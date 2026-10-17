@@ -62,7 +62,7 @@ namespace KaiForest
             Voice = gameObject.AddComponent<VoiceEmitter>();
             Voice.audibleRange = 200f;
             Voice.loudness = 1f;
-            Rig = CharacterFactory.BuildMonster(transform, mats);
+            Rig = CharacterFactory.BuildMonsterFromModel(transform) ?? CharacterFactory.BuildMonster(transform, mats);
 
             breath = Make3D(bank.monsterBreath, true, 20f);
             stepSource = Make3D(null, false, 25f);

@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KaiForest.LanternSettings
   range: 11
   intensity: 22
+  daylight: 0

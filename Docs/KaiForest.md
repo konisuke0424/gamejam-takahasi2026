@@ -107,6 +107,21 @@ WebGL版は `Builds/WebGL` に出力（Gzip＋Decompression Fallback なので�
 | 声（Windows音声合成 Haruka） | `Tools/audio/gen_tts.ps1`（セリフ表は `lines.json`） | `Tools/audio/raw/*.wav` |
 | 声の加工・環境音 | `Tools/audio/build_audio.py` | `Assets/Game/Audio/` |
 | 地面・樹皮テクスチャ、見出し文字 | `Tools/gen_textures.py` | `Assets/Game/Textures`, `Assets/Game/UI` |
+| 化け物のモデル（Blender） | `Tools/blender/build_monster.py` | `Art/Source/Monster.blend`、`Assets/Game/Resources/MonsterModel.kfmodel`、`Art/Source/Previews/*.png` |
+
+### 化け物のモデル
+
+Blender（5.1）を画面なしで動かして作る。Blender の MCP 接続は不要。
+
+```
+"C:/Program Files/Blender Foundation/Blender 5.1/blender.exe" --background --factory-startup --python Tools/blender/build_monster.py -- --preview Art/Source/Previews
+```
+
+- モデルは **Body / Head / ArmL / ArmR の4パーツ**。各パーツの原点が関節（地面・首の付け根・肩）になっていて、`MonsterAI` の動き（首の傾き・痙攣・腕の振り・覆いかぶさり）がそのまま効く
+- `.kfmodel` は Unity 用の書き出し（Y上・+Z前の座標に変換済み）。`KaiModelImporter` が読み込み、パーツごとのメッシュと `ModelRig`（パーツの参照）を持つモデルにする。スクリプトを回し直すと自動で読み込み直される
+- 色・発光はゲームのマテリアル（`MaterialLibrary`）を使う。Blender のマテリアル名 `MonsterBody` / `Hair` / `MonsterFace` / `MonsterSkin` / `MonsterEye` で対応づける
+- `Monster.blend` を Blender で直接編集した場合は、同じ4パーツ名と原点の位置を保ったまま、スクリプトの `export_kfmodel` 部分だけを使って書き出す（形を変えるだけならスクリプト側の数値を直すのが簡単）
+- `MonsterModel.kfmodel` が無いときは、コードで組む仮の化け物（`CharacterFactory.BuildMonster`）に戻る
 
 **本番の声に差し替えるとき**は、`Tools/audio/raw/<id>.wav` を録音で上書きして `build_audio.py` を回すだけでよい（`gen_tts.ps1` は既存ファイルを上書きしない）。化け物のセリフも、お母さん役の録音を元に加工する前提。
 
