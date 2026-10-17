@@ -55,10 +55,17 @@ namespace KaiForest
 
         static GameManager GM => GameManager.I;
 
+        static IEnumerator WaitReady()
+        {
+            float t = 0f;
+            while ((GM == null || !GM.Ready) && t < 20f) { t += Time.unscaledDeltaTime; yield return null; }
+        }
+
         IEnumerator Run()
         {
-            yield return new WaitForSeconds(1.5f);
-            Check("forest generated", GM.Forest.TreeCount > 1500, $"trees={GM.Forest.TreeCount}");
+            yield return WaitReady();
+            yield return new WaitForSeconds(1.0f);
+            Check("forest scene loaded", GM.Map.TreeCount > 1500 && GM.Map.exit != null, $"trees={GM.Map.TreeCount} exit={GM.Map.exit != null}");
             yield return Shot("01_title");
 
             GM.BeginGame();
@@ -84,21 +91,21 @@ namespace KaiForest
             yield return Shot("04_walk");
 
             // Look at a landmark.
-            if (GM.Forest.Landmarks.Count > 0)
+            if (GM.Map.Landmarks.Length > 0)
             {
-                var lm = GM.Forest.Landmarks[0];
-                var lp = lm.Key;
-                var from = GM.Forest.FindOpenPoint(lp + new Vector3(0f, 0f, -4.5f), 1.5f);
+                var lm = GM.Map.Landmarks[0];
+                var lp = lm.transform.position;
+                var from = GM.Map.FindOpenPoint(lp + new Vector3(0f, 0f, -4.5f), 1.5f);
                 GM.Player.Teleport(from, 0f);
                 GM.Player.FaceTowards(lp + Vector3.up * 0.6f);
                 yield return new WaitForSeconds(0.5f);
-                yield return Shot("05_landmark_" + lm.Value);
+                yield return Shot("05_landmark_" + lm.type);
             }
 
             // AI movement and voices over a few seconds.
             var mp = GM.Mother.transform.position;
             var xp = GM.Monster.transform.position;
-            GM.Player.Teleport(GM.Forest.StartPosition, 0f);
+            GM.Player.Teleport(GM.Map.StartPosition, 0f);
             yield return new WaitForSeconds(8f);
             Check("mother moves", Vector3.Distance(mp, GM.Mother.transform.position) > 1f, $"d={Vector3.Distance(mp, GM.Mother.transform.position):0.0}");
             Check("monster moves", Vector3.Distance(xp, GM.Monster.transform.position) > 1f, $"d={Vector3.Distance(xp, GM.Monster.transform.position):0.0}");
@@ -108,7 +115,7 @@ namespace KaiForest
             // Meet the monster: screenshot, then it should start chasing.
             GM.Monster.Frozen = true;
             var mPos = GM.Monster.transform.position;
-            var dir = (GM.Forest.StartPosition - mPos); dir.y = 0f; dir.Normalize();
+            var dir = (GM.Map.StartPosition - mPos); dir.y = 0f; dir.Normalize();
             var near = mPos + dir * 6f;
             GM.Player.Teleport(near, 0f);
             GM.Player.FaceTowards(GM.Monster.Rig.head.position - Vector3.up * 0.8f);
@@ -123,9 +130,9 @@ namespace KaiForest
 
             // Get away and find the mother.
             GM.Monster.Frozen = true;
-            GM.Monster.Teleport(GM.Forest.StartPosition + new Vector3(60f, 0f, 0f));
+            GM.Monster.Teleport(GM.Map.StartPosition + new Vector3(60f, 0f, 0f));
             var mom = GM.Mother.transform.position;
-            var away = GM.Forest.FindOpenPoint(mom + (GM.Forest.StartPosition - mom).normalized * 6f, 1f);
+            var away = GM.Map.FindOpenPoint(mom + (GM.Map.StartPosition - mom).normalized * 6f, 1f);
             GM.Player.Teleport(away, 0f);
             GM.Player.FaceTowards(GM.Mother.Rig.head.position);
             GM.Mother.Active = false;
@@ -144,7 +151,9 @@ namespace KaiForest
 
             // Retry, then get caught.
             GM.Restart();
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0.3f);
+            yield return WaitReady();
+            yield return new WaitForSeconds(0.5f);
             Check("retry skips title", GM.State == GameState.Intro, $"state={GM.State}");
             GM.SkipIntro();
             yield return new WaitForSeconds(0.5f);

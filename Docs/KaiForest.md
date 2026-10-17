@@ -6,8 +6,27 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 森にはお母さんの声をまねる化け物がいて、本物と偽物の声を聞き分けることが攻略の鍵になる。
 
 - お母さんに触れたらクリア / 化け物に捕まったらゲームオーバー
-- 出口（お母さんの居場所）は毎回3か所の候補からランダム。残り2か所は壊れた鳥居（偽の出口）
-- 森の配置は固定シード（`GameManager.forestSeed`）で、毎回同じ
+- 出口（お母さんの居場所）は `Forest.unity` に置いた鳥居（`Torii_Exit`）1か所。壊れた鳥居（`BrokenTorii`）は偽の出口としての飾り
+- 森は `Forest.unity` に置いたオブジェクトそのもの（下の「マップの編集」を参照）
+
+## マップの編集（Forest.unity）
+
+`Assets/Scenes/Forest.unity` を開くと、霧のない明るい状態でマップ全体を編集できる（明かりは編集用で、ゲーム中は消える）。
+
+| オブジェクト | 中身 | 編集のしかた |
+|---|---|---|
+| `ForestMap` | マップの根元。歩ける範囲（`halfSize`、黄色の枠）を持つ | 範囲を変えたら `Walls` も合わせて動かす |
+| `PlayerStart` | カイのスタート地点と向き（緑の球と矢印） | 動かす・回す |
+| `Landmarks/Torii_Exit` | 本物の出口。お母さんはこの前方 4m を中心に半径 20m を歩く（水色の円） | 動かす。前方（青い矢印）がカイの来る側 |
+| `Landmarks/*` | 地蔵・祠・大杉などの目印、壊れた鳥居 | 動かす・複製・削除。`Assets/Game/Map/Prefabs/Landmarks` から追加 |
+| `Trees/Area_*/Cedar_*` | 杉（8種類のプレハブ、約4000本） | 動かす・複製・削除。`Assets/Game/Map/Prefabs/Trees` から追加 |
+| `Undergrowth` | 茂み・石・草・枝を区画ごとにまとめたメッシュ | 直接は編集しない。目印や出口を動かしたら `KaiForest > Map > Rebake Undergrowth` で、それらを避けて撒き直す |
+| `Ground` / `Walls` | 地面と外周の見えない壁 | 通常は触らない |
+
+- プレハブ（杉・目印・鳥居）は仮の見た目。モデルを差し替えるとシーン上の全部が置き換わる。当たり判定（Collider）は残すこと（AI の視線や移動に使う）
+- `KaiForest > Map > Rebuild Forest Scene From Seed` は**手での編集をすべて捨てて**最初の配置に戻す
+- `KaiForest > Map > Regenerate Placeholder Prefabs` はプレハブを仮の見た目に作り直す（差し替えたモデルは失われる）
+- 化け物の出現位置は、スタートから 75m 以上・お母さんから 55m 以上離れた空き地からランダム
 
 ## 操作（マウスのみ）
 

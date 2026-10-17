@@ -19,8 +19,9 @@ git clone <このリポジトリのURL>
 遊び方・AI・声の仕組み・素材の作り直し方は [Docs/KaiForest.md](Docs/KaiForest.md) を参照。
 
 - WebGL で書き出すには Unity に **WebGL Build Support** モジュールが必要
-- メニュー `KaiForest > Setup Project` でマテリアル・音声バンク・`Assets/Scenes/Main.unity` を作り直す。
-  **`Main.unity` はこのとき上書きされるので手で編集しない**（森・キャラ・UI は実行時にコードが生成する）
+- シーンは2つ。どちらを開いて ▶ を押しても遊べる
+  - `Assets/Scenes/Forest.unity`：**マップ**。木・目印・鳥居・スタート地点が全部ふつうのオブジェクトとして置いてあるので、エディタで直接編集する
+  - `Assets/Scenes/Main.unity`：ゲーム進行（GameManager とポストエフェクトだけ）。`KaiForest > Setup Project` で上書きされるので**手で編集しない**
 - `KaiForest > Build WebGL` / `Build Windows` で `Builds/` に書き出す
 
 ## ルール

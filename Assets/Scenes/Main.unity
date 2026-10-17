@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &702695383
+--- !u!1 &1664643560
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,8 +127,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 702695385}
-  - component: {fileID: 702695384}
+  - component: {fileID: 1664643562}
+  - component: {fileID: 1664643561}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -136,13 +136,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &702695384
+--- !u!114 &1664643561
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 702695383}
+  m_GameObject: {fileID: 1664643560}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89730d0061dc8614eafedf9c4b3ca856, type: 3}
@@ -154,19 +154,17 @@ MonoBehaviour:
   titleTexture: {fileID: 2800000, guid: 3a2c775bdd505f84c93defb6dbf2109b, type: 3}
   clearTexture: {fileID: 2800000, guid: 8d14e2dd686e3f648b5a9cdac69216e8, type: 3}
   gameOverTexture: {fileID: 2800000, guid: 0fb5c325dbc835e49921e35854685922, type: 3}
-  volume: {fileID: 1216627892}
-  forestSeed: 20261017
-  forcedExitIndex: -1
+  volume: {fileID: 2075905215}
   fogDensity: 0.085
   fogColor: {r: 0.012, g: 0.016, b: 0.024, a: 1}
   ambientColor: {r: 0.05, g: 0.055, b: 0.075, a: 1}
---- !u!4 &702695385
+--- !u!4 &1664643562
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 702695383}
+  m_GameObject: {fileID: 1664643560}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -175,7 +173,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1216627891
+--- !u!1 &2075905214
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -183,8 +181,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1216627893}
-  - component: {fileID: 1216627892}
+  - component: {fileID: 2075905216}
+  - component: {fileID: 2075905215}
   m_Layer: 0
   m_Name: PostProcess
   m_TagString: Untagged
@@ -192,13 +190,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1216627892
+--- !u!114 &2075905215
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1216627891}
+  m_GameObject: {fileID: 2075905214}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
@@ -209,13 +207,13 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: 6a6d65978b0cd5f41b98d3688ce6e156, type: 2}
---- !u!4 &1216627893
+--- !u!4 &2075905216
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1216627891}
+  m_GameObject: {fileID: 2075905214}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -228,5 +226,5 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1216627893}
-  - {fileID: 702695385}
+  - {fileID: 2075905216}
+  - {fileID: 1664643562}

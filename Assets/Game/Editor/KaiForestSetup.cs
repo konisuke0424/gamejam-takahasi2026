@@ -20,9 +20,14 @@ namespace KaiForest.EditorTools
         const string Root = "Assets/Game";
         const string ScenePath = "Assets/Scenes/Main.unity";
 
+        /// <summary>
+        /// Recreates materials, audio bank, post-process profile and Main.unity, and creates any missing
+        /// map prefab. Forest.unity is only created when it doesn't exist yet: it holds hand edits.
+        /// </summary>
         [MenuItem("KaiForest/Setup Project")]
         public static void Setup()
         {
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
             foreach (var d in new[] { "Materials", "Data", "Settings" })
                 if (!AssetDatabase.IsValidFolder($"{Root}/{d}")) AssetDatabase.CreateFolder(Root, d);
             AssetDatabase.Refresh();
@@ -32,6 +37,8 @@ namespace KaiForest.EditorTools
             var profile = CreateVolumeProfile();
             ConfigurePipeline();
             ConfigurePlayer();
+            ForestBaker.EnsurePrefabs(mats);
+            if (!File.Exists(ForestBaker.ScenePath)) ForestBaker.BuildForestScene(mats);
             CreateScene(mats, bank, profile);
             AssetDatabase.SaveAssets();
             Debug.Log("[KaiForest] Setup done");
@@ -52,7 +59,7 @@ namespace KaiForest.EditorTools
         {
             var opts = new BuildPlayerOptions
             {
-                scenes = new[] { ScenePath },
+                scenes = new[] { ScenePath, ForestBaker.ScenePath },
                 locationPathName = path,
                 target = target,
                 options = BuildOptions.None,
@@ -65,7 +72,7 @@ namespace KaiForest.EditorTools
 
         // ------------------------------------------------------------------ materials
 
-        static Material Lit(string name, Color color, float smooth = 0.12f, Texture2D tex = null, Color? emission = null)
+        static Material Lit(string name, Color color, float smooth = 0.12f, Texture2D tex = null, Color? emission = null, float tiling = 1f)
         {
             string path = $"{Root}/Materials/{name}.mat";
             var m = AssetDatabase.LoadAssetAtPath<Material>(path);
@@ -80,11 +87,14 @@ namespace KaiForest.EditorTools
             m.SetFloat("_EnvironmentReflections", 0f);
             m.EnableKeyword("_ENVIRONMENTREFLECTIONS_OFF");
             m.SetTexture("_BaseMap", tex);
+            m.SetTextureScale("_BaseMap", Vector2.one * tiling);
             if (emission.HasValue)
             {
                 m.EnableKeyword("_EMISSION");
                 m.SetColor("_EmissionColor", emission.Value);
-                m.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+                // Must not be None: URP's material validation (run whenever the editor loads the
+                // material) treats None as "emission off" and strips _EMISSION.
+                m.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
             }
             else m.DisableKeyword("_EMISSION");
             m.enableInstancing = true;
@@ -98,7 +108,8 @@ namespace KaiForest.EditorTools
             var bark = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Root}/Textures/T_Bark.png");
             var lib = LoadOrCreate<MaterialLibrary>($"{Root}/Data/MaterialLibrary.asset");
             // Colours are sRGB; the project is linear, so these read much darker than they look here.
-            lib.ground = Lit("M_Ground", Color.white, 0.08f, ground);
+            // The ground is a 320 m plane: tile the texture every 4 m.
+            lib.ground = Lit("M_Ground", Color.white, 0.08f, ground, null, 80f);
             lib.bark = Lit("M_Bark", Color.white, 0.1f, bark);
             lib.foliage = Lit("M_Foliage", new Color(0.12f, 0.18f, 0.12f), 0.05f);
             lib.bush = Lit("M_Bush", new Color(0.2f, 0.3f, 0.16f), 0.1f);
@@ -279,7 +290,11 @@ namespace KaiForest.EditorTools
 
             Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
             EditorSceneManager.SaveScene(scene, ScenePath);
-            EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
+            EditorBuildSettings.scenes = new[]
+            {
+                new EditorBuildSettingsScene(ScenePath, true),
+                new EditorBuildSettingsScene(ForestBaker.ScenePath, true),
+            };
         }
 
         static T LoadOrCreate<T>(string path) where T : ScriptableObject

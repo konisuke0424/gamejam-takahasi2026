@@ -57,7 +57,7 @@ namespace KaiForest
             camGo.transform.localPosition = new Vector3(0f, eyeHeight, 0f);
             Cam = camGo.AddComponent<Camera>();
             Cam.nearClipPlane = 0.05f;
-            Cam.farClipPlane = 70f;
+            Cam.farClipPlane = 40f; // fog hides everything past ~25 m; fewer trees to draw
             Cam.fieldOfView = 68f;
             Cam.clearFlags = CameraClearFlags.SolidColor;
             Cam.backgroundColor = RenderSettings.fogColor;

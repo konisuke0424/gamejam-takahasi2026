@@ -51,7 +51,7 @@ namespace KaiForest
         bool Blocked(Vector3 dir)
         {
             return Physics.SphereCast(transform.position + Vector3.up * probeHeight, probeRadius, dir, out _, probeLength,
-                ForestGenerator.ObstacleMask, QueryTriggerInteraction.Ignore);
+                ForestMap.ObstacleMask, QueryTriggerInteraction.Ignore);
         }
 
         void Update()

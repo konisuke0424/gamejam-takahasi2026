@@ -36,7 +36,7 @@ namespace KaiForest
         public float DistanceToPlayer { get; private set; } = 999f;
         public int ChaseCount { get; private set; }
 
-        ForestGenerator forest;
+        ForestMap forest;
         PlayerController player;
         AudioBank bank;
         NpcMotor motor;
@@ -45,7 +45,7 @@ namespace KaiForest
         float stateSince, lastSeen, nextCall, nextPerceive, nextLunge, lungeUntil, stepTimer, lookAroundUntil;
         int last1 = -1, last2 = -1;
 
-        public void Init(ForestGenerator f, PlayerController p, AudioBank b, MaterialLibrary mats)
+        public void Init(ForestMap f, PlayerController p, AudioBank b, MaterialLibrary mats)
         {
             forest = f; player = p; bank = b;
             var cc = gameObject.AddComponent<CharacterController>();
@@ -123,7 +123,7 @@ namespace KaiForest
         bool LineOfSight()
         {
             var eye = transform.position + Vector3.up * 2.4f;
-            return !Physics.Linecast(eye, player.HeadPosition, ForestGenerator.ObstacleMask, QueryTriggerInteraction.Ignore);
+            return !Physics.Linecast(eye, player.HeadPosition, ForestMap.ObstacleMask, QueryTriggerInteraction.Ignore);
         }
 
         void Update()

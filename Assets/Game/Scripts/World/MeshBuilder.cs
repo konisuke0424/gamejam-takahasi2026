@@ -100,6 +100,21 @@ namespace KaiForest
             tris.Add(s); tris.Add(s + 2); tris.Add(s + 1);
         }
 
+        /// <summary>A single grass blade: one thin triangle, front and back.</summary>
+        public void AddBlade(Vector3 root, Quaternion rot, float width, float height)
+        {
+            var l = root + rot * new Vector3(-width * 0.5f, 0f, 0f);
+            var r = root + rot * new Vector3(width * 0.5f, 0f, 0f);
+            var tip = root + rot * new Vector3(0f, height, 0f);
+            int s = verts.Count;
+            verts.Add(l); verts.Add(tip); verts.Add(r);
+            verts.Add(l); verts.Add(tip); verts.Add(r);
+            uvs.Add(new Vector2(0f, 0f)); uvs.Add(new Vector2(0.5f, 1f)); uvs.Add(new Vector2(1f, 0f));
+            uvs.Add(new Vector2(0f, 0f)); uvs.Add(new Vector2(0.5f, 1f)); uvs.Add(new Vector2(1f, 0f));
+            tris.Add(s); tris.Add(s + 1); tris.Add(s + 2);
+            tris.Add(s + 3); tris.Add(s + 5); tris.Add(s + 4);
+        }
+
         public Mesh ToMesh(string name)
         {
             var m = new Mesh { name = name };

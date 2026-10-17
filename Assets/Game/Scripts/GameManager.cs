@@ -11,11 +11,14 @@ namespace KaiForest
     public enum GameState { Title, Intro, Playing, Clear, Caught }
 
     /// <summary>
-    /// Builds the run (forest, boy, mother, monster, UI) and drives the title → intro → play → ending flow.
-    /// The scene only holds this component and the post-process volume; everything else is spawned here.
+    /// Loads the map (Forest.unity, placed by hand in the editor), spawns the boy, mother and monster
+    /// on its markers, builds the UI, and drives the title → intro → play → ending flow.
+    /// Main.unity only holds this component and the post-process volume.
     /// </summary>
     public class GameManager : MonoBehaviour
     {
+        public const string SceneName = "Main";
+
         public static GameManager I { get; private set; }
         /// <summary>Set before reloading the scene so a retry skips the title screen.</summary>
         public static bool SkipTitle;
@@ -31,15 +34,15 @@ namespace KaiForest
         public Texture2D gameOverTexture;
         public Volume volume;
 
-        [Header("World")]
-        public int forestSeed = 20261017;
-        [Tooltip("-1 = random each run")] public int forcedExitIndex = -1;
+        [Header("Night look (applied at runtime)")]
         public float fogDensity = 0.085f;
         public Color fogColor = new Color(0.012f, 0.016f, 0.024f);
         public Color ambientColor = new Color(0.05f, 0.055f, 0.075f);
 
         public GameState State { get; private set; } = GameState.Title;
-        public ForestGenerator Forest { get; private set; }
+        /// <summary>True once the map is loaded and the actors exist.</summary>
+        public bool Ready { get; private set; }
+        public ForestMap Map { get; private set; }
         public PlayerController Player { get; private set; }
         public MotherAI Mother { get; private set; }
         public MonsterAI Monster { get; private set; }
@@ -62,32 +65,6 @@ namespace KaiForest
         {
             I = this;
             ApplyRenderSettings();
-
-            Forest = new GameObject("ForestGenerator").AddComponent<ForestGenerator>();
-            Forest.seed = forestSeed;
-            int exit = forcedExitIndex >= 0 ? forcedExitIndex : Random.Range(0, ForestGenerator.ExitCandidates.Length);
-            Forest.Generate(mats, exit);
-
-            var pgo = new GameObject("Player") { layer = 2 };
-            Player = pgo.AddComponent<PlayerController>();
-            Player.Init(mats, audioBank.steps);
-            Player.Teleport(Forest.StartPosition, 0f);
-
-            var toCenter = (-Forest.ExitPosition).normalized; toCenter.y = 0f;
-            var home = Forest.ExitPosition + toCenter * 4f;
-            var mgo = new GameObject("Mother") { layer = 2 };
-            Mother = mgo.AddComponent<MotherAI>();
-            Mother.Init(Forest, Player, audioBank, mats, home);
-            Mother.Teleport(Forest.FindOpenPoint(home, 3f));
-
-            var xgo = new GameObject("Monster") { layer = 2 };
-            Monster = xgo.AddComponent<MonsterAI>();
-            Monster.Init(Forest, Player, audioBank, mats);
-            Monster.Teleport(PickMonsterSpawn(home));
-
-            Ambience = gameObject.AddComponent<AmbienceController>();
-            Ambience.Init(audioBank, Player, Monster);
-
             BuildMoon();
             BuildUI();
             if (volume != null)
@@ -102,10 +79,49 @@ namespace KaiForest
                 new GameObject("AutoTest").AddComponent<AutoTest>();
         }
 
-        void Start()
+        IEnumerator Start()
         {
+            // The map lives in its own scene; it is already loaded when Forest.unity was the one played.
+            if (ForestMap.Instance == null)
+            {
+                var op = SceneManager.LoadSceneAsync(ForestMap.SceneName, LoadSceneMode.Additive);
+                while (op != null && !op.isDone) yield return null;
+            }
+            Map = ForestMap.Instance;
+            if (Map == null)
+            {
+                Debug.LogError("[KaiForest] Forest scene not found. Add Assets/Scenes/Forest.unity to the build (KaiForest > Setup Project).");
+                yield break;
+            }
+            Physics.SyncTransforms();
+            SpawnActors();
+            Ready = true;
+
             if (SkipTitle) introRoutine = StartCoroutine(IntroRoutine(true));
             else ShowTitle();
+        }
+
+        void SpawnActors()
+        {
+            var pgo = new GameObject("Player") { layer = 2 };
+            Player = pgo.AddComponent<PlayerController>();
+            Player.Init(mats, audioBank.steps);
+            Player.Teleport(Map.StartPosition, Map.StartYaw);
+
+            var home = Map.exit != null ? Map.exit.MotherHome : Map.ExitPosition;
+            var mgo = new GameObject("Mother") { layer = 2 };
+            Mother = mgo.AddComponent<MotherAI>();
+            Mother.Init(Map, Player, audioBank, mats, home);
+            if (Map.exit != null) Mother.wanderRadius = Map.exit.wanderRadius;
+            Mother.Teleport(Map.FindOpenPoint(home, 3f));
+
+            var xgo = new GameObject("Monster") { layer = 2 };
+            Monster = xgo.AddComponent<MonsterAI>();
+            Monster.Init(Map, Player, audioBank, mats);
+            Monster.Teleport(PickMonsterSpawn(home));
+
+            Ambience = gameObject.AddComponent<AmbienceController>();
+            Ambience.Init(audioBank, Player, Monster);
         }
 
         public static bool HasArg(string a)
@@ -141,15 +157,17 @@ namespace KaiForest
 
         Vector3 PickMonsterSpawn(Vector3 motherHome)
         {
+            // Somewhere between the boy and his mother, well away from both.
+            float h = Map.halfSize - 25f;
             for (int i = 0; i < 300; i++)
             {
-                var p = new Vector3(Random.Range(-95f, 95f), 0f, Random.Range(-35f, 55f));
-                if (Vector3.Distance(p, Forest.StartPosition) < 75f) continue;
+                var p = new Vector3(Random.Range(-h, h), 0f, Random.Range(-h, h));
+                if (Vector3.Distance(p, Map.StartPosition) < 75f) continue;
                 if (Vector3.Distance(p, motherHome) < 55f) continue;
-                if (!Forest.IsOpen(p)) continue;
+                if (!Map.IsOpen(p)) continue;
                 return p;
             }
-            return Forest.FindOpenPoint(new Vector3(0f, 0f, 10f), 20f);
+            return Map.FindOpenPoint((Map.StartPosition + motherHome) * 0.5f, 20f);
         }
 
         // ------------------------------------------------------------------ flow
@@ -302,11 +320,13 @@ namespace KaiForest
         public void Restart()
         {
             SkipTitle = true;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            // Single-mode load drops the map too; the new GameManager loads it again.
+            SceneManager.LoadScene(SceneName, LoadSceneMode.Single);
         }
 
         void Update()
         {
+            if (!Ready) return;
             var mouse = IgnoreMouse ? null : Mouse.current;
             bool click = mouse != null && mouse.leftButton.wasPressedThisFrame;
             switch (State)
@@ -345,7 +365,7 @@ namespace KaiForest
             return $"state {State}  t {PlayTime:0.0}s  fps {1f / Mathf.Max(Time.smoothDeltaTime, 0.0001f):0}  kai ({pp.x:0.0}, {pp.z:0.0}) yaw {Player.Yaw:0}\n" +
                    $"mother {dm:0.0}m  calls {Mother.Voice.PlayCount}  last {Mother.Voice.LastLineId}  noticed {Mother.Noticed}\n" +
                    $"monster {Monster.DistanceToPlayer:0.0}m  {Monster.State}  calls {Monster.Voice.PlayCount}  last {Monster.Voice.LastLineId}\n" +
-                   $"exit {Forest.ExitPosition}  trees {Forest.TreeCount}";
+                   $"exit {Map.ExitPosition}  trees {Map.TreeCount}";
         }
 
         // ------------------------------------------------------------------ UI
