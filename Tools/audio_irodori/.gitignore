@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.venv/
+assets/raw/*.wav
+assets/export/*.wav
+assets/export/*.prefar.wav
+assets/export.zip

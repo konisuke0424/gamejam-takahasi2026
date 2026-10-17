@@ -11,6 +11,8 @@ an occasional stutter and a tape-like pitch drop at the end. --monster-strength 
 SFX: everything else (insects, wind, footsteps, heartbeat, ...) is synthesized here.
 
 Usage: python Tools/audio/build_audio.py [--monster-strength 1.0]
+
+本番 Irodori 音声は Tools/audio_irodori と sync_irodori_export.py を使う（本スクリプトは Haruka プロト用）。
 """
 import argparse
 import json
