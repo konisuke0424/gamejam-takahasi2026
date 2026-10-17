@@ -6,8 +6,8 @@ namespace KaiForest
 {
     /// <summary>
     /// Mouse-only first person control.
-    /// Hold left = walk forward, hold right = walk backward; moving the mouse while holding turns.
-    /// Hold the wheel button and drag = look around without moving.
+    /// Moving the mouse looks around (the cursor is locked during play, see GameManager).
+    /// Hold left = walk forward, hold right = walk backward.
     /// </summary>
     [RequireComponent(typeof(CharacterController))]
     public class PlayerController : MonoBehaviour
@@ -16,6 +16,10 @@ namespace KaiForest
         public float backSpeed = 1.5f;
         public float acceleration = 7f;
         public float lookSensitivity = 0.15f;
+        [Tooltip("上下の視点の限界（度）。上にも下にもこの角度まで")]
+        public float pitchLimit = 10f;
+        [Tooltip("1フレームのマウス移動量の上限（ピクセル）。カーソルをロックした直後の跳ねで視点が飛ぶのを防ぐ")]
+        public float maxLookDeltaPerFrame = 150f;
         public float eyeHeight = 1.25f;
         public float stepDistance = 0.78f;
 
@@ -127,18 +131,16 @@ namespace KaiForest
             var mouse = GameManager.IgnoreMouse ? null : Mouse.current;
             if (ControlEnabled && mouse != null)
             {
-                bool l = mouse.leftButton.isPressed, r = mouse.rightButton.isPressed, m = mouse.middleButton.isPressed;
+                bool l = mouse.leftButton.isPressed, r = mouse.rightButton.isPressed;
                 if (waitForRelease)
                 {
-                    if (!l && !r && !m) waitForRelease = false;
-                    l = r = m = false;
+                    if (!l && !r) waitForRelease = false;
+                    l = r = false;
                 }
-                if (l || r || m)
-                {
-                    Vector2 d = mouse.delta.ReadValue();
-                    yaw += d.x * lookSensitivity;
-                    pitch = Mathf.Clamp(pitch - d.y * lookSensitivity, -70f, 70f);
-                }
+                // Looking needs no button: the mouse always turns the view.
+                Vector2 d = Vector2.ClampMagnitude(mouse.delta.ReadValue(), maxLookDeltaPerFrame);
+                yaw += d.x * lookSensitivity;
+                pitch = Mathf.Clamp(pitch - d.y * lookSensitivity, -pitchLimit, pitchLimit);
                 if (l && !r) input = 1f;
                 else if (r && !l) input = -1f;
             }

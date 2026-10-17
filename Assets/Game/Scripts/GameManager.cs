@@ -267,8 +267,21 @@ namespace KaiForest
             State = GameState.Playing;
             PlayTime = 0f;
             Player.ControlEnabled = true;
+            LockCursor(true);
             Mother.Activate();
             Monster.Activate();
+        }
+
+        /// <summary>
+        /// Locks and hides the cursor so mouse movement turns the view without clicking.
+        /// Browsers only grant the lock on a user click (Unity applies it at the next one),
+        /// and Esc releases it; a click during play locks it again (see Update).
+        /// </summary>
+        static void LockCursor(bool on)
+        {
+            if (IgnoreMouse) return; // AutoTest: don't grab the desktop cursor
+            Cursor.lockState = on ? CursorLockMode.Locked : CursorLockMode.None;
+            Cursor.visible = !on;
         }
 
         /// <summary>AutoTest/dev shortcut: jump straight into play from the title or intro.</summary>
@@ -286,6 +299,7 @@ namespace KaiForest
             if (State != GameState.Playing) return;
             State = GameState.Clear;
             Player.ControlEnabled = false;
+            LockCursor(false);
             Monster.Halt();
             Mother.SayFound();
             Ambience.FadeTo(0.3f, 3f);
@@ -323,6 +337,7 @@ namespace KaiForest
             if (State != GameState.Playing) return;
             State = GameState.Caught;
             Player.ControlEnabled = false;
+            LockCursor(false);
             Mother.Active = false;
             Mother.Voice.Stop();
             who.Halt();
@@ -385,6 +400,8 @@ namespace KaiForest
                     break;
                 case GameState.Playing:
                     PlayTime += Time.deltaTime;
+                    // Esc releases the lock; the next click takes it back.
+                    if (click && Cursor.lockState != CursorLockMode.Locked) LockCursor(true);
                     break;
                 case GameState.Clear:
                 case GameState.Caught:
@@ -466,9 +483,9 @@ namespace KaiForest
             title.rectTransform.sizeDelta *= 0.75f;
             MakeText(titleGroup.transform, "―　本物の声を、聞き分けて　―", 34, new Color(0.75f, 0.7f, 0.65f), new Vector2(0f, 40f));
             MakeText(titleGroup.transform,
-                "左ボタンを押している間　前へ進む（押したままマウスを動かすと曲がる）\n" +
-                "右ボタンを押している間　うしろへ下がる\n" +
-                "ホイールボタンを押したままドラッグ　立ち止まって見回す",
+                "マウスを動かす　見回す\n" +
+                "左ボタンを押している間　前へ進む\n" +
+                "右ボタンを押している間　うしろへ下がる",
                 26, new Color(0.62f, 0.6f, 0.58f), new Vector2(0f, -150f));
             MakeText(titleGroup.transform, "ヘッドホン推奨", 22, new Color(0.5f, 0.45f, 0.42f), new Vector2(0f, -300f));
             titleHint = MakeText(titleGroup.transform, "クリックで　はじめる", 34, Color.white, new Vector2(0f, -390f));
@@ -481,7 +498,7 @@ namespace KaiForest
             storyGroup.alpha = 0f;
 
             hintGroup = MakeGroup(go.transform, "Hint");
-            MakeText(hintGroup.transform, "左長押し：前へ　　右長押し：うしろへ　　押したまま動かす：向きを変える　　ホイール押しドラッグ：見回す",
+            MakeText(hintGroup.transform, "マウス：見回す　　左長押し：前へ　　右長押し：うしろへ　　Esc：カーソルを出す（クリックで戻る）",
                 22, new Color(0.7f, 0.68f, 0.64f, 0.8f), new Vector2(0f, 480f));
             hintGroup.alpha = 0f;
 
