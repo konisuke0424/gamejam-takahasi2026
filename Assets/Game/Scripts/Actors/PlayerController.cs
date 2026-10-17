@@ -6,8 +6,8 @@ namespace KaiForest
 {
     /// <summary>
     /// Mouse-only first person control.
-    /// Hold left = walk forward, hold right = walk backward; moving the mouse while holding turns.
-    /// Hold the wheel button and drag = look around without moving.
+    /// Moving the mouse looks around (the cursor is locked during play, see GameManager).
+    /// Hold left = walk forward, hold right = walk backward.
     /// </summary>
     [RequireComponent(typeof(CharacterController))]
     public class PlayerController : MonoBehaviour
@@ -16,12 +16,28 @@ namespace KaiForest
         public float backSpeed = 1.5f;
         public float acceleration = 7f;
         public float lookSensitivity = 0.15f;
+        [Tooltip("上下の視点の限界（度）。上にも下にもこの角度まで")]
+        public float pitchLimit = 10f;
+        [Tooltip("1フレームのマウス移動量の上限（ピクセル）。カーソルをロックした直後の跳ねで視点が飛ぶのを防ぐ")]
+        public float maxLookDeltaPerFrame = 150f;
         public float eyeHeight = 1.25f;
         public float stepDistance = 0.78f;
 
         public Camera Cam { get; private set; }
         public Light LanternLight { get; private set; }
-        public bool ControlEnabled { get; set; }
+        /// <summary>
+        /// When control is handed over, a mouse button still held from the click that started play
+        /// (title / story skip) is ignored until it is released, so the boy doesn't lurch forward.
+        /// </summary>
+        public bool ControlEnabled
+        {
+            get => controlEnabled;
+            set
+            {
+                if (value && !controlEnabled) waitForRelease = true;
+                controlEnabled = value;
+            }
+        }
         public bool IsMoving => Mathf.Abs(speed) > 0.35f;
         public float Speed => speed;
         public float Yaw => yaw;
@@ -37,7 +53,9 @@ namespace KaiForest
         Transform lantern;
         AudioSource stepSource;
         AudioClip[] steps;
-        float yaw, pitch, speed, vy, stepAccum, bobPhase, lanternBaseIntensity, lastYaw;
+        LanternSettings lanternSettings;
+        bool controlEnabled, waitForRelease;
+        float yaw, pitch, speed, vy, stepAccum, bobPhase, lastYaw;
         Vector3 lanternBasePos;
         Quaternion lookOverride;
         float lookOverrideWeight;
@@ -66,11 +84,11 @@ namespace KaiForest
             data.renderPostProcessing = true;
             data.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
 
-            var rig = CharacterFactory.BuildHandLantern(camGo.transform, mats);
+            lanternSettings = LanternSettings.Load();
+            var rig = CharacterFactory.BuildHandLantern(camGo.transform, mats, lanternSettings.range, lanternSettings.intensity);
             lantern = rig.lantern;
             LanternLight = rig.light;
             lanternBasePos = lantern.localPosition;
-            lanternBaseIntensity = LanternLight.intensity;
 
             steps = stepClips;
             stepSource = gameObject.AddComponent<AudioSource>();
@@ -113,13 +131,16 @@ namespace KaiForest
             var mouse = GameManager.IgnoreMouse ? null : Mouse.current;
             if (ControlEnabled && mouse != null)
             {
-                bool l = mouse.leftButton.isPressed, r = mouse.rightButton.isPressed, m = mouse.middleButton.isPressed;
-                if (l || r || m)
+                bool l = mouse.leftButton.isPressed, r = mouse.rightButton.isPressed;
+                if (waitForRelease)
                 {
-                    Vector2 d = mouse.delta.ReadValue();
-                    yaw += d.x * lookSensitivity;
-                    pitch = Mathf.Clamp(pitch - d.y * lookSensitivity, -70f, 70f);
+                    if (!l && !r) waitForRelease = false;
+                    l = r = false;
                 }
+                // Looking needs no button: the mouse always turns the view.
+                Vector2 d = Vector2.ClampMagnitude(mouse.delta.ReadValue(), maxLookDeltaPerFrame);
+                yaw += d.x * lookSensitivity;
+                pitch = Mathf.Clamp(pitch - d.y * lookSensitivity, -pitchLimit, pitchLimit);
                 if (l && !r) input = 1f;
                 else if (r && !l) input = -1f;
             }
@@ -162,8 +183,10 @@ namespace KaiForest
             lantern.localPosition = lanternBasePos + new Vector3(Mathf.Sin(bobPhase) * 0.012f, Mathf.Abs(Mathf.Cos(bobPhase)) * 0.02f * moveK, 0f);
             lantern.localRotation = Quaternion.Euler(Mathf.Sin(bobPhase) * 3f * moveK, 0f, Mathf.Clamp(yawVel * 0.03f, -12f, 12f));
 
+            // Read the settings every frame so Inspector edits during Play apply immediately.
             float flicker = Mathf.PerlinNoise(Time.time * 5.5f, 0.37f) * 0.14f + Mathf.PerlinNoise(Time.time * 17f, 0.91f) * 0.05f;
-            LanternLight.intensity = lanternBaseIntensity * LanternScale * (0.9f + flicker);
+            LanternLight.range = lanternSettings.range;
+            LanternLight.intensity = lanternSettings.intensity * LanternScale * (0.9f + flicker);
         }
     }
 }

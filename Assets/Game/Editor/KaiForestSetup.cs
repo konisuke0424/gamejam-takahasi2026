@@ -37,6 +37,7 @@ namespace KaiForest.EditorTools
             var profile = CreateVolumeProfile();
             ConfigurePipeline();
             ConfigurePlayer();
+            LanternSettingsAsset.Ensure();
             ForestBaker.EnsurePrefabs(mats);
             if (!File.Exists(ForestBaker.ScenePath)) ForestBaker.BuildForestScene(mats);
             CreateScene(mats, bank, profile);
@@ -282,7 +283,7 @@ namespace KaiForest.EditorTools
 
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
-            RenderSettings.fogDensity = gm.fogDensity;
+            RenderSettings.fogDensity = GameManager.FogDensity;
             RenderSettings.fogColor = gm.fogColor;
             RenderSettings.ambientMode = AmbientMode.Flat;
             RenderSettings.ambientLight = gm.ambientColor;

@@ -2,14 +2,15 @@ using UnityEngine;
 
 namespace KaiForest
 {
-    public enum MonsterState { Search, Investigate, Chase }
+    public enum MonsterState { Search, Investigate, Chase, Retreat }
 
     /// <summary>
     /// Imitates the mother's voice while hunting the boy.
     /// Tells for the player: it only knows a few of her phrases, always says them with exactly the same
     /// intonation, and the takes themselves warble / stutter / end wrong (baked by build_audio.py).
     /// Search: drifts around the boy's rough area. Investigate: heard footsteps, walks to the sound.
-    /// Chase: saw the lantern, runs at him; loses him after a while out of sight.
+    /// Chase: saw the lantern, runs at him; loses him after a while out of sight, or gives up after
+    /// chaseMaxDuration. Retreat: walks away ignoring the boy for retreatDuration, then searches again.
     /// </summary>
     public class MonsterAI : MonoBehaviour
     {
@@ -22,6 +23,12 @@ namespace KaiForest
         public float sightDistance = 12f;
         public float catchDistance = 1.3f;
         public float loseSightTime = 4.5f;
+        [Tooltip("これだけ追いかけたら諦めて退却する（秒）")]
+        public float chaseMaxDuration = 10f;
+        [Tooltip("退却中はカイを無視する（秒）。終わると探索に戻る")]
+        public float retreatDuration = 8f;
+        public float retreatDistance = 40f;
+        public float retreatSpeed = 2.0f;
         public float searchAroundPlayerRadius = 35f;
         public Vector2 callGap = new Vector2(5.5f, 10f);
         public Vector2 chaseCallGap = new Vector2(1.5f, 3.5f);
@@ -104,6 +111,16 @@ namespace KaiForest
             State = s;
             stateSince = Time.time;
             if (s == MonsterState.Search) PickSearchTarget();
+            if (s == MonsterState.Retreat) PickRetreatTarget();
+        }
+
+        void PickRetreatTarget()
+        {
+            // Walk off away from the boy so it doesn't spot him again right away.
+            var away = transform.position - player.transform.position; away.y = 0f;
+            if (away.sqrMagnitude < 0.01f) away = Random.insideUnitSphere;
+            away.y = 0f;
+            motor.MoveTo(forest.FindOpenPoint(transform.position + away.normalized * retreatDistance, 10f), retreatSpeed);
         }
 
         void PickSearchTarget()
@@ -188,6 +205,13 @@ namespace KaiForest
                         lookAroundUntil = 0f;
                         Enter(MonsterState.Investigate);
                     }
+                    else if (StateTime > chaseMaxDuration)
+                        Enter(MonsterState.Retreat);
+                    break;
+
+                case MonsterState.Retreat:
+                    // Ignores sight and hearing; can still catch him if he walks right into it.
+                    if (StateTime > retreatDuration) Enter(MonsterState.Search);
                     break;
             }
 

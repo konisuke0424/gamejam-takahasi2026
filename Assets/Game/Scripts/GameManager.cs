@@ -35,8 +35,10 @@ namespace KaiForest
         public Texture2D gameOverTexture;
         public Volume volume;
 
+        /// <summary>Night fog: about half the scene is gone at 10 m, nearly all of it at 20 m.</summary>
+        public const float FogDensity = 0.085f;
+
         [Header("Night look (applied at runtime)")]
-        public float fogDensity = 0.085f;
         public Color fogColor = new Color(0.012f, 0.016f, 0.024f);
         public Color ambientColor = new Color(0.05f, 0.055f, 0.075f);
 
@@ -61,10 +63,12 @@ namespace KaiForest
         float baseVignette, baseChroma;
         bool debugHud;
         Coroutine introRoutine;
+        LanternSettings viewSettings;
 
         void Awake()
         {
             I = this;
+            viewSettings = LanternSettings.Load();
             ApplyRenderSettings();
             BuildMoon();
             BuildUI();
@@ -134,26 +138,52 @@ namespace KaiForest
 
         // ------------------------------------------------------------------ setup
 
+        static readonly Color MoonColor = new Color(0.55f, 0.65f, 1f);
+        static readonly Color SunColor = new Color(1f, 0.96f, 0.88f);
+        static readonly Color DayFogColor = new Color(0.62f, 0.68f, 0.74f);
+        static readonly Color DayAmbientColor = new Color(0.55f, 0.57f, 0.6f);
+        Light moon;
+
         void ApplyRenderSettings()
         {
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
-            RenderSettings.fogDensity = fogDensity;
-            RenderSettings.fogColor = fogColor;
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = ambientColor;
             RenderSettings.skybox = null;
             RenderSettings.reflectionIntensity = 0f;
+            ApplyLook();
+        }
+
+        /// <summary>
+        /// The night look, blended toward daylight by LanternSettings.daylight (editor-only debug).
+        /// Runs every frame so fog density and the daylight slider can be tuned during Play.
+        /// </summary>
+        void ApplyLook()
+        {
+            float day = viewSettings.EffectiveDaylight;
+            RenderSettings.fogDensity = Mathf.Lerp(FogDensity, 0.004f, day);
+            RenderSettings.fogColor = Color.Lerp(fogColor, DayFogColor, day);
+            RenderSettings.ambientLight = Color.Lerp(ambientColor, DayAmbientColor, day);
+            if (moon != null)
+            {
+                moon.intensity = Mathf.Lerp(0.06f, 1.3f, day);
+                moon.color = Color.Lerp(MoonColor, SunColor, day);
+            }
+            if (Player != null && Player.Cam != null)
+            {
+                Player.Cam.backgroundColor = RenderSettings.fogColor;
+                Player.Cam.farClipPlane = Mathf.Lerp(40f, 300f, day);
+            }
         }
 
         void BuildMoon()
         {
-            var l = new GameObject("Moonlight").AddComponent<Light>();
-            l.type = LightType.Directional;
-            l.color = new Color(0.55f, 0.65f, 1f);
-            l.intensity = 0.06f;
-            l.shadows = LightShadows.None;
-            l.transform.rotation = Quaternion.Euler(55f, -40f, 0f);
+            moon = new GameObject("Moonlight").AddComponent<Light>();
+            moon.type = LightType.Directional;
+            moon.color = MoonColor;
+            moon.intensity = 0.06f;
+            moon.shadows = LightShadows.None;
+            moon.transform.rotation = Quaternion.Euler(55f, -40f, 0f);
         }
 
         Vector3 PickMonsterSpawn(Vector3 motherHome)
@@ -189,25 +219,42 @@ namespace KaiForest
             introRoutine = StartCoroutine(IntroRoutine(false));
         }
 
-        IEnumerator IntroRoutine(bool quick)
+        IEnumerator IntroRoutine(bool retry)
         {
             State = GameState.Intro;
+            if (retry)
+            {
+                // Retry: no story, straight back into the forest.
+                titleGroup.alpha = 0f;
+                fade.color = Color.black;
+                StartPlaying();
+                yield return FadeImage(0f, 0.8f);
+                yield break;
+            }
             yield return Fade(titleGroup, 0f, 0.6f);
             fade.color = Color.black;
-            if (!quick)
-            {
-                yield return ShowStory("森で、迷子に　なってしまった。", 2.6f);
-                yield return ShowStory("おかあさんの声が　きこえる……\n\nでも、この森には\n人の声を　まねる　化け物が　いるらしい。", 4.2f);
-            }
-            else
-            {
-                yield return ShowStory("……もういちど。\n本物の　おかあさんの声を　さがして。", 2.0f);
-            }
+            yield return ShowStory("森で、迷子に　なってしまった。", 2.6f);
+            yield return ShowStory("おかあさんの声が　きこえる……\n\nでも、この森には\n人の声を　まねる　化け物が　いるらしい。", 4.2f);
             StartPlaying();
-            yield return FadeImage(0f, 2.5f);
+            yield return FadeIntoPlay(2.5f);
+        }
+
+        IEnumerator FadeIntoPlay(float seconds)
+        {
+            yield return FadeImage(0f, seconds);
             hintGroup.alpha = 1f;
             yield return new WaitForSeconds(14f);
             yield return Fade(hintGroup, 0f, 2f);
+        }
+
+        /// <summary>A click during the opening story jumps straight into play.</summary>
+        void SkipStory()
+        {
+            if (introRoutine != null) StopCoroutine(introRoutine);
+            titleGroup.alpha = 0f;
+            storyGroup.alpha = 0f;
+            StartPlaying();
+            introRoutine = StartCoroutine(FadeIntoPlay(0.6f));
         }
 
         IEnumerator ShowStory(string text, float hold)
@@ -224,8 +271,21 @@ namespace KaiForest
             State = GameState.Playing;
             PlayTime = 0f;
             Player.ControlEnabled = true;
+            LockCursor(true);
             Mother.Activate();
             Monster.Activate();
+        }
+
+        /// <summary>
+        /// Locks and hides the cursor so mouse movement turns the view without clicking.
+        /// Browsers only grant the lock on a user click (Unity applies it at the next one),
+        /// and Esc releases it; a click during play locks it again (see Update).
+        /// </summary>
+        static void LockCursor(bool on)
+        {
+            if (IgnoreMouse) return; // AutoTest: don't grab the desktop cursor
+            Cursor.lockState = on ? CursorLockMode.Locked : CursorLockMode.None;
+            Cursor.visible = !on;
         }
 
         /// <summary>AutoTest/dev shortcut: jump straight into play from the title or intro.</summary>
@@ -245,6 +305,7 @@ namespace KaiForest
             PlayerPrefs.SetInt(ClearRecordKey, 1);
             PlayerPrefs.Save();
             Player.ControlEnabled = false;
+            LockCursor(false);
             Monster.Halt();
             Mother.SayFound();
             Ambience.FadeTo(0.3f, 3f);
@@ -262,6 +323,7 @@ namespace KaiForest
                 Player.LanternScale = Mathf.Lerp(1f, 0.12f, t / 0.8f);
                 yield return null;
             }
+            CanRestart = true; // a click from here on retries; the clear screen keeps playing out otherwise
             yield return new WaitForSeconds(1.6f);
             fade.color = new Color(0.06f, 0.035f, 0.02f, 0f);
             yield return FadeImage(0.88f, 2f);
@@ -273,9 +335,7 @@ namespace KaiForest
             endHint.text = "クリックで　もういちど";
             endHint.enabled = false;
             yield return Fade(endGroup, 1f, 1.5f);
-            yield return new WaitForSeconds(1.2f);
             endHint.enabled = true;
-            CanRestart = true;
         }
 
         public void OnCaught(MonsterAI who)
@@ -283,6 +343,7 @@ namespace KaiForest
             if (State != GameState.Playing) return;
             State = GameState.Caught;
             Player.ControlEnabled = false;
+            LockCursor(false);
             Mother.Active = false;
             Mother.Voice.Stop();
             who.Halt();
@@ -310,17 +371,15 @@ namespace KaiForest
                 yield return null;
             }
             fade.color = Color.black;
+            CanRestart = true; // the scare has played; a click retries right away
             endImage.texture = gameOverTexture;
             endImage.SetNativeSize();
             endImage.rectTransform.sizeDelta *= 0.62f;
             endSub.text = "あれは、おかあさんじゃ　なかった。";
             endHint.text = "クリックで　もういちど";
-            endHint.enabled = false;
-            yield return new WaitForSeconds(0.5f);
-            yield return Fade(endGroup, 1f, 1.2f);
-            yield return new WaitForSeconds(1f);
             endHint.enabled = true;
-            CanRestart = true;
+            yield return new WaitForSeconds(0.3f);
+            yield return Fade(endGroup, 1f, 0.8f);
         }
 
         public void Restart()
@@ -332,6 +391,7 @@ namespace KaiForest
 
         void Update()
         {
+            ApplyLook(); // fog / daylight are live-tunable in LanternSettings
             if (!Ready) return;
             var mouse = IgnoreMouse ? null : Mouse.current;
             bool click = mouse != null && mouse.leftButton.wasPressedThisFrame;
@@ -341,8 +401,13 @@ namespace KaiForest
                     if (click) BeginGame();
                     if (titleHint != null) titleHint.color = new Color(0.85f, 0.8f, 0.75f, 0.45f + 0.45f * Mathf.Sin(Time.time * 2.4f));
                     break;
+                case GameState.Intro:
+                    if (click) SkipStory();
+                    break;
                 case GameState.Playing:
                     PlayTime += Time.deltaTime;
+                    // Esc releases the lock; the next click takes it back.
+                    if (click && Cursor.lockState != CursorLockMode.Locked) LockCursor(true);
                     break;
                 case GameState.Clear:
                 case GameState.Caught:
@@ -424,9 +489,9 @@ namespace KaiForest
             title.rectTransform.sizeDelta *= 0.75f;
             MakeText(titleGroup.transform, "―　本物の声を、聞き分けて　―", 34, new Color(0.75f, 0.7f, 0.65f), new Vector2(0f, 40f));
             MakeText(titleGroup.transform,
-                "左ボタンを押している間　前へ進む（押したままマウスを動かすと曲がる）\n" +
-                "右ボタンを押している間　うしろへ下がる\n" +
-                "ホイールボタンを押したままドラッグ　立ち止まって見回す",
+                "マウスを動かす　見回す\n" +
+                "左ボタンを押している間　前へ進む\n" +
+                "右ボタンを押している間　うしろへ下がる",
                 26, new Color(0.62f, 0.6f, 0.58f), new Vector2(0f, -150f));
             MakeText(titleGroup.transform, "ヘッドホン推奨", 22, new Color(0.5f, 0.45f, 0.42f), new Vector2(0f, -300f));
             titleHint = MakeText(titleGroup.transform, "クリックで　はじめる", 34, Color.white, new Vector2(0f, -390f));
@@ -441,10 +506,11 @@ namespace KaiForest
             storyGroup = MakeGroup(go.transform, "Story");
             storyText = MakeText(storyGroup.transform, "", 40, new Color(0.85f, 0.82f, 0.78f), new Vector2(0f, 20f));
             storyText.lineSpacing = 1.15f;
+            MakeText(storyGroup.transform, "クリックで　とばす", 22, new Color(0.55f, 0.52f, 0.48f, 0.8f), new Vector2(0f, -470f));
             storyGroup.alpha = 0f;
 
             hintGroup = MakeGroup(go.transform, "Hint");
-            MakeText(hintGroup.transform, "左長押し：前へ　　右長押し：うしろへ　　押したまま動かす：向きを変える　　ホイール押しドラッグ：見回す",
+            MakeText(hintGroup.transform, "マウス：見回す　　左長押し：前へ　　右長押し：うしろへ　　Esc：カーソルを出す（クリックで戻る）",
                 22, new Color(0.7f, 0.68f, 0.64f, 0.8f), new Vector2(0f, 480f));
             hintGroup.alpha = 0f;
 
