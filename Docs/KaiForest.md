@@ -53,6 +53,16 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 - **化け物**: Search（カイのいるあたりを漂う）→ Investigate（足音が聞こえたら音の場所へ。歩いていると15m、止まっていると4.5mで気づく）→ Chase（12m以内でランタンが見えたら追う。4.5秒見失うと諦める）。追跡中はときどき一気に距離を詰めてくる。
 - パラメータは `MotherAI` / `MonsterAI` / `PlayerController` の public フィールドで調整できる。
 
+## エディタで調整できる設定
+
+| 設定 | 場所 | 中身 |
+|---|---|---|
+| カイのランタン | `Assets/Game/Resources/LanternSettings.asset`（メニュー `KaiForest > Lantern Settings` で選択） | `Range`：光が届く距離（m）、`Intensity`：明るさ |
+
+- 再生中に Inspector で値を変えると即座に画面に反映され、再生を止めても値は残る
+- 遠くまで照らすには Range と Intensity を一緒に上げる（点光源は距離の2乗で暗くなる）。見える距離そのものは霧（`Main.unity` の GameManager の Fog Density）でも決まる
+- このファイルは `Setup Project` では上書きされない。消えた場合はスクリプトの読み込み時に初期値（11m / 22）で作り直される
+
 ## ビルド・再生成
 
 Unity 6000.6.6f1 / URP。シーンなどの組み立ては全部コードで行う。

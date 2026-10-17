@@ -5,7 +5,7 @@ namespace KaiForest
     /// <summary>Night forest bed (insects, wind) plus tension layers driven by how close the monster is.</summary>
     public class AmbienceController : MonoBehaviour
     {
-        public float insectsVolume = 0.22f;
+        public float insectsVolume = 0.12f;
         public float windVolume = 0.2f;
         public float droneMaxVolume = 0.5f;
         public float heartbeatRange = 16f;

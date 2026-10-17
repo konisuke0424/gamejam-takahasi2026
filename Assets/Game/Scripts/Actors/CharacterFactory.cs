@@ -72,13 +72,13 @@ namespace KaiForest
         }
 
         /// <summary>The boy's own lantern, parented to the camera so it sits at the lower right of the view.</summary>
-        public static Rig BuildHandLantern(Transform cam, MaterialLibrary m)
+        public static Rig BuildHandLantern(Transform cam, MaterialLibrary m, float range, float intensity)
         {
             var r = new Rig { root = cam };
             r.lantern = Prims.Group(cam, "HandLantern", new Vector3(0.4f, -0.44f, 0.82f), 0f);
             Prims.Part(r.lantern, PrimitiveType.Cube, new Vector3(0f, 0.17f, 0f), new Vector3(0.01f, 0.2f, 0.01f), Vector3.zero, m.lanternFrame, false);
             BuildChochin(r.lantern, Vector3.zero, 0.42f, m);
-            r.light = AddLanternLight(r.lantern, new Vector3(0f, 0.05f, 0f), 11f, 22f, true);
+            r.light = AddLanternLight(r.lantern, new Vector3(0f, 0.05f, 0f), range, intensity, true);
             return r;
         }
 

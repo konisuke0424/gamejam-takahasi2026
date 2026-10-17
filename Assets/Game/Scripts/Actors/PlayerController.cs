@@ -37,7 +37,8 @@ namespace KaiForest
         Transform lantern;
         AudioSource stepSource;
         AudioClip[] steps;
-        float yaw, pitch, speed, vy, stepAccum, bobPhase, lanternBaseIntensity, lastYaw;
+        LanternSettings lanternSettings;
+        float yaw, pitch, speed, vy, stepAccum, bobPhase, lastYaw;
         Vector3 lanternBasePos;
         Quaternion lookOverride;
         float lookOverrideWeight;
@@ -66,11 +67,11 @@ namespace KaiForest
             data.renderPostProcessing = true;
             data.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
 
-            var rig = CharacterFactory.BuildHandLantern(camGo.transform, mats);
+            lanternSettings = LanternSettings.Load();
+            var rig = CharacterFactory.BuildHandLantern(camGo.transform, mats, lanternSettings.range, lanternSettings.intensity);
             lantern = rig.lantern;
             LanternLight = rig.light;
             lanternBasePos = lantern.localPosition;
-            lanternBaseIntensity = LanternLight.intensity;
 
             steps = stepClips;
             stepSource = gameObject.AddComponent<AudioSource>();
@@ -162,8 +163,10 @@ namespace KaiForest
             lantern.localPosition = lanternBasePos + new Vector3(Mathf.Sin(bobPhase) * 0.012f, Mathf.Abs(Mathf.Cos(bobPhase)) * 0.02f * moveK, 0f);
             lantern.localRotation = Quaternion.Euler(Mathf.Sin(bobPhase) * 3f * moveK, 0f, Mathf.Clamp(yawVel * 0.03f, -12f, 12f));
 
+            // Read the settings every frame so Inspector edits during Play apply immediately.
             float flicker = Mathf.PerlinNoise(Time.time * 5.5f, 0.37f) * 0.14f + Mathf.PerlinNoise(Time.time * 17f, 0.91f) * 0.05f;
-            LanternLight.intensity = lanternBaseIntensity * LanternScale * (0.9f + flicker);
+            LanternLight.range = lanternSettings.range;
+            LanternLight.intensity = lanternSettings.intensity * LanternScale * (0.9f + flicker);
         }
     }
 }
