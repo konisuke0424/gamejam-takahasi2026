@@ -18,6 +18,7 @@ namespace KaiForest
     public class GameManager : MonoBehaviour
     {
         public const string SceneName = "Main";
+        const string ClearRecordKey = "KaiForest.HasCleared";
 
         public static GameManager I { get; private set; }
         /// <summary>Set before reloading the scene so a retry skips the title screen.</summary>
@@ -53,7 +54,7 @@ namespace KaiForest
         Canvas canvas;
         Image fade;
         CanvasGroup titleGroup, endGroup, storyGroup, hintGroup;
-        Text storyText, endSub, endHint, titleHint, debugText;
+        Text storyText, endSub, endHint, titleHint, titleBadge, debugText;
         RawImage endImage;
         Vignette vignette;
         ChromaticAberration chroma;
@@ -176,6 +177,9 @@ namespace KaiForest
         {
             State = GameState.Title;
             fade.color = new Color(0f, 0f, 0f, 0.72f);
+            bool cleared = PlayerPrefs.GetInt(ClearRecordKey, 0) == 1;
+            titleBadge.text = cleared ? "◆　森の脱出者　◆" : "◇　未クリア　◇";
+            titleBadge.color = cleared ? new Color(0.93f, 0.76f, 0.38f) : new Color(0.56f, 0.52f, 0.48f);
             titleGroup.alpha = 1f;
         }
 
@@ -238,6 +242,8 @@ namespace KaiForest
         {
             if (State != GameState.Playing) return;
             State = GameState.Clear;
+            PlayerPrefs.SetInt(ClearRecordKey, 1);
+            PlayerPrefs.Save();
             Player.ControlEnabled = false;
             Monster.Halt();
             Mother.SayFound();
@@ -424,6 +430,12 @@ namespace KaiForest
                 26, new Color(0.62f, 0.6f, 0.58f), new Vector2(0f, -150f));
             MakeText(titleGroup.transform, "ヘッドホン推奨", 22, new Color(0.5f, 0.45f, 0.42f), new Vector2(0f, -300f));
             titleHint = MakeText(titleGroup.transform, "クリックで　はじめる", 34, Color.white, new Vector2(0f, -390f));
+            titleBadge = MakeText(titleGroup.transform, "◇　未クリア　◇", 26, new Color(0.56f, 0.52f, 0.48f), Vector2.zero);
+            titleBadge.rectTransform.anchorMin = titleBadge.rectTransform.anchorMax = new Vector2(1f, 1f);
+            titleBadge.rectTransform.pivot = new Vector2(1f, 1f);
+            titleBadge.rectTransform.anchoredPosition = new Vector2(-48f, -42f);
+            titleBadge.rectTransform.sizeDelta = new Vector2(500f, 70f);
+            titleBadge.alignment = TextAnchor.MiddleRight;
             titleGroup.alpha = 0f;
 
             storyGroup = MakeGroup(go.transform, "Story");
