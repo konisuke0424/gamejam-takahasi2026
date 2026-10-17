@@ -10336,7 +10336,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &72205954
 Transform:
   m_ObjectHideFlags: 0
@@ -13126,7 +13126,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &89315775
 Transform:
   m_ObjectHideFlags: 0
@@ -17712,7 +17712,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &122670567
 Transform:
   m_ObjectHideFlags: 0
@@ -18722,7 +18722,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &125275308
 Transform:
   m_ObjectHideFlags: 0
@@ -18827,7 +18827,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &125699105
 Transform:
   m_ObjectHideFlags: 0
@@ -21283,6 +21283,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Jizo
       objectReference: {fileID: 0}
+    - target: {fileID: 4723325429768796923, guid: 79c138faa64643a499fb8e914ec48e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6837602178945762178, guid: 79c138faa64643a499fb8e914ec48e58, type: 3}
       propertyPath: m_LocalPosition.x
       value: 39.151558
@@ -23452,7 +23456,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &154001852
 Transform:
   m_ObjectHideFlags: 0
@@ -27075,9 +27079,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 863265503479158662, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_Name
       value: Cedar_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4806829106936453906, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_LocalScale.x
@@ -28341,6 +28353,63 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 188766002}
   m_Mesh: {fileID: -4055841301766724123, guid: 6d9d0830868ca7148ab8a06365008d75, type: 2}
+--- !u!1001 &189653574
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 2520b189a00235749875842905cfd88e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2520b189a00235749875842905cfd88e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2520b189a00235749875842905cfd88e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2520b189a00235749875842905cfd88e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2520b189a00235749875842905cfd88e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2520b189a00235749875842905cfd88e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2520b189a00235749875842905cfd88e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2520b189a00235749875842905cfd88e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2520b189a00235749875842905cfd88e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2520b189a00235749875842905cfd88e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2520b189a00235749875842905cfd88e, type: 3}
+      propertyPath: m_Name
+      value: HUDA
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2520b189a00235749875842905cfd88e, type: 3}
 --- !u!1001 &189719602
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30695,9 +30764,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5469705371069118637, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
       propertyPath: m_Name
       value: Cedar_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -31242,7 +31319,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &207971385
 Transform:
   m_ObjectHideFlags: 0
@@ -31915,6 +31992,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_07
       objectReference: {fileID: 0}
+    - target: {fileID: 1531236490173877241, guid: fb8ebb05b8043a4439b164e9bd14c9f1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2663473813120936438, guid: fb8ebb05b8043a4439b164e9bd14c9f1, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4336986486600126919, guid: fb8ebb05b8043a4439b164e9bd14c9f1, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9841108
@@ -32259,9 +32344,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1144159471265620620, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
       propertyPath: m_Name
       value: Cedar_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -33948,7 +34041,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &225122179
 Transform:
   m_ObjectHideFlags: 0
@@ -34326,7 +34419,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &228621478
 Transform:
   m_ObjectHideFlags: 0
@@ -36460,6 +36553,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.98568994
@@ -36511,6 +36608,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -37055,7 +37156,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &244793465
 Transform:
   m_ObjectHideFlags: 0
@@ -37972,7 +38073,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &252621968
 Transform:
   m_ObjectHideFlags: 0
@@ -42251,7 +42352,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &287295392
 Transform:
   m_ObjectHideFlags: 0
@@ -45359,6 +45460,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hokora
       objectReference: {fileID: 0}
+    - target: {fileID: 8379243880440299117, guid: a99b64076b508f04abcb2eee18a291a0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -46571,9 +46676,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5469705371069118637, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
       propertyPath: m_Name
       value: Cedar_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -50346,7 +50459,7 @@ Transform:
   m_GameObject: {fileID: 344366447}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.2, y: 0, z: 25.8}
+  m_LocalPosition: {x: -8.46, y: 0, z: 1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -54276,9 +54389,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1144159471265620620, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
       propertyPath: m_Name
       value: Cedar_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -54543,7 +54664,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &368353581
 Transform:
   m_ObjectHideFlags: 0
@@ -57909,9 +58030,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 863265503479158662, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_Name
       value: Cedar_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4806829106936453906, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_LocalScale.x
@@ -60374,7 +60503,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &402579564
 Transform:
   m_ObjectHideFlags: 0
@@ -64704,6 +64833,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_06
       objectReference: {fileID: 0}
+    - target: {fileID: 1397426770832251883, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4129778872975533120, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4693350279899021468, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0403316
@@ -64929,7 +65066,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &438388234
 Transform:
   m_ObjectHideFlags: 0
@@ -69940,9 +70077,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 863265503479158662, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_Name
       value: Cedar_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4806829106936453906, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_LocalScale.x
@@ -74784,6 +74929,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Torii_Exit
       objectReference: {fileID: 0}
+    - target: {fileID: 5561803683919688518, guid: 364d34928ea559c4181279d5d3307d20, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -75934,6 +76083,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 143734973254216184, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
   m_PrefabInstance: {fileID: 502913001}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &503140982
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.87
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -73.41
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4161234135461386180, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
+      propertyPath: m_Name
+      value: TORII (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
 --- !u!1001 &503225420
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -76390,6 +76596,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_08
       objectReference: {fileID: 0}
+    - target: {fileID: 4212676414951568499, guid: 4c6745225d643e6478273058cafadafe, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4767868165862906797, guid: 4c6745225d643e6478273058cafadafe, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0521035
@@ -76441,6 +76651,10 @@ PrefabInstance:
     - target: {fileID: 4767868165862906797, guid: 4c6745225d643e6478273058cafadafe, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7182855951738796100, guid: 4c6745225d643e6478273058cafadafe, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -77870,6 +78084,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Well
       objectReference: {fileID: 0}
+    - target: {fileID: 1722841326590446056, guid: df87a22a52f6b214d9527c893f5b14d4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4098146373428027371, guid: df87a22a52f6b214d9527c893f5b14d4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -55.613945
@@ -78002,9 +78220,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 1231120163301457945, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_Name
       value: Cedar_05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3623425468738771099, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_LocalScale.x
@@ -79389,7 +79615,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &524241582
 Transform:
   m_ObjectHideFlags: 0
@@ -80830,9 +81056,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 1231120163301457945, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_Name
       value: Cedar_05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3623425468738771099, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_LocalScale.x
@@ -81104,9 +81338,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5469705371069118637, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
       propertyPath: m_Name
       value: Cedar_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -89784,6 +90026,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9268144
@@ -89835,6 +90081,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -90839,7 +91089,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &598107843
 Transform:
   m_ObjectHideFlags: 0
@@ -91235,7 +91485,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &600651579
 Transform:
   m_ObjectHideFlags: 0
@@ -92251,6 +92501,14 @@ PrefabInstance:
     - target: {fileID: 1397426770832251883, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
       propertyPath: m_Name
       value: Cedar_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 1397426770832251883, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4129778872975533120, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4693350279899021468, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
       propertyPath: m_LocalScale.x
@@ -99680,9 +99938,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1144159471265620620, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
       propertyPath: m_Name
       value: Cedar_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -104802,6 +105068,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Jizo
       objectReference: {fileID: 0}
+    - target: {fileID: 4723325429768796923, guid: 79c138faa64643a499fb8e914ec48e58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6837602178945762178, guid: 79c138faa64643a499fb8e914ec48e58, type: 3}
       propertyPath: m_LocalPosition.x
       value: 83.63452
@@ -105381,6 +105651,14 @@ PrefabInstance:
     - target: {fileID: 1397426770832251883, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
       propertyPath: m_Name
       value: Cedar_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 1397426770832251883, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4129778872975533120, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4693350279899021468, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
       propertyPath: m_LocalScale.x
@@ -106199,7 +106477,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &695315666
 Transform:
   m_ObjectHideFlags: 0
@@ -106563,6 +106841,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4693350279899021468, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
   m_PrefabInstance: {fileID: 697001113}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &697121230
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1554370746033935537, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_Name
+      value: TOUROU (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -63.170006
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 79.57
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9921174
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.12531184
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -14.398
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ffbef5748c9598e46834822b8122da25, type: 3}
 --- !u!1001 &698097249
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -110067,6 +110402,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SacredTree
       objectReference: {fileID: 0}
+    - target: {fileID: 5522251462081366542, guid: 40b4df8dd6e405349916342768e125bb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -110581,9 +110920,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1144159471265620620, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
       propertyPath: m_Name
       value: Cedar_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -110610,7 +110957,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &729592102
 Transform:
   m_ObjectHideFlags: 0
@@ -115647,9 +115994,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 1231120163301457945, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_Name
       value: Cedar_05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3623425468738771099, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_LocalScale.x
@@ -115818,7 +116173,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &762707790
 Transform:
   m_ObjectHideFlags: 0
@@ -119993,6 +120348,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0277214
@@ -120044,6 +120403,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -123963,9 +124326,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5469705371069118637, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
       propertyPath: m_Name
       value: Cedar_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -124214,7 +124585,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &813547919
 Transform:
   m_ObjectHideFlags: 0
@@ -124320,7 +124691,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &815534833
 Transform:
   m_ObjectHideFlags: 0
@@ -127475,19 +127846,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: b98a5ca24229e3847960e428027897fc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.25
+      value: -62.58
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b98a5ca24229e3847960e428027897fc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b98a5ca24229e3847960e428027897fc, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 36.36
+      value: 78.42
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b98a5ca24229e3847960e428027897fc, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7933534
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b98a5ca24229e3847960e428027897fc, type: 3}
       propertyPath: m_LocalRotation.x
@@ -127495,7 +127866,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b98a5ca24229e3847960e428027897fc, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.60876137
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b98a5ca24229e3847960e428027897fc, type: 3}
       propertyPath: m_LocalRotation.z
@@ -127507,7 +127878,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b98a5ca24229e3847960e428027897fc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b98a5ca24229e3847960e428027897fc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -127981,7 +128352,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &839079069
 Transform:
   m_ObjectHideFlags: 0
@@ -128086,6 +128457,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.92244256
@@ -128137,6 +128512,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -128787,7 +129166,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &845642544
 Transform:
   m_ObjectHideFlags: 0
@@ -129248,9 +129627,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 863265503479158662, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_Name
       value: Cedar_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4806829106936453906, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_LocalScale.x
@@ -129551,7 +129938,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &853981373
 Transform:
   m_ObjectHideFlags: 0
@@ -129995,6 +130382,10 @@ PrefabInstance:
     - target: {fileID: 8683805820548251181, guid: 9843c9d9997df5a4cb6fe406a8acdc66, type: 3}
       propertyPath: m_Name
       value: StoneLanterns
+      objectReference: {fileID: 0}
+    - target: {fileID: 8683805820548251181, guid: 9843c9d9997df5a4cb6fe406a8acdc66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -130909,7 +131300,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &866678243
 Transform:
   m_ObjectHideFlags: 0
@@ -132270,7 +132661,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &875814099
 Transform:
   m_ObjectHideFlags: 0
@@ -139147,6 +139538,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BrokenTorii
       objectReference: {fileID: 0}
+    - target: {fileID: 7045022139501776985, guid: b960c6d3f797ba240b7fa1b8dc3ce4f2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -139468,7 +139863,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &929587147
 Transform:
   m_ObjectHideFlags: 0
@@ -140339,9 +140734,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5469705371069118637, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
       propertyPath: m_Name
       value: Cedar_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -140442,7 +140845,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &934589116
 Transform:
   m_ObjectHideFlags: 0
@@ -140571,6 +140974,14 @@ PrefabInstance:
     - target: {fileID: 1531236490173877241, guid: fb8ebb05b8043a4439b164e9bd14c9f1, type: 3}
       propertyPath: m_Name
       value: Cedar_07
+      objectReference: {fileID: 0}
+    - target: {fileID: 1531236490173877241, guid: fb8ebb05b8043a4439b164e9bd14c9f1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2663473813120936438, guid: fb8ebb05b8043a4439b164e9bd14c9f1, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4336986486600126919, guid: fb8ebb05b8043a4439b164e9bd14c9f1, type: 3}
       propertyPath: m_LocalScale.x
@@ -144577,7 +144988,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &959949591
 Transform:
   m_ObjectHideFlags: 0
@@ -144919,6 +145330,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_08
       objectReference: {fileID: 0}
+    - target: {fileID: 4212676414951568499, guid: 4c6745225d643e6478273058cafadafe, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4767868165862906797, guid: 4c6745225d643e6478273058cafadafe, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9361514
@@ -144970,6 +145385,10 @@ PrefabInstance:
     - target: {fileID: 4767868165862906797, guid: 4c6745225d643e6478273058cafadafe, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7182855951738796100, guid: 4c6745225d643e6478273058cafadafe, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -147158,7 +147577,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &979814798
 Transform:
   m_ObjectHideFlags: 0
@@ -147630,7 +148049,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &984196266
 Transform:
   m_ObjectHideFlags: 0
@@ -147981,9 +148400,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5469705371069118637, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
       propertyPath: m_Name
       value: Cedar_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -150600,7 +151027,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1002977044
 Transform:
   m_ObjectHideFlags: 0
@@ -151202,7 +151629,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1006998682
 Transform:
   m_ObjectHideFlags: 0
@@ -152340,9 +152767,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 1231120163301457945, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_Name
       value: Cedar_05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3623425468738771099, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_LocalScale.x
@@ -153486,6 +153921,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_08
       objectReference: {fileID: 0}
+    - target: {fileID: 4212676414951568499, guid: 4c6745225d643e6478273058cafadafe, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4767868165862906797, guid: 4c6745225d643e6478273058cafadafe, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9460669
@@ -153537,6 +153976,10 @@ PrefabInstance:
     - target: {fileID: 4767868165862906797, guid: 4c6745225d643e6478273058cafadafe, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7182855951738796100, guid: 4c6745225d643e6478273058cafadafe, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -154229,7 +154672,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1021709169
 Transform:
   m_ObjectHideFlags: 0
@@ -156484,7 +156927,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1036166610
 Transform:
   m_ObjectHideFlags: 0
@@ -160579,7 +161022,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1061598069
 Transform:
   m_ObjectHideFlags: 0
@@ -161252,6 +161695,10 @@ PrefabInstance:
     - target: {fileID: 1256473631789900513, guid: 6fd2620f5f93c6442bee56cd52da671a, type: 3}
       propertyPath: m_Name
       value: Graves
+      objectReference: {fileID: 0}
+    - target: {fileID: 1256473631789900513, guid: 6fd2620f5f93c6442bee56cd52da671a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4403650669923269275, guid: 6fd2620f5f93c6442bee56cd52da671a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -162663,6 +163110,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0923686
@@ -162714,6 +163165,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -163551,6 +164006,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_08
       objectReference: {fileID: 0}
+    - target: {fileID: 4212676414951568499, guid: 4c6745225d643e6478273058cafadafe, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4767868165862906797, guid: 4c6745225d643e6478273058cafadafe, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0006331
@@ -163602,6 +164061,10 @@ PrefabInstance:
     - target: {fileID: 4767868165862906797, guid: 4c6745225d643e6478273058cafadafe, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7182855951738796100, guid: 4c6745225d643e6478273058cafadafe, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -164057,6 +164520,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4767868165862906797, guid: 4c6745225d643e6478273058cafadafe, type: 3}
   m_PrefabInstance: {fileID: 1083940036}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1084080808
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1554370746033935537, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_Name
+      value: TOUROU (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -62.370003
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 77.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9921174
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.12531184
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -14.398
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ffbef5748c9598e46834822b8122da25, type: 3}
 --- !u!1001 &1084165564
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -166437,6 +166957,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_06
       objectReference: {fileID: 0}
+    - target: {fileID: 1397426770832251883, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4129778872975533120, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4693350279899021468, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0835702
@@ -166507,9 +167035,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 863265503479158662, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_Name
       value: Cedar_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4806829106936453906, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_LocalScale.x
@@ -167640,7 +168176,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1108345323
 Transform:
   m_ObjectHideFlags: 0
@@ -170445,9 +170981,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 863265503479158662, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_Name
       value: Cedar_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4806829106936453906, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_LocalScale.x
@@ -171652,7 +172196,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1130875508
 Transform:
   m_ObjectHideFlags: 0
@@ -175026,7 +175570,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1159579471
 Transform:
   m_ObjectHideFlags: 0
@@ -178767,9 +179311,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 863265503479158662, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_Name
       value: Cedar_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4806829106936453906, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_LocalScale.x
@@ -180714,7 +181266,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1192206309
 Transform:
   m_ObjectHideFlags: 0
@@ -181908,7 +182460,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1197962407
 Transform:
   m_ObjectHideFlags: 0
@@ -182645,6 +183197,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BrokenTorii
       objectReference: {fileID: 0}
+    - target: {fileID: 7045022139501776985, guid: b960c6d3f797ba240b7fa1b8dc3ce4f2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -183275,6 +183831,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9046333
@@ -183326,6 +183886,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -184034,7 +184598,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1212652878
 Transform:
   m_ObjectHideFlags: 0
@@ -187676,7 +188240,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1239816925
 Transform:
   m_ObjectHideFlags: 0
@@ -191985,7 +192549,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1262399609
 Transform:
   m_ObjectHideFlags: 0
@@ -193182,9 +193746,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1144159471265620620, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
       propertyPath: m_Name
       value: Cedar_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -193285,7 +193857,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1272373190
 Transform:
   m_ObjectHideFlags: 0
@@ -194354,9 +194926,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 1231120163301457945, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_Name
       value: Cedar_05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3623425468738771099, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_LocalScale.x
@@ -195172,6 +195752,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.93404037
@@ -195223,6 +195807,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -195323,7 +195911,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1285673937
 Transform:
   m_ObjectHideFlags: 0
@@ -196075,6 +196663,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0428356
@@ -196126,6 +196718,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -199929,9 +200525,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5469705371069118637, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
       propertyPath: m_Name
       value: Cedar_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -201737,9 +202341,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1144159471265620620, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
       propertyPath: m_Name
       value: Cedar_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -204663,6 +205275,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FallenLog
       objectReference: {fileID: 0}
+    - target: {fileID: 4811343927455082191, guid: 440e0ded9037b0f4fbb8a3dec5e99bbf, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -204829,9 +205445,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 863265503479158662, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_Name
       value: Cedar_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4806829106936453906, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_LocalScale.x
@@ -212033,6 +212657,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_06
       objectReference: {fileID: 0}
+    - target: {fileID: 1397426770832251883, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4129778872975533120, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4693350279899021468, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0593307
@@ -217839,9 +218471,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 1231120163301457945, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_Name
       value: Cedar_05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3623425468738771099, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_LocalScale.x
@@ -219963,9 +220603,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5469705371069118637, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
       propertyPath: m_Name
       value: Cedar_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -220613,6 +221261,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_07
       objectReference: {fileID: 0}
+    - target: {fileID: 1531236490173877241, guid: fb8ebb05b8043a4439b164e9bd14c9f1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2663473813120936438, guid: fb8ebb05b8043a4439b164e9bd14c9f1, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4336986486600126919, guid: fb8ebb05b8043a4439b164e9bd14c9f1, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.045694
@@ -220687,6 +221343,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9308459
@@ -220738,6 +221398,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -222456,7 +223120,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1484172032
 Transform:
   m_ObjectHideFlags: 0
@@ -222924,9 +223588,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 1231120163301457945, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_Name
       value: Cedar_05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3623425468738771099, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_LocalScale.x
@@ -224353,7 +225025,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1496097372
 Transform:
   m_ObjectHideFlags: 0
@@ -226760,6 +227432,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StoneLanterns
       objectReference: {fileID: 0}
+    - target: {fileID: 8683805820548251181, guid: 9843c9d9997df5a4cb6fe406a8acdc66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -226926,9 +227602,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 863265503479158662, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_Name
       value: Cedar_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4806829106936453906, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_LocalScale.x
@@ -228445,7 +229129,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1524768227
 Transform:
   m_ObjectHideFlags: 0
@@ -229367,9 +230051,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 1231120163301457945, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_Name
       value: Cedar_05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3623425468738771099, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_LocalScale.x
@@ -231195,9 +231887,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5469705371069118637, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
       propertyPath: m_Name
       value: Cedar_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -232137,9 +232837,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 863265503479158662, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_Name
       value: Cedar_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4806829106936453906, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_LocalScale.x
@@ -232337,9 +233045,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1144159471265620620, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
       propertyPath: m_Name
       value: Cedar_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -232588,7 +233304,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1554044740
 Transform:
   m_ObjectHideFlags: 0
@@ -232964,7 +233680,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1555625999
 Transform:
   m_ObjectHideFlags: 0
@@ -235610,9 +236326,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 863265503479158662, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_Name
       value: Cedar_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4806829106936453906, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_LocalScale.x
@@ -237832,6 +238556,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SacredTree
       objectReference: {fileID: 0}
+    - target: {fileID: 5522251462081366542, guid: 40b4df8dd6e405349916342768e125bb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -238671,7 +239399,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1592003988
 Transform:
   m_ObjectHideFlags: 0
@@ -242256,9 +242984,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5469705371069118637, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
       propertyPath: m_Name
       value: Cedar_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -242726,6 +243462,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_08
       objectReference: {fileID: 0}
+    - target: {fileID: 4212676414951568499, guid: 4c6745225d643e6478273058cafadafe, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4767868165862906797, guid: 4c6745225d643e6478273058cafadafe, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0015296
@@ -242777,6 +243517,10 @@ PrefabInstance:
     - target: {fileID: 4767868165862906797, guid: 4c6745225d643e6478273058cafadafe, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7182855951738796100, guid: 4c6745225d643e6478273058cafadafe, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -250588,6 +251332,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stumps
       objectReference: {fileID: 0}
+    - target: {fileID: 8845436783135199834, guid: ef9b6e09184e0d54885dbb5b86617bfc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -256063,7 +256811,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1692732345
 Transform:
   m_ObjectHideFlags: 0
@@ -260268,6 +261016,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_08
       objectReference: {fileID: 0}
+    - target: {fileID: 4212676414951568499, guid: 4c6745225d643e6478273058cafadafe, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4767868165862906797, guid: 4c6745225d643e6478273058cafadafe, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9774201
@@ -260319,6 +261071,10 @@ PrefabInstance:
     - target: {fileID: 4767868165862906797, guid: 4c6745225d643e6478273058cafadafe, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7182855951738796100, guid: 4c6745225d643e6478273058cafadafe, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -263263,7 +264019,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1739840095
 Transform:
   m_ObjectHideFlags: 0
@@ -265369,7 +266125,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1757121821
 Transform:
   m_ObjectHideFlags: 0
@@ -265693,7 +266449,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1757645833
 Transform:
   m_ObjectHideFlags: 0
@@ -266216,6 +266972,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9719554
@@ -266267,6 +267027,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -271006,6 +271770,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0725973
@@ -271057,6 +271825,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -273824,9 +274596,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1144159471265620620, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
       propertyPath: m_Name
       value: Cedar_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -276070,6 +276850,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0770992
@@ -276121,6 +276905,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -277289,7 +278077,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1826005918
 Transform:
   m_ObjectHideFlags: 0
@@ -277576,9 +278364,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5469705371069118637, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
       propertyPath: m_Name
       value: Cedar_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -278583,7 +279379,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1836470272
 Transform:
   m_ObjectHideFlags: 0
@@ -280993,6 +281789,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_08
       objectReference: {fileID: 0}
+    - target: {fileID: 4212676414951568499, guid: 4c6745225d643e6478273058cafadafe, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4767868165862906797, guid: 4c6745225d643e6478273058cafadafe, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.003652
@@ -281044,6 +281844,10 @@ PrefabInstance:
     - target: {fileID: 4767868165862906797, guid: 4c6745225d643e6478273058cafadafe, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7182855951738796100, guid: 4c6745225d643e6478273058cafadafe, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -282714,7 +283518,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1865120202
 Transform:
   m_ObjectHideFlags: 0
@@ -283403,9 +284207,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 863265503479158662, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_Name
       value: Cedar_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4806829106936453906, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_LocalScale.x
@@ -284581,9 +285393,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5469705371069118637, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
       propertyPath: m_Name
       value: Cedar_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -285967,9 +286787,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 863265503479158662, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_Name
       value: Cedar_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177795783109433535, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4806829106936453906, guid: 219e2c0185cc9f54a8087d330846e7ee, type: 3}
       propertyPath: m_LocalScale.x
@@ -287100,7 +287928,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1895706208
 Transform:
   m_ObjectHideFlags: 0
@@ -287475,9 +288303,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5469705371069118637, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
       propertyPath: m_Name
       value: Cedar_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -296635,6 +297471,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_06
       objectReference: {fileID: 0}
+    - target: {fileID: 1397426770832251883, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4129778872975533120, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4693350279899021468, guid: ffd350cdaf8e13e4ca8a6960b1fc5044, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.91846365
@@ -300653,9 +301497,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5469705371069118637, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
       propertyPath: m_Name
       value: Cedar_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6340658643314042090, guid: afaa896f75582864fb3c632212894e2d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -300904,7 +301756,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1992781641
 Transform:
   m_ObjectHideFlags: 0
@@ -305225,6 +306077,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
   m_PrefabInstance: {fileID: 2029148645}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2030225897
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1554370746033935537, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_Name
+      value: TOUROU (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -103.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.38
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9921174
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.12531184
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -14.398
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ffbef5748c9598e46834822b8122da25, type: 3}
 --- !u!1001 &2030579787
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -308451,6 +309360,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.97925174
@@ -308502,6 +309415,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -309876,7 +310793,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2059619596
 Transform:
   m_ObjectHideFlags: 0
@@ -310228,6 +311145,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.001187
@@ -310279,6 +311200,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -311112,9 +312037,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1895706208}
     m_Modifications:
+    - target: {fileID: 1231120163301457945, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_Name
       value: Cedar_05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2838700431983778262, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3623425468738771099, guid: 7d9bbbf8a9f398a47b00be7e1b0d91aa, type: 3}
       propertyPath: m_LocalScale.x
@@ -314552,6 +315485,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0783514
@@ -314603,6 +315540,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -315118,9 +316059,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1144159471265620620, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
       propertyPath: m_Name
       value: Cedar_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 7293441108343995924, guid: 26721f58f72951d41a3158935fd5953f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -321218,6 +322167,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cedar_02
       objectReference: {fileID: 0}
+    - target: {fileID: 5655959782511368208, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.99003005
@@ -321269,6 +322222,10 @@ PrefabInstance:
     - target: {fileID: 6713561644341029407, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7091380912030731739, guid: 710799b235fc0c443952ef63c8f9b895, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -323880,6 +324837,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hokora
       objectReference: {fileID: 0}
+    - target: {fileID: 8379243880440299117, guid: a99b64076b508f04abcb2eee18a291a0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -324978,6 +325939,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lanthanum
       objectReference: {fileID: 0}
+    - target: {fileID: 2211390792039218216, guid: f3e908ccfdb312545b29c171c7caed40, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -324997,15 +325962,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.8
+      value: -6.48
       objectReference: {fileID: 0}
     - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.00000061530767
+      value: 0.13
       objectReference: {fileID: 0}
     - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 38.1
+      value: 5.31
       objectReference: {fileID: 0}
     - target: {fileID: 2223066662262590987, guid: ffbef5748c9598e46834822b8122da25, type: 3}
       propertyPath: m_LocalRotation.w
@@ -325054,19 +326019,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8996873517456343117, guid: 14f13a84ff62f754b8416104c8ba5a2a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.0385265
+      value: -6.55
       objectReference: {fileID: 0}
     - target: {fileID: 8996873517456343117, guid: 14f13a84ff62f754b8416104c8ba5a2a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.00000007393555
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8996873517456343117, guid: 14f13a84ff62f754b8416104c8ba5a2a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 37.942123
+      value: 6.2
       objectReference: {fileID: 0}
     - target: {fileID: 8996873517456343117, guid: 14f13a84ff62f754b8416104c8ba5a2a, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.5752909
       objectReference: {fileID: 0}
     - target: {fileID: 8996873517456343117, guid: 14f13a84ff62f754b8416104c8ba5a2a, type: 3}
       propertyPath: m_LocalRotation.x
@@ -325074,7 +326039,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8996873517456343117, guid: 14f13a84ff62f754b8416104c8ba5a2a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.81794894
       objectReference: {fileID: 0}
     - target: {fileID: 8996873517456343117, guid: 14f13a84ff62f754b8416104c8ba5a2a, type: 3}
       propertyPath: m_LocalRotation.z
@@ -325086,7 +326051,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8996873517456343117, guid: 14f13a84ff62f754b8416104c8ba5a2a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -109.76
       objectReference: {fileID: 0}
     - target: {fileID: 8996873517456343117, guid: 14f13a84ff62f754b8416104c8ba5a2a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -325107,31 +326072,31 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5793523553320082901, guid: ada8e251bcd682c4b827c1c8a3291950, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -103.11098
+      value: -5.6553564
       objectReference: {fileID: 0}
     - target: {fileID: 5793523553320082901, guid: ada8e251bcd682c4b827c1c8a3291950, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.099999994
       objectReference: {fileID: 0}
     - target: {fileID: 5793523553320082901, guid: ada8e251bcd682c4b827c1c8a3291950, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 83.47452
+      value: 5.2062874
       objectReference: {fileID: 0}
     - target: {fileID: 5793523553320082901, guid: ada8e251bcd682c4b827c1c8a3291950, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.97926754
       objectReference: {fileID: 0}
     - target: {fileID: 5793523553320082901, guid: ada8e251bcd682c4b827c1c8a3291950, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5793523553320082901, guid: ada8e251bcd682c4b827c1c8a3291950, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.20257147
       objectReference: {fileID: 0}
     - target: {fileID: 5793523553320082901, guid: ada8e251bcd682c4b827c1c8a3291950, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5793523553320082901, guid: ada8e251bcd682c4b827c1c8a3291950, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -325139,7 +326104,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5793523553320082901, guid: ada8e251bcd682c4b827c1c8a3291950, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -23.375
       objectReference: {fileID: 0}
     - target: {fileID: 5793523553320082901, guid: ada8e251bcd682c4b827c1c8a3291950, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -325165,6 +326130,10 @@ PrefabInstance:
     - target: {fileID: 6607614673873447806, guid: e79a8747f6251934e9953f0a0d4e15e9, type: 3}
       propertyPath: m_Name
       value: Terrain
+      objectReference: {fileID: 0}
+    - target: {fileID: 7834803608123011029, guid: e79a8747f6251934e9953f0a0d4e15e9, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7834803608123011029, guid: e79a8747f6251934e9953f0a0d4e15e9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -325220,44 +326189,32 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -12.093205
+      value: -13.1
       objectReference: {fileID: 0}
     - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.30347824
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 38.632996
+      value: 70.73
       objectReference: {fileID: 0}
     - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.0014704816
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.9999989
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -325265,15 +326222,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 180.168
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3671696806424055166, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4161234135461386180, guid: dcb87f80b56d5c3438625e74f5e49e8a, type: 3}
       propertyPath: m_Name
@@ -325294,7 +326247,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8227234499433427878, guid: 66167f22a80c05140bfdfbd394cd62f1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -103.11098
+      value: -5.16
       objectReference: {fileID: 0}
     - target: {fileID: 8227234499433427878, guid: 66167f22a80c05140bfdfbd394cd62f1, type: 3}
       propertyPath: m_LocalPosition.y
@@ -325302,7 +326255,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8227234499433427878, guid: 66167f22a80c05140bfdfbd394cd62f1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 83.47452
+      value: 7.42
       objectReference: {fileID: 0}
     - target: {fileID: 8227234499433427878, guid: 66167f22a80c05140bfdfbd394cd62f1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -325351,15 +326304,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6164569856246684665, guid: 8ff2e43ad23b17642ad151dd2f3a3a6e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -101.93539
+      value: -5.86
       objectReference: {fileID: 0}
     - target: {fileID: 6164569856246684665, guid: 8ff2e43ad23b17642ad151dd2f3a3a6e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 6164569856246684665, guid: 8ff2e43ad23b17642ad151dd2f3a3a6e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 83.63116
+      value: 7.54
       objectReference: {fileID: 0}
     - target: {fileID: 6164569856246684665, guid: 8ff2e43ad23b17642ad151dd2f3a3a6e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -325411,5 +326364,10 @@ SceneRoots:
   - {fileID: 8875978295834865059}
   - {fileID: 1460983321884356829}
   - {fileID: 6814882940194444876}
+  - {fileID: 503140982}
   - {fileID: 2609693916321754762}
   - {fileID: 836611042}
+  - {fileID: 697121230}
+  - {fileID: 1084080808}
+  - {fileID: 2030225897}
+  - {fileID: 189653574}
