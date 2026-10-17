@@ -49,6 +49,7 @@ namespace KaiForest
         public MotherAI Mother { get; private set; }
         public MonsterAI Monster { get; private set; }
         public AmbienceController Ambience { get; private set; }
+        public PlayerStamina Stamina { get; private set; }
         public float PlayTime { get; private set; }
         public bool CanRestart { get; private set; }
 
@@ -124,8 +125,11 @@ namespace KaiForest
             Monster.Init(Map, Player, audioBank, mats);
             Monster.Teleport(PickMonsterSpawn(home));
 
+            Stamina = pgo.AddComponent<PlayerStamina>();
+            Stamina.Init(Monster);
+
             Ambience = gameObject.AddComponent<AmbienceController>();
-            Ambience.Init(audioBank, Player, Monster);
+            Ambience.Init(audioBank, Player, Monster, Stamina);
         }
 
         public static bool HasArg(string a)
@@ -430,6 +434,7 @@ namespace KaiForest
             return $"state {State}  t {PlayTime:0.0}s  fps {1f / Mathf.Max(Time.smoothDeltaTime, 0.0001f):0}  kai ({pp.x:0.0}, {pp.z:0.0}) yaw {Player.Yaw:0}\n" +
                    $"mother {dm:0.0}m  calls {Mother.Voice.PlayCount}  last {Mother.Voice.LastLineId}  noticed {Mother.Noticed}\n" +
                    $"monster {Monster.DistanceToPlayer:0.0}m  {Monster.State}  calls {Monster.Voice.PlayCount}  last {Monster.Voice.LastLineId}\n" +
+                   $"stamina {Stamina.Stamina * 100f:0}%  exhaustion {Stamina.Exhaustion:0.00}  hearing {Hearing.Volume:0.00}\n" +
                    $"exit {Map.ExitPosition}  trees {Map.TreeCount}";
         }
 

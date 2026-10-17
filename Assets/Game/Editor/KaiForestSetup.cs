@@ -37,7 +37,7 @@ namespace KaiForest.EditorTools
             var profile = CreateVolumeProfile();
             ConfigurePipeline();
             ConfigurePlayer();
-            LanternSettingsAsset.Ensure();
+            SettingsAssets.EnsureAll();
             ForestBaker.EnsurePrefabs(mats);
             if (!File.Exists(ForestBaker.ScenePath)) ForestBaker.BuildForestScene(mats);
             CreateScene(mats, bank, profile);

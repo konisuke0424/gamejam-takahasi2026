@@ -240,7 +240,8 @@ namespace KaiForest
         void UpdateSounds()
         {
             bool chasing = Active && State == MonsterState.Chase;
-            breath.volume = Mathf.MoveTowards(breath.volume, chasing ? 0.9f : (Active ? 0.15f : 0f), Time.deltaTime * 1.5f);
+            float breathTarget = (chasing ? 0.9f : (Active ? 0.15f : 0f)) * Hearing.Volume;
+            breath.volume = Mathf.MoveTowards(breath.volume, breathTarget, Time.deltaTime * 1.5f);
             float v = motor != null ? motor.Velocity.magnitude : 0f;
             if (v > 0.3f && bank.monsterSteps != null && bank.monsterSteps.Length > 0)
             {
@@ -248,7 +249,7 @@ namespace KaiForest
                 if (stepTimer <= 0f)
                 {
                     stepTimer = 1.25f;
-                    stepSource.volume = chasing ? 0.9f : 0.35f;
+                    stepSource.volume = (chasing ? 0.9f : 0.35f) * Hearing.Volume;
                     stepSource.pitch = Random.Range(0.8f, 1.0f);
                     stepSource.PlayOneShot(bank.monsterSteps[Random.Range(0, bank.monsterSteps.Length)]);
                 }

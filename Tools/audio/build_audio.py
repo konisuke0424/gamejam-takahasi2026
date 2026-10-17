@@ -315,6 +315,27 @@ def sfx_breath_loop(rng, seconds=2.6):
     return normalize(y, 0.8)
 
 
+def sfx_pant_loop(rng, seconds=4.0):
+    """The boy out of breath: quick breathy 'ha' exhales with short, higher inhales between."""
+    n = int(seconds * SR)
+    y = np.zeros(n, np.float32)
+    pos = 0.05
+    while pos < seconds - 0.4:
+        for kind in ("exhale", "inhale"):
+            dur = rng.uniform(0.22, 0.30) if kind == "exhale" else rng.uniform(0.13, 0.19)
+            a = int(pos * SR)
+            b = min(n, a + int(dur * SR))
+            seg = rng.standard_normal(b - a).astype(np.float32)
+            k = np.linspace(0, 1, b - a, dtype=np.float32)
+            if kind == "exhale":
+                body = butter(seg, "bandpass", [650, 1500], 2) + butter(seg, "bandpass", [2100, 3300], 2) * 0.45
+                y[a:b] += body * np.clip(np.sin(np.pi * k), 0, 1) ** 0.6 * np.exp(-k * 1.8)
+            else:
+                y[a:b] += butter(seg, "bandpass", [1600, 4800], 2) * np.sin(np.pi * k) * 0.4
+            pos += dur + rng.uniform(0.04, 0.1)
+    return normalize(loopify(y, 0.3), 0.8)
+
+
 def sfx_monster_step(rng):
     n = int(0.45 * SR)
     t = np.arange(n) / SR
@@ -389,6 +410,8 @@ def build_sfx():
     save(os.path.join(OUT_SFX, "monster_breath.wav"), sfx_breath_loop(rng))
     save(os.path.join(OUT_SFX, "clear_chime.wav"), sfx_clear_chime(rng))
     save(os.path.join(OUT_SFX, "gameover_sting.wav"), sfx_gameover(rng))
+    # Own generator so adding it didn't change any of the clips above.
+    save(os.path.join(OUT_SFX, "player_pant.wav"), sfx_pant_loop(np.random.default_rng(77)))
     print("sfx done")
 
 
@@ -396,7 +419,9 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--monster-strength", type=float, default=1.0)
     ap.add_argument("--skip-sfx", action="store_true")
+    ap.add_argument("--skip-voices", action="store_true")
     args = ap.parse_args()
-    build_voices(args.monster_strength)
+    if not args.skip_voices:
+        build_voices(args.monster_strength)
     if not args.skip_sfx:
         build_sfx()

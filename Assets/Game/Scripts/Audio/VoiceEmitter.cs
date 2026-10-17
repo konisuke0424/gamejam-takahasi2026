@@ -87,8 +87,9 @@ namespace KaiForest
                 listener = l.transform;
             }
             float d = Vector3.Distance(listener.position, transform.position);
-            float gain = GainAt(d) * loudness;
-            float mix = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(nearDistance, farDistance, d));
+            // Hearing: an out-of-breath boy hears voices quieter and muffled (pushed toward the far take).
+            float gain = GainAt(d) * loudness * Hearing.Volume;
+            float mix = Mathf.Max(Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(nearDistance, farDistance, d)), Hearing.Muffle);
             near.volume = gain * (1f - mix);
             far.volume = gain * mix;
         }

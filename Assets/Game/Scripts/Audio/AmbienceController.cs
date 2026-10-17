@@ -2,7 +2,10 @@ using UnityEngine;
 
 namespace KaiForest
 {
-    /// <summary>Night forest bed (insects, wind) plus tension layers driven by how close the monster is.</summary>
+    /// <summary>
+    /// Night forest bed (insects, wind) plus tension layers driven by how close the monster is.
+    /// The heartbeat also follows the boy's exhaustion; the forest bed follows Hearing.
+    /// </summary>
     public class AmbienceController : MonoBehaviour
     {
         public float insectsVolume = 0.12f;
@@ -14,11 +17,12 @@ namespace KaiForest
         AudioBank bank;
         PlayerController player;
         MonsterAI monster;
+        PlayerStamina stamina;
         float master = 1f, masterTarget = 1f, masterRate = 1f, nextBeat;
 
-        public void Init(AudioBank b, PlayerController p, MonsterAI m)
+        public void Init(AudioBank b, PlayerController p, MonsterAI m, PlayerStamina s)
         {
-            bank = b; player = p; monster = m;
+            bank = b; player = p; monster = m; stamina = s;
             insects = Loop(b.insects);
             wind = Loop(b.wind);
             drone = Loop(b.drone);
@@ -62,14 +66,16 @@ namespace KaiForest
             float d = monster != null && monster.Active ? monster.DistanceToPlayer : 999f;
             bool chase = monster != null && monster.Active && monster.State == MonsterState.Chase;
 
-            insects.volume = insectsVolume * master;
-            wind.volume = windVolume * master;
+            insects.volume = insectsVolume * master * Hearing.Volume;
+            wind.volume = windVolume * master * Hearing.Volume;
             float dk = Mathf.Clamp01(Mathf.InverseLerp(45f, 6f, d));
             float droneTarget = (dk * 0.7f + (chase ? 0.3f : 0f)) * droneMaxVolume * master;
             drone.volume = Mathf.MoveTowards(drone.volume, droneTarget, Time.deltaTime * 0.4f);
 
             float hk = Mathf.Clamp01(Mathf.InverseLerp(heartbeatRange, 2f, d));
             if (chase) hk = Mathf.Max(hk, 0.45f);
+            // Out of breath: the heart pounds louder and faster whatever the monster is doing.
+            if (stamina != null) hk = Mathf.Max(hk, stamina.Exhaustion);
             if (hk > 0.01f && Time.time >= nextBeat && bank.heartbeat != null)
             {
                 heart.PlayOneShot(bank.heartbeat, Mathf.Lerp(0.25f, 1f, hk) * master);

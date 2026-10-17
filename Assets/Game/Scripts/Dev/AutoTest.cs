@@ -128,8 +128,13 @@ namespace KaiForest
             while (GM.Monster.State != MonsterState.Chase && chaseWait < 3f) { chaseWait += Time.deltaTime; yield return null; }
             Check("monster chases when close", GM.Monster.State == MonsterState.Chase, $"state={GM.Monster.State}");
 
-            // Get away and find the mother.
+            // A frozen monster stays in Chase, so stamina should keep draining (10 s from full to empty).
             GM.Monster.Frozen = true;
+            float st0 = GM.Stamina.Stamina;
+            yield return new WaitForSeconds(2f);
+            Check("stamina drains while chased", GM.Stamina.Stamina < st0 - 0.1f, $"stamina {st0:0.00} -> {GM.Stamina.Stamina:0.00}");
+
+            // Get away and find the mother.
             GM.Monster.Teleport(GM.Map.StartPosition + new Vector3(60f, 0f, 0f));
             var mom = GM.Mother.transform.position;
             var away = GM.Map.FindOpenPoint(mom + (GM.Map.StartPosition - mom).normalized * 6f, 1f);
