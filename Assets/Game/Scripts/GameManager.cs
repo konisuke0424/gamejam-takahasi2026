@@ -34,7 +34,10 @@ namespace KaiForest
         public Texture2D gameOverTexture;
         public Volume volume;
 
-        [Header("Night look (applied at runtime; fog density is in LanternSettings)")]
+        /// <summary>Night fog: about half the scene is gone at 10 m, nearly all of it at 20 m.</summary>
+        public const float FogDensity = 0.085f;
+
+        [Header("Night look (applied at runtime)")]
         public Color fogColor = new Color(0.012f, 0.016f, 0.024f);
         public Color ambientColor = new Color(0.05f, 0.055f, 0.075f);
 
@@ -157,7 +160,7 @@ namespace KaiForest
         void ApplyLook()
         {
             float day = viewSettings.EffectiveDaylight;
-            RenderSettings.fogDensity = Mathf.Lerp(viewSettings.fogDensity, 0.004f, day);
+            RenderSettings.fogDensity = Mathf.Lerp(FogDensity, 0.004f, day);
             RenderSettings.fogColor = Color.Lerp(fogColor, DayFogColor, day);
             RenderSettings.ambientLight = Color.Lerp(ambientColor, DayAmbientColor, day);
             if (moon != null)

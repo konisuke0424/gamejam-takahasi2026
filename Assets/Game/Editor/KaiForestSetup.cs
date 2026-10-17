@@ -283,7 +283,7 @@ namespace KaiForest.EditorTools
 
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
-            RenderSettings.fogDensity = LanternSettingsAsset.Ensure().fogDensity;
+            RenderSettings.fogDensity = GameManager.FogDensity;
             RenderSettings.fogColor = gm.fogColor;
             RenderSettings.ambientMode = AmbientMode.Flat;
             RenderSettings.ambientLight = gm.ambientColor;
