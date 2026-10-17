@@ -56,7 +56,9 @@ namespace KaiForest
         Canvas canvas;
         Image fade;
         CanvasGroup titleGroup, endGroup, storyGroup, hintGroup;
-        Text storyText, endSub, endHint, titleHint, titleBadge, debugText;
+        Text storyText, endSub, endHint, titleHint, titleMedalStar, debugText;
+        Image titleMedal;
+        Image[] titleMedalRibbons;
         RawImage endImage;
         Vignette vignette;
         ChromaticAberration chroma;
@@ -208,8 +210,10 @@ namespace KaiForest
             State = GameState.Title;
             fade.color = new Color(0f, 0f, 0f, 0.72f);
             bool cleared = PlayerPrefs.GetInt(ClearRecordKey, 0) == 1;
-            titleBadge.text = cleared ? "◆　森の脱出者　◆" : "◇　未クリア　◇";
-            titleBadge.color = cleared ? new Color(0.93f, 0.76f, 0.38f) : new Color(0.56f, 0.52f, 0.48f);
+            titleMedal.color = cleared ? new Color(0.93f, 0.68f, 0.2f) : new Color(0.48f, 0.48f, 0.48f);
+            Color ribbonColor = cleared ? new Color(0.68f, 0.38f, 0.08f) : new Color(0.3f, 0.3f, 0.3f);
+            foreach (var ribbon in titleMedalRibbons) ribbon.color = ribbonColor;
+            titleMedalStar.color = cleared ? new Color(0.35f, 0.2f, 0.05f) : new Color(0.2f, 0.2f, 0.2f);
             titleGroup.alpha = 1f;
         }
 
@@ -495,12 +499,22 @@ namespace KaiForest
                 26, new Color(0.62f, 0.6f, 0.58f), new Vector2(0f, -150f));
             MakeText(titleGroup.transform, "ヘッドホン推奨", 22, new Color(0.5f, 0.45f, 0.42f), new Vector2(0f, -300f));
             titleHint = MakeText(titleGroup.transform, "クリックで　はじめる", 34, Color.white, new Vector2(0f, -390f));
-            titleBadge = MakeText(titleGroup.transform, "◇　未クリア　◇", 26, new Color(0.56f, 0.52f, 0.48f), Vector2.zero);
-            titleBadge.rectTransform.anchorMin = titleBadge.rectTransform.anchorMax = new Vector2(1f, 1f);
-            titleBadge.rectTransform.pivot = new Vector2(1f, 1f);
-            titleBadge.rectTransform.anchoredPosition = new Vector2(-48f, -42f);
-            titleBadge.rectTransform.sizeDelta = new Vector2(500f, 70f);
-            titleBadge.alignment = TextAnchor.MiddleRight;
+            var medalRoot = MakeRect(titleGroup.transform, "ClearMedal", new Vector2(-134f, -42f), new Vector2(86f, 96f), false);
+            medalRoot.anchorMin = medalRoot.anchorMax = medalRoot.pivot = new Vector2(1f, 1f);
+            titleMedalRibbons = new Image[2];
+            for (int i = 0; i < titleMedalRibbons.Length; i++)
+            {
+                var ribbonRect = MakeRect(medalRoot, "Ribbon", new Vector2(i == 0 ? -13f : 13f, -29f), new Vector2(19f, 42f), false);
+                ribbonRect.localRotation = Quaternion.Euler(0f, 0f, i == 0 ? -12f : 12f);
+                titleMedalRibbons[i] = ribbonRect.gameObject.AddComponent<Image>();
+                titleMedalRibbons[i].raycastTarget = false;
+            }
+            var medalCircle = MakeRect(medalRoot, "MedalFace", new Vector2(0f, 10f), new Vector2(68f, 68f), false).gameObject.AddComponent<Image>();
+            medalCircle.sprite = CreateCircleSprite();
+            medalCircle.raycastTarget = false;
+            titleMedal = medalCircle;
+            titleMedalStar = MakeText(medalRoot, "★", 42, Color.black, new Vector2(0f, 10f));
+            titleMedalStar.rectTransform.sizeDelta = new Vector2(68f, 68f);
             titleGroup.alpha = 0f;
 
             storyGroup = MakeGroup(go.transform, "Story");
@@ -573,6 +587,26 @@ namespace KaiForest
             sh.effectColor = new Color(0f, 0f, 0f, 0.8f);
             sh.effectDistance = new Vector2(2f, -2f);
             return t;
+        }
+
+        static Sprite CreateCircleSprite()
+        {
+            const int size = 128;
+            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            texture.name = "ClearMedalCircle";
+            texture.filterMode = FilterMode.Bilinear;
+            var pixels = new Color32[size * size];
+            float center = (size - 1) * 0.5f;
+            for (int y = 0; y < size; y++)
+                for (int x = 0; x < size; x++)
+                {
+                    float distance = Vector2.Distance(new Vector2(x, y), new Vector2(center, center));
+                    byte alpha = (byte)Mathf.RoundToInt(Mathf.Clamp01(center - distance + 1f) * 255f);
+                    pixels[y * size + x] = new Color32(255, 255, 255, alpha);
+                }
+            texture.SetPixels32(pixels);
+            texture.Apply();
+            return Sprite.Create(texture, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), size);
         }
     }
 }
