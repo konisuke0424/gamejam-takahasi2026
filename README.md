@@ -13,6 +13,16 @@ git clone <このリポジトリのURL>
 
 初回は `Library/` の再生成で数分かかります。
 
+## ゲーム：まねごえの森（仮）
+
+森で迷子になったカイが、お母さんの声を頼りに森を抜ける一人称ホラー（WebGL）。
+遊び方・AI・声の仕組み・素材の作り直し方は [Docs/KaiForest.md](Docs/KaiForest.md) を参照。
+
+- WebGL で書き出すには Unity に **WebGL Build Support** モジュールが必要
+- メニュー `KaiForest > Setup Project` でマテリアル・音声バンク・`Assets/Scenes/Main.unity` を作り直す。
+  **`Main.unity` はこのとき上書きされるので手で編集しない**（森・キャラ・UI は実行時にコードが生成する）
+- `KaiForest > Build WebGL` / `Build Windows` で `Builds/` に書き出す
+
 ## ルール
 
 - `.meta` ファイルは必ずアセットとセットでコミットする

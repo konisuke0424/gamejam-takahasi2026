@@ -1,0 +1,124 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8464f15dde8845c4282758673721020c, type: 3}
+  m_Name: AudioBank
+  m_EditorClassIdentifier: Assembly-CSharp::KaiForest.AudioBank
+  motherLines:
+  - id: mother_01
+    near: {fileID: 8300000, guid: 8f5216467195c9847a5ef3e9ddd117da, type: 3}
+    far: {fileID: 8300000, guid: 5771a26183c607447a563c68423f7e35, type: 3}
+    weight: 1
+  - id: mother_02
+    near: {fileID: 8300000, guid: d89e5f9e53bd3134d90f0b9609b01237, type: 3}
+    far: {fileID: 8300000, guid: 3578e08a20dd4eb4d887208be4d8e5eb, type: 3}
+    weight: 1
+  - id: mother_03
+    near: {fileID: 8300000, guid: fc670ba02e7f5ec4dbbd22cbe3c90546, type: 3}
+    far: {fileID: 8300000, guid: 9ed1cc9531559ce48a3665aa3e505140, type: 3}
+    weight: 1
+  - id: mother_04
+    near: {fileID: 8300000, guid: 1f79b57ff60b59b4cbdd5be0d1e6f993, type: 3}
+    far: {fileID: 8300000, guid: 9077c86571750234194a12fcac3bb202, type: 3}
+    weight: 1
+  - id: mother_05
+    near: {fileID: 8300000, guid: d135fb136e6dd874b9c0d9c6fc1ff833, type: 3}
+    far: {fileID: 8300000, guid: 5349eb892d8674f4baf3cdf9a7a01bc4, type: 3}
+    weight: 1
+  - id: mother_06
+    near: {fileID: 8300000, guid: 98933142f1460644797af4d609f2090c, type: 3}
+    far: {fileID: 8300000, guid: 445b5921ed0f8664e96aaf176aa7d00b, type: 3}
+    weight: 1
+  - id: mother_07
+    near: {fileID: 8300000, guid: 3300295eee7d8ae4596dc8922a448ffb, type: 3}
+    far: {fileID: 8300000, guid: b959935149500254bbab3ea033488f35, type: 3}
+    weight: 1
+  - id: mother_08
+    near: {fileID: 8300000, guid: 6e604f46488a3f84b9317e8ae7f1dd8d, type: 3}
+    far: {fileID: 8300000, guid: 23301efebf53ea6469dade02be6cd997, type: 3}
+    weight: 1
+  - id: mother_09
+    near: {fileID: 8300000, guid: 46084f238dc7295419abb1967aaebe4d, type: 3}
+    far: {fileID: 8300000, guid: 58b9ce3a2ba80e64fb29ffe9a396de33, type: 3}
+    weight: 1
+  - id: mother_10
+    near: {fileID: 8300000, guid: 9049633648fb76247858735270ff8f03, type: 3}
+    far: {fileID: 8300000, guid: 4b2c4dca53e7fce4baf42c7fbcc2105c, type: 3}
+    weight: 1
+  motherFound:
+    id: mother_found
+    near: {fileID: 8300000, guid: 8cae43e0607719841b233e7c8a50a565, type: 3}
+    far: {fileID: 8300000, guid: b5b166c64becd7c41a5b09e30e7e84c9, type: 3}
+    weight: 1
+  monsterLines:
+  - id: monster_01
+    near: {fileID: 8300000, guid: 68d206f77862cc14bb05f22f49270309, type: 3}
+    far: {fileID: 8300000, guid: 2ca2dc7d0fb83e54086297e44a57a53d, type: 3}
+    weight: 3
+  - id: monster_02
+    near: {fileID: 8300000, guid: 1b178fb7ccf40564880e36ece32ce3f9, type: 3}
+    far: {fileID: 8300000, guid: d1f23b4041785e64fb83f39cad5bf436, type: 3}
+    weight: 3
+  - id: monster_03
+    near: {fileID: 8300000, guid: 425b4d2910300ab4cb2cf096ef3b6c9a, type: 3}
+    far: {fileID: 8300000, guid: b527502e1fc8a41479b7879c4ee43539, type: 3}
+    weight: 3
+  - id: monster_04
+    near: {fileID: 8300000, guid: 702d9001a8c81254d8abc92a9f7da104, type: 3}
+    far: {fileID: 8300000, guid: f65682ca938f5474daccc738be3fd123, type: 3}
+    weight: 1
+  - id: monster_05
+    near: {fileID: 8300000, guid: 780b031c3e30e9d4dae5da724f4ec781, type: 3}
+    far: {fileID: 8300000, guid: 3b952d1404fc3e2409d11774ee70cdb9, type: 3}
+    weight: 1
+  - id: monster_06
+    near: {fileID: 8300000, guid: c1b3833630d2eaf44b47669f97918f23, type: 3}
+    far: {fileID: 8300000, guid: 16fd6317a0747984d88e848e02ba5a64, type: 3}
+    weight: 1
+  - id: monster_07
+    near: {fileID: 8300000, guid: 2f8a582bdc6bc5345ba64bc80add5783, type: 3}
+    far: {fileID: 8300000, guid: 12b59e3769f05ec4d845a63d6a8074a4, type: 3}
+    weight: 0.5
+  - id: monster_08
+    near: {fileID: 8300000, guid: 909855fb6b24fbd48858356e70c9455a, type: 3}
+    far: {fileID: 8300000, guid: 032ad1a4d8049434c8ec425c34116a2a, type: 3}
+    weight: 1
+  chaseLines:
+  - id: chase_01
+    near: {fileID: 8300000, guid: de210c4292ef5a440b72ddbf90bbc79e, type: 3}
+    far: {fileID: 8300000, guid: ef8e631097573b94390124c6dc781542, type: 3}
+    weight: 2
+  - id: chase_02
+    near: {fileID: 8300000, guid: f8119cc0d4e9c7e42a7fc3a8e2694321, type: 3}
+    far: {fileID: 8300000, guid: dad5af37294329d489dc173098362fe0, type: 3}
+    weight: 1
+  catchLine:
+    id: catch_01
+    near: {fileID: 8300000, guid: 6dc5c024c2beb81438037b7186b80d5f, type: 3}
+    far: {fileID: 8300000, guid: 5f94918d0dfbb214b8febf2be80bdeca, type: 3}
+    weight: 1
+  insects: {fileID: 8300000, guid: a482facdb112313428fb449663160925, type: 3}
+  wind: {fileID: 8300000, guid: fcfec7e3eb7ef7b4bb86cc8020f98aee, type: 3}
+  drone: {fileID: 8300000, guid: a52d0a8b33da73b4db7c1e5207d080b5, type: 3}
+  heartbeat: {fileID: 8300000, guid: b6772034bead0ef448374eb79909ceac, type: 3}
+  monsterBreath: {fileID: 8300000, guid: ac31fdb52f18cad45aad136ef460b770, type: 3}
+  clearChime: {fileID: 8300000, guid: a7621b01dcf2e604292057d130110590, type: 3}
+  gameOverSting: {fileID: 8300000, guid: 16013cfb77428024985dc41eb8b62923, type: 3}
+  steps:
+  - {fileID: 8300000, guid: 960fbbf17416fb7488492fc3681e2b3a, type: 3}
+  - {fileID: 8300000, guid: 0a69ef95f79dafa4f996ea1ac2e28d86, type: 3}
+  - {fileID: 8300000, guid: 9fac6b459e994e24f8985329a65af133, type: 3}
+  - {fileID: 8300000, guid: e3191fc19e09ead4e914a99b79e3bc93, type: 3}
+  - {fileID: 8300000, guid: f54b286218014c444b9830aca88d99ea, type: 3}
+  monsterSteps:
+  - {fileID: 8300000, guid: 4a83b3dbd9331204db60460cd825bbb0, type: 3}
+  - {fileID: 8300000, guid: 108b5d70550d4b743b9313ab0afdbb6e, type: 3}
+  - {fileID: 8300000, guid: d6ecce9355292a74e8e1f4c18324cb4f, type: 3}

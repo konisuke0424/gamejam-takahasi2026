@@ -1,0 +1,30 @@
+{
+  "_comment": "声のセリフ表。gen_tts.ps1 が Windows 音声合成(Haruka)で raw/*.wav を作り、build_audio.py が加工して Assets/Game/Audio/Voices に書き出す。本番の声に差し替えるときは raw/<id>.wav を録音データで置き換えて build_audio.py だけ回せばよい。",
+  "voice": "Microsoft Haruka Desktop",
+  "lines": [
+    { "id": "mother_01", "kind": "mother", "text": "カイー！", "rate": "-15%", "pitch": "+10%" },
+    { "id": "mother_02", "kind": "mother", "text": "カイー、どこにいるのー？", "rate": "-15%", "pitch": "+10%" },
+    { "id": "mother_03", "kind": "mother", "text": "カイー、お母さんはここよー！", "rate": "-15%", "pitch": "+10%" },
+    { "id": "mother_04", "kind": "mother", "text": "カイー、声のするほうに、おいでー！", "rate": "-15%", "pitch": "+8%" },
+    { "id": "mother_05", "kind": "mother", "text": "暗いけど、大丈夫だからねー！", "rate": "-20%", "pitch": "+5%" },
+    { "id": "mother_06", "kind": "mother", "text": "カイー、一緒にお家に帰ろうねー！", "rate": "-15%", "pitch": "+8%" },
+    { "id": "mother_07", "kind": "mother", "text": "カイー、今日の晩ごはん、カレーだよー！", "rate": "-12%", "pitch": "+12%" },
+    { "id": "mother_08", "kind": "mother", "text": "ゆっくりでいいからねー、カイー！", "rate": "-20%", "pitch": "+5%" },
+    { "id": "mother_09", "kind": "mother", "text": "カイー、お母さん、ずっとここにいるからねー！", "rate": "-15%", "pitch": "+8%" },
+    { "id": "mother_10", "kind": "mother", "text": "カイー、怖かったねえ、もうすぐだよー！", "rate": "-18%", "pitch": "+6%" },
+    { "id": "mother_found", "kind": "mother", "text": "カイ！よかったぁ……。もう、大丈夫だからね。", "rate": "-15%", "pitch": "+10%" },
+
+    { "id": "monster_01", "kind": "monster", "text": "カイー！", "rate": "-15%", "pitch": "+10%", "fx": { "warble": 1.0 } },
+    { "id": "monster_02", "kind": "monster", "text": "カイー、どこにいるのー？", "rate": "-15%", "pitch": "+10%", "fx": { "warble": 1.0, "tailDrop": 1.0 } },
+    { "id": "monster_03", "kind": "monster", "text": "カイー、お母さんはここよー！", "rate": "-15%", "pitch": "+10%", "fx": { "warble": 1.0, "stutterAt": 0.55 } },
+    { "id": "monster_04", "kind": "monster", "text": "カイー、どこに、どこに、どこにいるのー？", "rate": "-15%", "pitch": "+10%", "fx": { "warble": 1.2 } },
+    { "id": "monster_05", "kind": "monster", "text": "カイー、こっちよー、こっちよー、こっちよー", "rate": "-15%", "pitch": "+10%", "fx": { "warble": 1.0, "tailDrop": 1.0 } },
+    { "id": "monster_06", "kind": "monster", "text": "カ、カ、カイー！", "rate": "-10%", "pitch": "+10%", "fx": { "warble": 1.3 } },
+    { "id": "monster_07", "kind": "monster", "text": "カイー、お母さんは、ここに、いないよー", "rate": "-20%", "pitch": "+5%", "fx": { "warble": 1.4, "tailDrop": 1.5 } },
+    { "id": "monster_08", "kind": "monster", "text": "カイー、ばんごはん、ばんごはん、ばんごはん", "rate": "-12%", "pitch": "+12%", "fx": { "warble": 1.2, "stutterAt": 0.3 } },
+
+    { "id": "chase_01", "kind": "chase", "text": "カイ、カイ、カイ、カイ、カイ", "rate": "+30%", "pitch": "-10%", "fx": { "warble": 2.0, "down": 3.0 } },
+    { "id": "chase_02", "kind": "chase", "text": "みつけた", "rate": "-35%", "pitch": "-20%", "fx": { "warble": 2.5, "down": 5.0, "tailDrop": 2.0 } },
+    { "id": "catch_01", "kind": "catch", "text": "カイイイイイ", "rate": "-30%", "pitch": "-30%", "fx": { "warble": 4.0, "down": 9.0 } }
+  ]
+}

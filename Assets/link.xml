@@ -1,0 +1,8 @@
+<linker>
+  <!-- GameObject.CreatePrimitive(Sphere) adds a SphereCollider at runtime (Prims caches primitive meshes),
+       but nothing references the class in code, so WebGL stripping removes it. -->
+  <assembly fullname="UnityEngine.PhysicsModule">
+    <type fullname="UnityEngine.SphereCollider" preserve="all"/>
+    <type fullname="UnityEngine.MeshCollider" preserve="all"/>
+  </assembly>
+</linker>

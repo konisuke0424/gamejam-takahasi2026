@@ -61,3 +61,6 @@ sysinfo.txt
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Burst output from WebGL builds
+/Data/Plugins/lib_burst_generated*
