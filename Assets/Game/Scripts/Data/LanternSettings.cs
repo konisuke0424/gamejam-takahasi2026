@@ -30,6 +30,13 @@ namespace KaiForest
         [Tooltip("霧の濃さ。下げるほど遠くまで見える。0.085で約10m先が半分かすむ")]
         [Range(0.01f, 0.2f)] public float fogDensity = 0.085f;
 
+        [Header("デバッグ（エディタで再生したときだけ効く）")]
+        [Tooltip("0=夜（本番の見た目）、1=昼。霧・空・環境光・月明かり・描画距離をまとめて昼に寄せる。マップ確認用で、ビルドでは常に夜")]
+        [Range(0f, 1f)] public float daylight = 0f;
+
+        /// <summary>Daylight actually applied: the slider in the editor, always night in builds.</summary>
+        public float EffectiveDaylight => Application.isEditor ? daylight : 0f;
+
         /// <summary>Light intensity to use so the brightness at ReferenceDistance matches <see cref="intensity"/>.</summary>
         public float EffectiveIntensity
         {

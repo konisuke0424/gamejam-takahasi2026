@@ -134,26 +134,52 @@ namespace KaiForest
 
         // ------------------------------------------------------------------ setup
 
+        static readonly Color MoonColor = new Color(0.55f, 0.65f, 1f);
+        static readonly Color SunColor = new Color(1f, 0.96f, 0.88f);
+        static readonly Color DayFogColor = new Color(0.62f, 0.68f, 0.74f);
+        static readonly Color DayAmbientColor = new Color(0.55f, 0.57f, 0.6f);
+        Light moon;
+
         void ApplyRenderSettings()
         {
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
-            RenderSettings.fogDensity = viewSettings.fogDensity;
-            RenderSettings.fogColor = fogColor;
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = ambientColor;
             RenderSettings.skybox = null;
             RenderSettings.reflectionIntensity = 0f;
+            ApplyLook();
+        }
+
+        /// <summary>
+        /// The night look, blended toward daylight by LanternSettings.daylight (editor-only debug).
+        /// Runs every frame so fog density and the daylight slider can be tuned during Play.
+        /// </summary>
+        void ApplyLook()
+        {
+            float day = viewSettings.EffectiveDaylight;
+            RenderSettings.fogDensity = Mathf.Lerp(viewSettings.fogDensity, 0.004f, day);
+            RenderSettings.fogColor = Color.Lerp(fogColor, DayFogColor, day);
+            RenderSettings.ambientLight = Color.Lerp(ambientColor, DayAmbientColor, day);
+            if (moon != null)
+            {
+                moon.intensity = Mathf.Lerp(0.06f, 1.3f, day);
+                moon.color = Color.Lerp(MoonColor, SunColor, day);
+            }
+            if (Player != null && Player.Cam != null)
+            {
+                Player.Cam.backgroundColor = RenderSettings.fogColor;
+                Player.Cam.farClipPlane = Mathf.Lerp(40f, 300f, day);
+            }
         }
 
         void BuildMoon()
         {
-            var l = new GameObject("Moonlight").AddComponent<Light>();
-            l.type = LightType.Directional;
-            l.color = new Color(0.55f, 0.65f, 1f);
-            l.intensity = 0.06f;
-            l.shadows = LightShadows.None;
-            l.transform.rotation = Quaternion.Euler(55f, -40f, 0f);
+            moon = new GameObject("Moonlight").AddComponent<Light>();
+            moon.type = LightType.Directional;
+            moon.color = MoonColor;
+            moon.intensity = 0.06f;
+            moon.shadows = LightShadows.None;
+            moon.transform.rotation = Quaternion.Euler(55f, -40f, 0f);
         }
 
         Vector3 PickMonsterSpawn(Vector3 motherHome)
@@ -341,7 +367,7 @@ namespace KaiForest
 
         void Update()
         {
-            RenderSettings.fogDensity = viewSettings.fogDensity; // live-tunable in LanternSettings
+            ApplyLook(); // fog / daylight are live-tunable in LanternSettings
             if (!Ready) return;
             var mouse = IgnoreMouse ? null : Mouse.current;
             bool click = mouse != null && mouse.leftButton.wasPressedThisFrame;
