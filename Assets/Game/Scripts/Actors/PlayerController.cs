@@ -39,7 +39,7 @@ namespace KaiForest
         AudioClip[] steps;
         LanternSettings lanternSettings;
         float yaw, pitch, speed, vy, stepAccum, bobPhase, lastYaw;
-        Vector3 lanternBasePos;
+        Vector3 lanternBasePos, lightLocalPos;
         Quaternion lookOverride;
         float lookOverrideWeight;
 
@@ -72,6 +72,7 @@ namespace KaiForest
             lantern = rig.lantern;
             LanternLight = rig.light;
             lanternBasePos = lantern.localPosition;
+            lightLocalPos = LanternLight.transform.localPosition;
 
             steps = stepClips;
             stepSource = gameObject.AddComponent<AudioSource>();
@@ -164,9 +165,14 @@ namespace KaiForest
             lantern.localRotation = Quaternion.Euler(Mathf.Sin(bobPhase) * 3f * moveK, 0f, Mathf.Clamp(yawVel * 0.03f, -12f, 12f));
 
             // Read the settings every frame so Inspector edits during Play apply immediately.
+            // Reach pulls the light back behind the eye: a farther source flattens the 1/d² falloff,
+            // and EffectiveIntensity compensates so the brightness 2 m ahead stays the same.
+            var s = lanternSettings;
+            LanternLight.transform.localPosition = lightLocalPos;
+            LanternLight.transform.position -= Cam.transform.forward * s.reach;
             float flicker = Mathf.PerlinNoise(Time.time * 5.5f, 0.37f) * 0.14f + Mathf.PerlinNoise(Time.time * 17f, 0.91f) * 0.05f;
-            LanternLight.range = lanternSettings.range;
-            LanternLight.intensity = lanternSettings.intensity * LanternScale * (0.9f + flicker);
+            LanternLight.range = s.EffectiveRange;
+            LanternLight.intensity = s.EffectiveIntensity * LanternScale * (0.9f + flicker);
         }
     }
 }

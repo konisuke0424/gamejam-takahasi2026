@@ -57,11 +57,19 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 
 | 設定 | 場所 | 中身 |
 |---|---|---|
-| カイのランタン | `Assets/Game/Resources/LanternSettings.asset`（メニュー `KaiForest > Lantern Settings` で選択） | `Range`：光が届く距離（m）、`Intensity`：明るさ |
+| ランタンと見える距離 | `Assets/Game/Resources/LanternSettings.asset`（メニュー `KaiForest > Lantern Settings` で選択） | 下表 |
+
+| 項目 | 意味 | 初期値 |
+|---|---|---|
+| Range | 光が届く距離（m）。ここで光が途切れる | 11 |
+| Intensity | ランタンから2m先の明るさ。上げると手前が白飛びしやすい | 22 |
+| Reach | 奥行き（0〜8m）。2m先の明るさを保ったまま奥まで光を届かせ、手前のまぶしさを抑える。光の出どころをカイの後ろへ下げて作っているので、上げると幹の影は出にくくなる | 0（従来どおり） |
+| Fog Density | 霧の濃さ。下げるほど遠くまで見える（0.085 で約10m先が半分、20m先はほぼ見えない） | 0.085 |
 
 - 再生中に Inspector で値を変えると即座に画面に反映され、再生を止めても値は残る
-- 遠くまで照らすには Range と Intensity を一緒に上げる（点光源は距離の2乗で暗くなる）。見える距離そのものは霧（`Main.unity` の GameManager の Fog Density）でも決まる
-- このファイルは `Setup Project` では上書きされない。消えた場合はスクリプトの読み込み時に初期値（11m / 22）で作り直される
+- 「明るさは変えずに奥まで見せたい」ときは、まず Reach（例：3〜5）と Fog Density（例：0.05）を動かす。Intensity は手前の明るさの調整用
+- 点光源は距離の2乗で暗くなるので、Range だけ広げても遠くはほとんど明るくならない
+- このファイルは `Setup Project` では上書きされない。消えた場合はスクリプトの読み込み時に初期値で作り直される
 
 ## ビルド・再生成
 

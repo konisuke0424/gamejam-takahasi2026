@@ -34,8 +34,7 @@ namespace KaiForest
         public Texture2D gameOverTexture;
         public Volume volume;
 
-        [Header("Night look (applied at runtime)")]
-        public float fogDensity = 0.085f;
+        [Header("Night look (applied at runtime; fog density is in LanternSettings)")]
         public Color fogColor = new Color(0.012f, 0.016f, 0.024f);
         public Color ambientColor = new Color(0.05f, 0.055f, 0.075f);
 
@@ -60,10 +59,12 @@ namespace KaiForest
         float baseVignette, baseChroma;
         bool debugHud;
         Coroutine introRoutine;
+        LanternSettings viewSettings;
 
         void Awake()
         {
             I = this;
+            viewSettings = LanternSettings.Load();
             ApplyRenderSettings();
             BuildMoon();
             BuildUI();
@@ -137,7 +138,7 @@ namespace KaiForest
         {
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
-            RenderSettings.fogDensity = fogDensity;
+            RenderSettings.fogDensity = viewSettings.fogDensity;
             RenderSettings.fogColor = fogColor;
             RenderSettings.ambientMode = AmbientMode.Flat;
             RenderSettings.ambientLight = ambientColor;
@@ -326,6 +327,7 @@ namespace KaiForest
 
         void Update()
         {
+            RenderSettings.fogDensity = viewSettings.fogDensity; // live-tunable in LanternSettings
             if (!Ready) return;
             var mouse = IgnoreMouse ? null : Mouse.current;
             bool click = mouse != null && mouse.leftButton.wasPressedThisFrame;
