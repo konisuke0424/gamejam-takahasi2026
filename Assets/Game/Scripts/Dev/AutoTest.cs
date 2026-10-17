@@ -154,7 +154,7 @@ namespace KaiForest
             yield return new WaitForSeconds(0.3f);
             yield return WaitReady();
             yield return new WaitForSeconds(0.5f);
-            Check("retry skips title", GM.State == GameState.Intro, $"state={GM.State}");
+            Check("retry goes straight to play", GM.State == GameState.Playing, $"state={GM.State}");
             GM.SkipIntro();
             yield return new WaitForSeconds(0.5f);
             var mp2 = GM.Monster.transform.position;

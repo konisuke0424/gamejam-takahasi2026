@@ -21,7 +21,19 @@ namespace KaiForest
 
         public Camera Cam { get; private set; }
         public Light LanternLight { get; private set; }
-        public bool ControlEnabled { get; set; }
+        /// <summary>
+        /// When control is handed over, a mouse button still held from the click that started play
+        /// (title / story skip) is ignored until it is released, so the boy doesn't lurch forward.
+        /// </summary>
+        public bool ControlEnabled
+        {
+            get => controlEnabled;
+            set
+            {
+                if (value && !controlEnabled) waitForRelease = true;
+                controlEnabled = value;
+            }
+        }
         public bool IsMoving => Mathf.Abs(speed) > 0.35f;
         public float Speed => speed;
         public float Yaw => yaw;
@@ -38,6 +50,7 @@ namespace KaiForest
         AudioSource stepSource;
         AudioClip[] steps;
         LanternSettings lanternSettings;
+        bool controlEnabled, waitForRelease;
         float yaw, pitch, speed, vy, stepAccum, bobPhase, lastYaw;
         Vector3 lanternBasePos, lightLocalPos;
         Quaternion lookOverride;
@@ -116,6 +129,11 @@ namespace KaiForest
             if (ControlEnabled && mouse != null)
             {
                 bool l = mouse.leftButton.isPressed, r = mouse.rightButton.isPressed, m = mouse.middleButton.isPressed;
+                if (waitForRelease)
+                {
+                    if (!l && !r && !m) waitForRelease = false;
+                    l = r = m = false;
+                }
                 if (l || r || m)
                 {
                     Vector2 d = mouse.delta.ReadValue();

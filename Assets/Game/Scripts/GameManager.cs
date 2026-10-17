@@ -186,25 +186,42 @@ namespace KaiForest
             introRoutine = StartCoroutine(IntroRoutine(false));
         }
 
-        IEnumerator IntroRoutine(bool quick)
+        IEnumerator IntroRoutine(bool retry)
         {
             State = GameState.Intro;
+            if (retry)
+            {
+                // Retry: no story, straight back into the forest.
+                titleGroup.alpha = 0f;
+                fade.color = Color.black;
+                StartPlaying();
+                yield return FadeImage(0f, 0.8f);
+                yield break;
+            }
             yield return Fade(titleGroup, 0f, 0.6f);
             fade.color = Color.black;
-            if (!quick)
-            {
-                yield return ShowStory("森で、迷子に　なってしまった。", 2.6f);
-                yield return ShowStory("おかあさんの声が　きこえる……\n\nでも、この森には\n人の声を　まねる　化け物が　いるらしい。", 4.2f);
-            }
-            else
-            {
-                yield return ShowStory("……もういちど。\n本物の　おかあさんの声を　さがして。", 2.0f);
-            }
+            yield return ShowStory("森で、迷子に　なってしまった。", 2.6f);
+            yield return ShowStory("おかあさんの声が　きこえる……\n\nでも、この森には\n人の声を　まねる　化け物が　いるらしい。", 4.2f);
             StartPlaying();
-            yield return FadeImage(0f, 2.5f);
+            yield return FadeIntoPlay(2.5f);
+        }
+
+        IEnumerator FadeIntoPlay(float seconds)
+        {
+            yield return FadeImage(0f, seconds);
             hintGroup.alpha = 1f;
             yield return new WaitForSeconds(14f);
             yield return Fade(hintGroup, 0f, 2f);
+        }
+
+        /// <summary>A click during the opening story jumps straight into play.</summary>
+        void SkipStory()
+        {
+            if (introRoutine != null) StopCoroutine(introRoutine);
+            titleGroup.alpha = 0f;
+            storyGroup.alpha = 0f;
+            StartPlaying();
+            introRoutine = StartCoroutine(FadeIntoPlay(0.6f));
         }
 
         IEnumerator ShowStory(string text, float hold)
@@ -257,6 +274,7 @@ namespace KaiForest
                 Player.LanternScale = Mathf.Lerp(1f, 0.12f, t / 0.8f);
                 yield return null;
             }
+            CanRestart = true; // a click from here on retries; the clear screen keeps playing out otherwise
             yield return new WaitForSeconds(1.6f);
             fade.color = new Color(0.06f, 0.035f, 0.02f, 0f);
             yield return FadeImage(0.88f, 2f);
@@ -268,9 +286,7 @@ namespace KaiForest
             endHint.text = "クリックで　もういちど";
             endHint.enabled = false;
             yield return Fade(endGroup, 1f, 1.5f);
-            yield return new WaitForSeconds(1.2f);
             endHint.enabled = true;
-            CanRestart = true;
         }
 
         public void OnCaught(MonsterAI who)
@@ -305,17 +321,15 @@ namespace KaiForest
                 yield return null;
             }
             fade.color = Color.black;
+            CanRestart = true; // the scare has played; a click retries right away
             endImage.texture = gameOverTexture;
             endImage.SetNativeSize();
             endImage.rectTransform.sizeDelta *= 0.62f;
             endSub.text = "あれは、おかあさんじゃ　なかった。";
             endHint.text = "クリックで　もういちど";
-            endHint.enabled = false;
-            yield return new WaitForSeconds(0.5f);
-            yield return Fade(endGroup, 1f, 1.2f);
-            yield return new WaitForSeconds(1f);
             endHint.enabled = true;
-            CanRestart = true;
+            yield return new WaitForSeconds(0.3f);
+            yield return Fade(endGroup, 1f, 0.8f);
         }
 
         public void Restart()
@@ -336,6 +350,9 @@ namespace KaiForest
                 case GameState.Title:
                     if (click) BeginGame();
                     if (titleHint != null) titleHint.color = new Color(0.85f, 0.8f, 0.75f, 0.45f + 0.45f * Mathf.Sin(Time.time * 2.4f));
+                    break;
+                case GameState.Intro:
+                    if (click) SkipStory();
                     break;
                 case GameState.Playing:
                     PlayTime += Time.deltaTime;
@@ -431,6 +448,7 @@ namespace KaiForest
             storyGroup = MakeGroup(go.transform, "Story");
             storyText = MakeText(storyGroup.transform, "", 40, new Color(0.85f, 0.82f, 0.78f), new Vector2(0f, 20f));
             storyText.lineSpacing = 1.15f;
+            MakeText(storyGroup.transform, "クリックで　とばす", 22, new Color(0.55f, 0.52f, 0.48f, 0.8f), new Vector2(0f, -470f));
             storyGroup.alpha = 0f;
 
             hintGroup = MakeGroup(go.transform, "Hint");
