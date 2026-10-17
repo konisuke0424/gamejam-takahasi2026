@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace KaiForest
 {
     /// <summary>
-    /// Night forest bed (insects, wind) plus tension layers driven by how close the monster is.
+    /// Night forest bed (insects, wind) plus tension layers driven by how close the nearest monster is.
     /// The heartbeat also follows the boy's exhaustion; the forest bed follows Hearing.
     /// </summary>
     public class AmbienceController : MonoBehaviour
@@ -16,13 +17,13 @@ namespace KaiForest
         AudioSource insects, wind, drone, heart, oneShot;
         AudioBank bank;
         PlayerController player;
-        MonsterAI monster;
+        IReadOnlyList<MonsterAI> monsters;
         PlayerStamina stamina;
         float master = 1f, masterTarget = 1f, masterRate = 1f, nextBeat;
 
-        public void Init(AudioBank b, PlayerController p, MonsterAI m, PlayerStamina s)
+        public void Init(AudioBank b, PlayerController p, IReadOnlyList<MonsterAI> m, PlayerStamina s)
         {
-            bank = b; player = p; monster = m; stamina = s;
+            bank = b; player = p; monsters = m; stamina = s;
             insects = Loop(b.insects);
             wind = Loop(b.wind);
             drone = Loop(b.drone);
@@ -63,8 +64,9 @@ namespace KaiForest
         void Update()
         {
             master = Mathf.MoveTowards(master, masterTarget, masterRate * Time.deltaTime);
-            float d = monster != null && monster.Active ? monster.DistanceToPlayer : 999f;
-            bool chase = monster != null && monster.Active && monster.State == MonsterState.Chase;
+            var nearest = MonsterAI.Nearest(monsters);
+            float d = nearest != null ? nearest.DistanceToPlayer : 999f;
+            bool chase = MonsterAI.AnyChasing(monsters);
 
             insects.volume = insectsVolume * master * Hearing.Volume;
             wind.volume = windVolume * master * Hearing.Volume;

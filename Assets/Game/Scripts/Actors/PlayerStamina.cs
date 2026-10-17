@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace KaiForest
 {
     /// <summary>
-    /// The boy's stamina: drains only while the monster is chasing him and recovers afterwards.
+    /// The boy's stamina: drains only while a monster is chasing him and recovers afterwards.
     /// It never affects movement. As it runs out he pants, his heart pounds (AmbienceController reads
     /// Exhaustion) and the world gets quieter and muffled (Hearing), so the voices are harder to judge.
     /// </summary>
@@ -16,14 +17,14 @@ namespace KaiForest
         public float Exhaustion { get; private set; }
 
         StaminaSettings settings;
-        MonsterAI monster;
+        IReadOnlyList<MonsterAI> monsters;
         AudioSource pant;
         float recoverAt;
 
-        public void Init(MonsterAI m)
+        public void Init(IReadOnlyList<MonsterAI> m)
         {
             settings = StaminaSettings.Load();
-            monster = m;
+            monsters = m;
             pant = gameObject.AddComponent<AudioSource>();
             pant.clip = settings.pantClip;
             pant.loop = true;
@@ -40,7 +41,7 @@ namespace KaiForest
             float dt = Time.deltaTime;
             var gm = GameManager.I;
             bool playing = gm != null && gm.State == GameState.Playing;
-            bool chased = playing && monster != null && monster.Active && monster.State == MonsterState.Chase;
+            bool chased = playing && MonsterAI.AnyChasing(monsters);
 
             if (chased)
             {

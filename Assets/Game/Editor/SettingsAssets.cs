@@ -12,6 +12,7 @@ namespace KaiForest.EditorTools
     {
         const string Dir = "Assets/Game/Resources";
         const string PantClipPath = "Assets/Game/Audio/Sfx/player_pant.wav";
+        const string BackdropImagePath = "Assets/Denim/back.png";
 
         static SettingsAssets() => EditorApplication.delayCall += EnsureAll;
 
@@ -19,6 +20,7 @@ namespace KaiForest.EditorTools
         {
             Lantern();
             Stamina();
+            Backdrop();
         }
 
         public static LanternSettings Lantern() => Ensure<LanternSettings>(LanternSettings.ResourceName);
@@ -34,6 +36,29 @@ namespace KaiForest.EditorTools
                     EditorUtility.SetDirty(s);
                     AssetDatabase.SaveAssets();
                 }
+            }
+            return s;
+        }
+
+        /// <summary>Also fills in the image (Assets/Denim/back.png) and the shader if they are empty.</summary>
+        public static BackdropSettings Backdrop()
+        {
+            var s = Ensure<BackdropSettings>(BackdropSettings.ResourceName);
+            bool dirty = false;
+            if (s.texture == null)
+            {
+                s.texture = AssetDatabase.LoadAssetAtPath<Texture2D>(BackdropImagePath);
+                dirty |= s.texture != null;
+            }
+            if (s.shader == null)
+            {
+                s.shader = Shader.Find(BackdropSettings.ShaderName);
+                dirty |= s.shader != null;
+            }
+            if (dirty)
+            {
+                EditorUtility.SetDirty(s);
+                AssetDatabase.SaveAssets();
             }
             return s;
         }
@@ -55,6 +80,9 @@ namespace KaiForest.EditorTools
 
         [MenuItem("KaiForest/Stamina Settings")]
         static void SelectStamina() => Select(Stamina());
+
+        [MenuItem("KaiForest/Backdrop Settings")]
+        static void SelectBackdrop() => Select(Backdrop());
 
         static void Select(Object o)
         {

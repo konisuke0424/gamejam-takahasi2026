@@ -26,7 +26,7 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 - プレハブ（杉・目印・鳥居）は仮の見た目。モデルを差し替えるとシーン上の全部が置き換わる。当たり判定（Collider）は残すこと（AI の視線や移動に使う）
 - `KaiForest > Map > Rebuild Forest Scene From Seed` は**手での編集をすべて捨てて**最初の配置に戻す
 - `KaiForest > Map > Regenerate Placeholder Prefabs` はプレハブを仮の見た目に作り直す（差し替えたモデルは失われる）
-- 化け物の出現位置は、スタートから 75m 以上・お母さんから 55m 以上離れた空き地からランダム
+- 化け物（2体）は、スタートからお母さんへの道すじの左右 35m 以内で、スタートから 35m 以上・お母さんから 25m 以上・化け物どうし 25m 以上離れた空き地にランダムに現れる（場所が足りないときは、まず化け物どうしの距離、次に道すじの条件をあきらめる）
 
 ## 操作（マウスのみ）
 
@@ -53,7 +53,13 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 ## AI
 
 - **お母さん**: 出口の周り半径20mを歩きながら 4〜7.5秒おきに呼ぶ。ランタンが見える距離（11m）に来るとカイに歩み寄る。
-- **化け物**: Search（カイのいるあたりを漂う）→ Investigate（足音が聞こえたら音の場所へ。歩いていると15m、止まっていると4.5mで気づく）→ Chase（12m以内でランタンが見えたら追う。4.5秒見失うと調査に戻る）→ Retreat（10秒追いかけたら諦め、8秒間カイを無視して反対方向へ去ってから探索に戻る）。追跡中はときどき一気に距離を詰めてくる。退却中も、ぶつかるほど近づけば捕まる。
+- **化け物（2体）**: それぞれが下の動きをする。数・現れる場所・最初の呼び声のずらし方は `Main.unity` の `GameManager`（`monsterCount` / `monsterSpacing` / `monsterMinFromStart` / `monsterMinFromMother` / `monsterRouteWidth` / `monsterCallStagger`）で変えられる。スタミナ・心音・画面の揺らぎは、いちばん近い化け物と「どれか1体でも追っているか」で決まる。
+  - Search（9割はカイの半径18m以内を行き先にして、8秒ごとに選び直す。カイの居場所は知らないが寄ってくる）→ Investigate（足音が聞こえたら音の場所へ。歩いていると22m、止まっていると6mで気づく）→ Chase（16m以内でランタンが見えたら追う。6秒見失うと調査に戻る）→ Retreat（10秒追いかけたら諦め、4秒間カイを無視して反対方向へ去ってから探索に戻る）。追跡中はときどき一気に距離を詰めてくる。退却中も、ぶつかるほど近づけば捕まる。1体に捕まった時点で全員止まる。
+  - 追っている化け物の呼び声は仲間を呼ぶ。半径50m以内で探索・調査中のほかの化け物は、2秒ごとに伝わるカイの居場所へ向かう（2体以上に同時に追われることがある）。`MonsterAI.alertRadius` を 0 にすると、それぞれ独立して動く。
+- **捕まったとき**: 化け物がカイの前で覆いかぶさり、視界がその顔の正面へ一気に引き寄せられて、顔が画面いっぱいに映る（揺れながら約1.6秒）→ 暗転。手のランタンは画面右下から下へ落ちて画面外に消え、暗くなった光が顔を下から照らす（白飛びしない）。時間・視野角・顔との距離・ランタンの明るさは `Main.unity` の `GameManager`（`scareDuration` / `scareFov` / `scareFaceDistance` / `scareLanternLight`）で調整できる
+  - カメラの位置は `scareViewOffset`（カイから見て x: 右＋／左－、y: 上＋／下－。初期値は左斜め下 (-0.18, -0.15)）。どこに置いても顔は画面の中心に来る
+  - 画面の中心に来る点は `scareAimOffset`（x: 右／左、y: 上／下、z: 奥／手前）。顔の中心からずれて見えるときに直す。y を－にすると顔が画面の上へ、＋にすると下へ動く
+  - 顔の中心の目印は頭の骨（Head）から上へ 1.2、前へ 0.7（Head→HeadTop の長さが 1）。Tripo のリグは顎のあたりで頭の骨が終わっているため。化け物はうつむいていて額が前に出ているので、目〜口はそれより下にある（`MonsterBody.FaceUp` / `FaceAhead`）
 - パラメータは `MotherAI` / `MonsterAI` / `PlayerController` の public フィールドで調整できる。
 
 ## スタミナ
@@ -72,6 +78,7 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 |---|---|---|
 | ランタン（とデバッグ用の昼モード） | `Assets/Game/Resources/LanternSettings.asset`（メニュー `KaiForest > Lantern Settings` で選択） | 下表 |
 | スタミナ | `Assets/Game/Resources/StaminaSettings.asset`（メニュー `KaiForest > Stamina Settings` で選択） | 減る秒数・回復・影響が出始める残量・息切れの音量・聞こえにくさの強さ |
+| 遠景 | `Assets/Game/Resources/BackdropSettings.asset`（メニュー `KaiForest > Backdrop Settings` で選択） | 下の「遠景」 |
 
 | ランタンの項目 | 意味 | 初期値 |
 |---|---|---|
@@ -83,6 +90,23 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 - 点光源は距離の2乗で暗くなるので、Range だけ広げても遠くはほとんど明るくならない
 - 霧の濃さは固定（`GameManager.FogDensity` = 0.085。約10m先が半分かすみ、20m先はほぼ見えない）
 - このファイルは `Setup Project` では上書きされない。消えた場合はスクリプトの読み込み時に初期値で作り直される
+
+### 遠景（月夜の山並み）
+
+- 画像は `Assets/Denim/back.png`。カメラを中心にした半径30mの帯に貼り、カメラと一緒に動くので近づけない（本物の遠くの山と同じ）
+- 霧の影響を受けず、ほかのものはすべてその手前に描かれる。木や地面がない方向（描画距離40m以内に何もないすき間・空）にだけ見える
+- 一周に2枚、1枚おきに左右反転して並べるので継ぎ目は出ない（月は正反対の方角にもう1つある）。月は月明かりの来る方角に合わせてある
+- 仕組み：`Backdrop`（`Scripts/World`）が帯を作り、`KaiForest/Backdrop` シェーダー（`Assets/Game/Shaders`）で描く。デバッグ用の昼モードでは霧の色に溶ける
+
+| 遠景の項目 | 意味 | 初期値 |
+|---|---|---|
+| Visible | 遠景を出す | オン |
+| Texture | 画像 | back.png |
+| Copies | 一周に並べる枚数（偶数なら継ぎ目なし） | 2 |
+| Bottom Angle / Top Angle | 画像の下端・上端の高さ（度。0が目の高さ）。差を 360÷枚数×(縦÷横) にすると絵がつぶれない | -60 / 60 |
+| Yaw | 画像を横に回す角度（度） | 0 |
+| Brightness | 明るさ | 1 |
+| Fog Mix | 霧の色を混ぜる割合。上げると遠景が霧に沈む | 0 |
 
 ## ビルド・再生成
 
@@ -108,9 +132,34 @@ WebGL版は `Builds/WebGL` に出力（Gzip＋Decompression Fallback なので�
 | 声（本番: Irodori） | `Tools/audio_irodori` → `sync_irodori_export.py` | `Assets/Game/Audio/Voices` |
 | 環境音など | `build_audio.py`（プロト声と一緒に回すとき） | `Assets/Game/Audio/Sfx` |
 | 地面・樹皮テクスチャ、見出し文字 | `Tools/gen_textures.py` | `Assets/Game/Textures`, `Assets/Game/UI` |
-| 化け物のモデル（Blender） | `Tools/blender/build_monster.py` | `Art/Source/Monster.blend`、`Assets/Game/Resources/MonsterModel.kfmodel`、`Art/Source/Previews/*.png` |
+| 化け物のモデル（Tripo、使用中） | `Tools/blender/convert_tripo_monster.py`（元は `Art/Source/Tripo/Monster100_run.glb`） | `Assets/Game/Resources/Monster100/`、`Art/Source/Previews/monster100_*.png` |
+| 化け物のモデル（Blender、予備） | `Tools/blender/build_monster.py` | `Art/Source/Monster.blend`、`Assets/Game/Resources/MonsterModel.kfmodel`、`Art/Source/Previews/monster_*.png` |
 
-### 化け物のモデル
+### 化け物のモデル（Tripo）
+
+Tripo Studio で作ってリグと「run」アニメを付けたモデル。ゲームは `Assets/Game/Resources/Monster100/Monster100.fbx` を使う。
+
+```
+"C:/Program Files/Blender Foundation/Blender 5.1/blender.exe" --background --factory-startup --python Tools/blender/convert_tripo_monster.py -- --preview Art/Source/Previews
+```
+
+- 元データは Tripo Studio から**アニメーション付きで GLB 書き出し**したもの（`Art/Source/Tripo/Monster100_run.glb`）。差し替えるときはこのファイルを上書きしてスクリプトを回す（別のファイルは `--src` で指定）
+- スクリプトがやること
+  - 向きをそろえる（Tripo は横向きで書き出すので、Blender 上で +Y に向ける＝Unity の前方 +Z）
+  - 「run」をその場走りにする（Tripo の run は 1 ループで約 1.9m 前に進む。移動はゲーム側が行う）
+  - 「idle」（腕を下ろして少し猫背、ゆっくり呼吸）を足す（Tripo の基本姿勢は腕を広げた A ポーズのため）
+  - テクスチャ（色・法線）を FBX の隣に JPEG で書き出す
+- 取り込み設定は `MonsterModelPostprocessor` が自動で行う（Generic リグ、クリップ名 `idle` / `run` とループ、法線マップ）
+- マテリアルは `Monster100/Monster100_Mat.mat`（URP Lit、両面表示）。無ければ Unity がスクリプトを読み込んだとき・FBX を取り込んだときに自動で作られ、FBX のマテリアルはこれに置き換えられる（再生中は置き換えを待つが、ゲーム中はコードでこのマテリアルを付ける）（FBX から自動生成されるマテリアルではテクスチャが付かなかったため）。色味や艶はこのマテリアルを Inspector で調整してよい（作り直されない）
+- 動き（`MonsterBody`）
+  - 追跡中は `run`。探索・調査・退却で歩くときは `idle` と `run` を半々に混ぜた忍び歩き。止まっているときは `idle`
+  - 脚の回転は実際の移動速度に合わせる。`MonsterAI.runAnimPace`（初期値 1.25）を上げると脚が速く回る（1 で足と地面がぴったり合う）
+  - 首の不自然な傾きとけいれん、捕まえたときに覆いかぶさる動きは、アニメの上からコードで足している
+  - 背の高さは `MonsterAI.height`（初期値 2.6m）。Tripo のモデル（約 1m）をこの高さに拡大する
+- Tripo の DCC Bridge で Unity に直接送ったモデル（`Assets/TripoModels/`）はゲームでは使わない。アニメが入らず、マテリアルも URP 用にならないため
+- `Monster100` が無いときは Blender のモデル、それも無いときはコードで組む仮の化け物に戻る
+
+### 化け物のモデル（Blender、予備）
 
 Blender（5.1）を画面なしで動かして作る。Blender の MCP 接続は不要。
 

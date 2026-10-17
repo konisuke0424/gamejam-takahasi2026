@@ -55,6 +55,12 @@ namespace KaiForest
 
         static GameManager GM => GameManager.I;
 
+        /// <summary>The checks follow the first monster; the others are stopped so they can't interfere.</summary>
+        static void HaltExtraMonsters()
+        {
+            for (int i = 1; i < GM.Monsters.Count; i++) GM.Monsters[i].Halt();
+        }
+
         static IEnumerator WaitReady()
         {
             float t = 0f;
@@ -72,6 +78,7 @@ namespace KaiForest
             yield return new WaitForSeconds(2.2f);
             yield return Shot("02_intro");
             GM.SkipIntro();
+            HaltExtraMonsters();
             yield return new WaitForSeconds(1.0f);
             yield return Shot("03_start");
 
@@ -161,6 +168,7 @@ namespace KaiForest
             yield return new WaitForSeconds(0.5f);
             Check("retry goes straight to play", GM.State == GameState.Playing, $"state={GM.State}");
             GM.SkipIntro();
+            HaltExtraMonsters();
             yield return new WaitForSeconds(0.5f);
             var mp2 = GM.Monster.transform.position;
             GM.Player.Teleport(mp2 + new Vector3(0f, 0f, 1.0f), 180f);
