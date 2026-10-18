@@ -531,6 +531,7 @@ namespace KaiForest
             string target = item != null ? $"{item.displayName} {Vector3.Distance(pp, item.transform.position):0.0}m" : "mother";
             return $"state {State}  t {PlayTime:0.0}s  fps {1f / Mathf.Max(Time.smoothDeltaTime, 0.0001f):0}  kai ({pp.x:0.0}, {pp.z:0.0}) yaw {Player.Yaw:0}\n" +
                    $"stage {Director.Stage}  find {target}  checkpoint {StageDirector.HasCheckpoint}\n" +
+                   $"deer trap {Director.NearestDeerTrap(pp)}\n" +
                    $"mother {dm:0.0}m  calls {Mother.Voice.PlayCount}  last {Mother.Voice.LastLineId}  noticed {Mother.Noticed}\n" +
                    monsters +
                    $"stamina {Stamina.Stamina * 100f:0}%  exhaustion {Stamina.Exhaustion:0.00}  hearing {Hearing.Volume:0.00}\n" +

@@ -131,14 +131,30 @@ namespace KaiForest.EditorTools
             AssetDatabase.CreateFolder(parent, Path.GetFileName(path));
         }
 
+        [MenuItem("KaiForest/Map/Regenerate Mother Prefab (overwrites)")]
+        static void MenuRegenerateMother()
+        {
+            Folder(Dir);
+            Save(BuildMother(LoadMats()), "Mother");
+            AssetDatabase.SaveAssets();
+            Debug.Log("[KaiForest] Mother prefab rebuilt (its editor preview now shows mother's picture).");
+        }
+
         static GameObject BuildMother(MaterialLibrary m)
         {
             var go = CheckpointLayout.MotherMarker();
-            // Stand-in model for editing only (the real mother is built at runtime).
+            // Stand-in for editing only (the real mother is built at runtime): her picture, facing the
+            // way the marker faces (+Z), or the primitive figure if the picture material is missing.
             var preview = new GameObject("Preview") { tag = "EditorOnly" };
             preview.transform.SetParent(go.transform, false);
-            CharacterFactory.BuildMother(preview.transform, m);
-            foreach (var light in preview.GetComponentsInChildren<Light>()) Object.DestroyImmediate(light.gameObject);
+            var picture = SettingsAssets.MotherBillboard();
+            if (picture != null)
+                CharacterFactory.BuildMotherPicture(preview.transform, picture).localRotation = Quaternion.Euler(0f, 180f, 0f);
+            else
+            {
+                CharacterFactory.BuildMother(preview.transform, m);
+                foreach (var light in preview.GetComponentsInChildren<Light>()) Object.DestroyImmediate(light.gameObject);
+            }
             return go;
         }
     }

@@ -38,6 +38,46 @@ namespace KaiForest
             return r;
         }
 
+        /// <summary>Resources name of mother's picture material (made by SettingsAssets from Assets/Denim/mother.png).</summary>
+        public const string MotherBillboardResource = "MotherBillboard";
+        /// <summary>How tall she stands (m), feet to the top of her hair.</summary>
+        const float MotherHeight = 1.6f;
+        // Where she is in mother.png, as fractions of the picture's height: the empty strip under her
+        // feet, her own height, and the middle of her face from the top.
+        const float PictureBelowFeet = 0.022f, PictureFigure = 0.959f, PictureFaceFromTop = 0.137f;
+
+        /// <summary>
+        /// Mother as a standing picture that always turns to the boy, or null if the material isn't there
+        /// (callers fall back to <see cref="BuildMother"/>). Her light sits in front of the picture, on
+        /// the boy's side, so her face is lit whichever way she walks.
+        /// </summary>
+        public static Rig BuildMotherBillboard(Transform parent)
+        {
+            var mat = Resources.Load<Material>(MotherBillboardResource);
+            var tex = mat != null ? mat.GetTexture("_BaseMap") : null;
+            if (tex == null) return null;
+            var r = new Rig { root = parent };
+            r.body = Prims.Group(parent, "Body", Vector3.zero, 0f);
+            var card = BuildMotherPicture(r.body, mat);
+            card.gameObject.AddComponent<Billboard>();
+            float h = card.localScale.y;
+            r.head = Prims.Group(card.parent, "Face", new Vector3(0f, card.localPosition.y + h * (0.5f - PictureFaceFromTop), 0f), 0f);
+            r.head.SetParent(card, true);
+            r.light = AddLanternLight(card, new Vector3(0f, 0.25f / h, -1.1f), 9f, 3f, false);
+            return r;
+        }
+
+        /// <summary>The picture itself (a Quad facing -Z), standing on the ground; also the editor preview.</summary>
+        public static Transform BuildMotherPicture(Transform parent, Material mat)
+        {
+            var tex = mat.GetTexture("_BaseMap");
+            float h = MotherHeight / PictureFigure;
+            float w = h * tex.width / tex.height;
+            var quad = Prims.Part(parent, PrimitiveType.Quad, new Vector3(0f, h * 0.5f - h * PictureBelowFeet, 0f), new Vector3(w, h, 1f), Vector3.zero, mat, false);
+            quad.name = "Picture";
+            return quad;
+        }
+
         /// <summary>Resources name of the modelled monster (Tools/blender/build_monster.py -> KaiModelImporter).</summary>
         public const string MonsterModelResource = "MonsterModel";
 

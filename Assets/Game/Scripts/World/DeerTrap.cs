@@ -67,12 +67,18 @@ namespace KaiForest
             nextCall = Time.time + len + Random.Range(callGap.x, callGap.y);
         }
 
+        /// <summary>For the debug display: dormant until the handkerchief is picked up, then armed, then sprung.</summary>
+        public string StateLabel => Sprung ? "発動済み" : Armed ? "有効" : "待機中（ハンカチを拾うと有効）";
+
         void OnDrawGizmos()
         {
-            Gizmos.color = new Color(1f, 0.25f, 0.2f);
+            // During play the colour shows the state: red = armed, dark = dormant, grey = sprung.
+            bool playing = Application.isPlaying;
+            Gizmos.color = !playing || Armed ? new Color(1f, 0.25f, 0.2f)
+                : Sprung ? new Color(0.5f, 0.5f, 0.5f) : new Color(0.45f, 0.12f, 0.1f);
             GizmoShapes.Circle(transform.position + Vector3.up * 0.05f, triggerRadius);
             Gizmos.DrawWireSphere(transform.position + Vector3.up * 0.6f, 0.25f);
-            GizmoShapes.Label(transform.position + Vector3.up * 1.4f, "鹿トラップ");
+            GizmoShapes.Label(transform.position + Vector3.up * 1.4f, playing ? $"鹿トラップ（{StateLabel}）" : "鹿トラップ");
         }
     }
 }

@@ -37,7 +37,8 @@ namespace KaiForest
             motor = gameObject.AddComponent<NpcMotor>();
             Voice = gameObject.AddComponent<VoiceEmitter>();
             Voice.kind = VoiceKind.Mother;
-            Rig = CharacterFactory.BuildMother(transform, mats);
+            // Her picture (mother.png, always facing the boy), else the primitive figure.
+            Rig = CharacterFactory.BuildMotherBillboard(transform) ?? CharacterFactory.BuildMother(transform, mats);
             lanternBase = Rig.light.intensity;
         }
 
@@ -116,11 +117,12 @@ namespace KaiForest
             float t = Time.time;
             float walk = Mathf.Clamp01(motor != null ? motor.Velocity.magnitude / approachSpeed : 0f);
             Rig.body.localPosition = new Vector3(0f, Mathf.Abs(Mathf.Sin(t * 6f)) * 0.03f * walk, 0f);
+            Rig.light.intensity = lanternBase * (0.88f + Mathf.PerlinNoise(t * 6f, 3.1f) * 0.2f);
+            if (Rig.armL == null) return; // her picture: only the walking bob and the flickering light
             Rig.armL.localRotation = Quaternion.Euler(Mathf.Sin(t * 6f) * 18f * walk, 0f, 4f);
             Rig.armR.localRotation = Quaternion.Euler(-55f + Mathf.Sin(t * 6f + 1f) * 4f * walk, 0f, -4f);
             // Lantern swings a little and flickers.
             Rig.lantern.localRotation = Quaternion.Euler(55f + Mathf.Sin(t * 2.3f) * 6f, 0f, Mathf.Sin(t * 1.7f) * 5f);
-            Rig.light.intensity = lanternBase * (0.88f + Mathf.PerlinNoise(t * 6f, 3.1f) * 0.2f);
             if (Voice != null && Voice.IsPlaying)
                 Rig.head.localRotation = Quaternion.Euler(-8f + Mathf.Sin(t * 1.3f) * 4f, Mathf.Sin(t * 0.7f) * 25f, 0f);
             else

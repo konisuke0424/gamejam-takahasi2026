@@ -19,7 +19,8 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 | 2 | お母さんの**かんざし** | かんざし | 鹿トラップ・化け物トラップ（偽物の声で呼ぶ） |
 | 3 | **お母さん**（かんざしを拾うと現れる） | お母さん | トラップ＋森じゅうを追ってくる化け物 1体 |
 
-- 拾うのは、落ちている物の近く（1.8m 以内。「クリックで　〇〇を　拾う」と出る）で左クリック。そのクリックで前へは進まない
+- 拾うのは、落ちている物の近く（3m 以内＝`CheckpointItem.pickupRadius`。「クリックで　〇〇を　拾う」と出る）で左クリック。そのクリックで前へは進まない
+- 物のそばに置いた目印（パーティクルなど）は物と一緒に現れ、拾うと一緒に消える。`CheckpointItem.markers` に入れたもの、空なら物から 4m 以内に単独で（何かの子でなく）置いたパーティクル
 - 拾うと、その物の文（`CheckpointItem.message`）が画面に出る
 - **鹿トラップ**: 偽物の声で呼ぶ。半径 1m に入ると鹿の絵が画面に飛び出す（驚かすだけでゲームオーバーにはならない）。1回きり
 - **化け物トラップ**: 半径 20m の縄張りに化け物が1体いて、偽物の声で呼ぶ。縄張りに入ったカイだけに気づき、縄張りの縁まで追ってくる（外へ逃げると縁で見失う）。捕まるとゲームオーバー
@@ -36,9 +37,9 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 | `ForestMap` | マップの根元。歩ける範囲（`halfSize`、黄色の枠）を持つ | 範囲を変えたら `Walls` も合わせて動かす |
 | `PlayerStart` | カイのスタート地点と向き（緑の球と矢印） | 動かす・回す |
 | `Landmarks/Torii_Exit` | 本物の出口。`Checkpoints/Mother` が無いときは、お母さんはこの前方 4m を中心に半径 20m を歩く（水色の円） | 動かす。前方（青い矢印）がカイの来る側 |
-| `Checkpoints/Handkerchief` | お母さんのハンカチ（段階1で探す）。黄色の円が拾える範囲 | 動かす。拾ったときの文などは Inspector の `CheckpointItem` |
+| `Checkpoints/Handkerchief` | お母さんのハンカチ（段階1で探す）。黄色の円が拾える範囲 | 動かす。拾える範囲・拾ったときの文・目印（`markers`）は Inspector の `CheckpointItem` |
 | `Checkpoints/Kanzashi` | お母さんのかんざし（段階2で探す） | 同上 |
-| `Checkpoints/Mother` | 段階3でお母さんが現れる場所。水色の円が歩き回る範囲（`wanderRadius`）。お母さんの見本の人形はエディタでだけ見える | 動かす・回す |
+| `Checkpoints/Mother` | 段階3でお母さんが現れる場所。水色の円が歩き回る範囲（`wanderRadius`）。お母さんの見本（画像）はエディタでだけ見える（古い人形のままなら `KaiForest > Map > Regenerate Mother Prefab`） | 動かす・回す |
 | `Checkpoints/DeerTrap` | 鹿トラップ。赤い円（半径 `triggerRadius` = 1m）に入ると鹿が飛び出す。絵は `scareImage` | 動かす・複製・削除 |
 | `Checkpoints/MonsterTrap` | 化け物トラップ。橙の円（半径 `areaRadius` = 20m）が化け物の縄張り | 動かす・複製・削除 |
 | `Landmarks/*` | 地蔵・祠・大杉などの目印、壊れた鳥居 | 動かす・複製・削除。`Assets/Game/Map/Prefabs/Landmarks` から追加 |
@@ -84,6 +85,7 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 ## AI
 
 - **お母さん**: 段階3で `Checkpoints/Mother` に現れ、そのまわり半径20mを歩きながら 4〜7.5秒おきに呼ぶ。ランタンが見える距離（11m）に来るとカイに歩み寄る。段階1・2では、ハンカチ・かんざしから同じように本物の声がする。
+  - 見た目は `Assets/Denim/mother.png` の立ち絵（高さ 1.6m）。左右にだけ回って常にカイの方を向く（`Billboard`）。顔の前（カイの側）1.1m に明かりがあり、どちらへ歩いても顔が照らされる。マテリアルは `Resources/MotherBillboard.mat`（メニュー `KaiForest > Mother Picture Material`。画像の透明な部分で切り抜き）。画像を差し替えたら `CharacterFactory` の、画像の中での足元・身長・顔の位置の割合も合わせる
 - **化け物**: 段階3で現れて森じゅうを追ってくる化け物（初期値 1体）と、化け物トラップの化け物（縄張りの中だけ）。どれも下の動きをする（トラップの化け物は縄張りの中を歩き、縄張りの中のカイにだけ気づく）。数・現れる場所・最初の呼び声のずらし方は `Main.unity` の `GameManager`（`monsterCount` / `monsterSpacing` / `monsterMinFromStart` / `monsterMinFromMother` / `monsterRouteWidth` / `monsterCallStagger`）で変えられる。スタミナ・心音・画面の揺らぎは、いちばん近い化け物と「どれか1体でも追っているか」で決まる。
   - Search（9割はカイの半径18m以内を行き先にして、8秒ごとに選び直す。カイの居場所は知らないが寄ってくる）→ Investigate（足音が聞こえたら音の場所へ。歩いていると22m、止まっていると6mで気づく）→ Chase（16m以内でランタンが見えたら追う。6秒見失うと調査に戻る）→ Retreat（10秒追いかけたら諦め、4秒間カイを無視して反対方向へ去ってから探索に戻る）。追跡中はときどき一気に距離を詰めてくる。退却中も、ぶつかるほど近づけば捕まる。1体に捕まった時点で全員止まる。
   - 追っている化け物の呼び声は仲間を呼ぶ。半径50m以内で探索・調査中のほかの化け物は、2秒ごとに伝わるカイの居場所へ向かう（2体以上に同時に追われることがある）。`MonsterAI.alertRadius` を 0 にすると、それぞれ独立して動く。

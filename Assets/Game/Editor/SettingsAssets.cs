@@ -13,6 +13,7 @@ namespace KaiForest.EditorTools
         const string Dir = "Assets/Game/Resources";
         const string PantClipPath = "Assets/Game/Audio/Sfx/player_pant.wav";
         const string BackdropImagePath = "Assets/Denim/back.png";
+        const string MotherImagePath = "Assets/Denim/mother.png";
 
         static SettingsAssets() => EditorApplication.delayCall += EnsureAll;
 
@@ -22,6 +23,42 @@ namespace KaiForest.EditorTools
             Stamina();
             Backdrop();
             Voice();
+            MotherBillboard();
+        }
+
+        /// <summary>
+        /// Mother's picture material (Resources/MotherBillboard.mat): URP Lit cut out along the picture's
+        /// transparency, both faces, no shine. Made once when missing; tweak it freely afterwards.
+        /// A saved asset (rather than one made at runtime) keeps the alpha-clip shader variant in builds.
+        /// </summary>
+        public static Material MotherBillboard()
+        {
+            string path = $"{Dir}/{CharacterFactory.MotherBillboardResource}.mat";
+            var m = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (m != null) return m;
+            var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(MotherImagePath);
+            var shader = Shader.Find("Universal Render Pipeline/Lit");
+            if (tex == null || shader == null) return null;
+            m = new Material(shader);
+            m.SetTexture("_BaseMap", tex);
+            m.SetTexture("_MainTex", tex);
+            m.SetColor("_BaseColor", Color.white);
+            m.SetFloat("_AlphaClip", 1f);
+            m.SetFloat("_Cutoff", 0.5f);
+            m.EnableKeyword("_ALPHATEST_ON");
+            m.SetOverrideTag("RenderType", "TransparentCutout");
+            m.renderQueue = (int)UnityEngine.Rendering.RenderQueue.AlphaTest;
+            m.SetFloat("_Cull", 0f);
+            m.doubleSidedGI = true;
+            m.SetFloat("_Smoothness", 0f);
+            m.SetFloat("_Metallic", 0f);
+            m.SetFloat("_SpecularHighlights", 0f);
+            m.EnableKeyword("_SPECULARHIGHLIGHTS_OFF");
+            m.SetFloat("_EnvironmentReflections", 0f);
+            m.EnableKeyword("_ENVIRONMENTREFLECTIONS_OFF");
+            AssetDatabase.CreateAsset(m, path);
+            AssetDatabase.SaveAssets();
+            return m;
         }
 
         public static LanternSettings Lantern() => Ensure<LanternSettings>(LanternSettings.ResourceName);
@@ -90,8 +127,12 @@ namespace KaiForest.EditorTools
         [MenuItem("KaiForest/Voice Settings")]
         static void SelectVoice() => Select(Voice());
 
+        [MenuItem("KaiForest/Mother Picture Material")]
+        static void SelectMotherBillboard() => Select(MotherBillboard());
+
         static void Select(Object o)
         {
+            if (o == null) return;
             Selection.activeObject = o;
             EditorGUIUtility.PingObject(o);
         }

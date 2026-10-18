@@ -96,7 +96,7 @@ namespace KaiForest
         void ShowStageObjects()
         {
             var current = Current;
-            foreach (var it in items) it.gameObject.SetActive(it == current && !it.Taken);
+            foreach (var it in items) it.SetShown(it == current && !it.Taken);
             gm.Mother.gameObject.SetActive(Stage == Stage.Mother);
         }
 
@@ -174,6 +174,20 @@ namespace KaiForest
         {
             foreach (var it in items) it.StopCalling();
             foreach (var t in deerTraps) t.Disarm();
+        }
+
+        /// <summary>Debug display: the nearest deer trap from p, its distance and state.</summary>
+        public string NearestDeerTrap(Vector3 p)
+        {
+            DeerTrap best = null;
+            float bestD = float.MaxValue;
+            foreach (var t in deerTraps)
+            {
+                var d = t.transform.position - p;
+                d.y = 0f;
+                if (d.magnitude < bestD) { bestD = d.magnitude; best = t; }
+            }
+            return best == null ? "none" : $"{bestD:0.0}m (r {best.triggerRadius:0.#}m) {best.StateLabel}";
         }
 
         /// <summary>Dev (F2) / AutoTest: moves on without picking anything up (not a checkpoint).</summary>
