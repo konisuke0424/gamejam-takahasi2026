@@ -19,6 +19,9 @@ namespace KaiForest
     public class GameManager : MonoBehaviour
     {
         public const string SceneName = "Main";
+        const string ClearedPlayerPrefsKey = "KaiForest.GameCleared";
+        static Texture2D goldMedalTexture;
+        static Texture2D grayMedalTexture;
 
         public static GameManager I { get; private set; }
         /// <summary>Set before reloading the scene so a retry skips the title screen.</summary>
@@ -365,6 +368,8 @@ namespace KaiForest
         {
             if (State != GameState.Playing) return;
             State = GameState.Clear;
+            PlayerPrefs.SetInt(ClearedPlayerPrefsKey, 1);
+            PlayerPrefs.Save();
             Player.ControlEnabled = false;
             LockCursor(false);
             foreach (var m in Monsters) m.Halt();
@@ -639,20 +644,20 @@ namespace KaiForest
             fade.color = Color.black;
 
             titleGroup = MakeGroup(go.transform, "Title");
-            var title = MakeRect(titleGroup.transform, "Logo", new Vector2(0f, 210f), Vector2.zero, false).gameObject.AddComponent<RawImage>();
+            var title = MakeRect(titleGroup.transform, "Logo", new Vector2(0f, 160f), Vector2.zero, false).gameObject.AddComponent<RawImage>();
             title.texture = titleTexture;
             title.raycastTarget = false;
             title.SetNativeSize();
-            title.rectTransform.sizeDelta *= 0.75f;
-            MakeText(titleGroup.transform, "―　本物の声を、聞き分けて　―", 34, new Color(0.75f, 0.7f, 0.65f), new Vector2(0f, 40f));
-            MakeText(titleGroup.transform,
-                "マウスを動かす　見回す\n" +
-                "左ボタンを押している間　前へ進む\n" +
-                "右ボタンを押している間　うしろへ下がる\n" +
-                "落ちているものの近くで左クリック　拾う",
-                26, new Color(0.62f, 0.6f, 0.58f), new Vector2(0f, -150f));
-            MakeText(titleGroup.transform, "ヘッドホン推奨", 22, new Color(0.5f, 0.45f, 0.42f), new Vector2(0f, -300f));
-            titleHint = MakeText(titleGroup.transform, "クリックで　はじめる", 34, Color.white, new Vector2(0f, -390f));
+            title.rectTransform.sizeDelta *= 0.9f;
+            MakeText(titleGroup.transform, "―　本物の声を、聞き分けて　―", 40, new Color(0.75f, 0.7f, 0.65f), new Vector2(0f, 0f));
+            MakeText(titleGroup.transform, "ヘッドホン推奨", 60, new Color(0.5f, 0.45f, 0.42f), new Vector2(0f, -150f));
+            titleHint = MakeText(titleGroup.transform, "クリックで　はじめる", 60, Color.white, new Vector2(0f, -240f));
+            var medal = MakeRect(titleGroup.transform, "ClearMedal", Vector2.zero, new Vector2(142f, 178f), false).gameObject.AddComponent<RawImage>();
+            medal.texture = GetMedalTexture(PlayerPrefs.GetInt(ClearedPlayerPrefsKey, 0) != 0);
+            medal.raycastTarget = false;
+            var medalRect = medal.rectTransform;
+            medalRect.anchorMin = medalRect.anchorMax = medalRect.pivot = new Vector2(1f, 1f);
+            medalRect.anchoredPosition = new Vector2(-72f, -62f);
             titleGroup.alpha = 0f;
 
             storyGroup = MakeGroup(go.transform, "Story");
@@ -712,6 +717,93 @@ namespace KaiForest
                 rt.sizeDelta = size;
             }
             return rt;
+        }
+
+        static Texture2D GetMedalTexture(bool cleared)
+        {
+            if (cleared)
+            {
+                if (goldMedalTexture == null) goldMedalTexture = CreateMedalTexture(true);
+                return goldMedalTexture;
+            }
+
+            if (grayMedalTexture == null) grayMedalTexture = CreateMedalTexture(false);
+            return grayMedalTexture;
+        }
+
+        static Texture2D CreateMedalTexture(bool gold)
+        {
+            const int width = 256;
+            const int height = 320;
+            var outer = gold ? new Color32(104, 61, 18, 255) : new Color32(48, 52, 58, 255);
+            var rim = gold ? new Color32(255, 225, 138, 255) : new Color32(184, 188, 191, 255);
+            var ring = gold ? new Color32(168, 108, 28, 255) : new Color32(79, 84, 91, 255);
+            var face = gold ? new Color32(224, 163, 49, 255) : new Color32(126, 132, 139, 255);
+            var ribbon = gold ? new Color32(174, 103, 27, 255) : new Color32(91, 97, 105, 255);
+            var ribbonLight = gold ? new Color32(247, 195, 80, 255) : new Color32(156, 161, 165, 255);
+            var starColor = gold ? new Color32(255, 245, 195, 255) : new Color32(235, 238, 240, 255);
+            var shine = gold ? new Color32(255, 251, 221, 255) : new Color32(250, 251, 252, 255);
+
+            Vector2[] leftRibbon = { new Vector2(84, 161), new Vector2(122, 170), new Vector2(111, 28), new Vector2(96, 50), new Vector2(73, 35) };
+            Vector2[] rightRibbon = { new Vector2(134, 170), new Vector2(172, 161), new Vector2(183, 35), new Vector2(160, 50), new Vector2(145, 28) };
+            Vector2[] leftStripe = { new Vector2(91, 143), new Vector2(100, 147), new Vector2(96, 72), new Vector2(87, 67) };
+            Vector2[] rightStripe = { new Vector2(156, 147), new Vector2(165, 143), new Vector2(169, 67), new Vector2(160, 72) };
+            var center = new Vector2(128f, 210f);
+            var star = BuildMedalStar(center, 38f, 17f);
+            var pixels = new Color32[width * height];
+            for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
+            {
+                var point = new Vector2(x + 0.5f, y + 0.5f);
+                var color = new Color32(0, 0, 0, 0);
+                if (PointInPolygon(point, leftRibbon) || PointInPolygon(point, rightRibbon)) color = ribbon;
+                if (PointInPolygon(point, leftStripe) || PointInPolygon(point, rightStripe)) color = ribbonLight;
+
+                float distance = Vector2.Distance(point, center);
+                if (distance <= 84f) color = outer;
+                if (distance <= 76f) color = rim;
+                if (distance <= 68f) color = ring;
+                if (distance <= 59f) color = face;
+                if (PointInPolygon(point, star)) color = starColor;
+                if (Vector2.Distance(point, new Vector2(101f, 234f)) <= 6f) color = shine;
+                pixels[y * width + x] = color;
+            }
+
+            var texture = new Texture2D(width, height, TextureFormat.RGBA32, false)
+            {
+                name = gold ? "ClearMedal_Gold" : "ClearMedal_Gray",
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp
+            };
+            texture.SetPixels32(pixels);
+            texture.Apply(false, true);
+            return texture;
+        }
+
+        static Vector2[] BuildMedalStar(Vector2 center, float outerRadius, float innerRadius)
+        {
+            var points = new Vector2[10];
+            for (int i = 0; i < points.Length; i++)
+            {
+                float angle = -Mathf.PI * 0.5f + i * Mathf.PI / 5f;
+                float radius = i % 2 == 0 ? outerRadius : innerRadius;
+                points[i] = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+            }
+            return points;
+        }
+
+        static bool PointInPolygon(Vector2 point, Vector2[] polygon)
+        {
+            bool inside = false;
+            for (int i = 0, j = polygon.Length - 1; i < polygon.Length; j = i++)
+            {
+                var a = polygon[i];
+                var b = polygon[j];
+                if ((a.y > point.y) != (b.y > point.y) &&
+                    point.x < (b.x - a.x) * (point.y - a.y) / (b.y - a.y) + a.x)
+                    inside = !inside;
+            }
+            return inside;
         }
 
         static CanvasGroup MakeGroup(Transform parent, string name)
