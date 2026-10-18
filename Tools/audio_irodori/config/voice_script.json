@@ -735,6 +735,147 @@
         "level": 0
       },
       "fx": {}
+    },
+    {
+      "id": "takashi_06",
+      "filename": "takashi_06.wav",
+      "character": "takashi",
+      "scene": "独り言・探索",
+      "text": "お母さん、どこだろう。探さなきゃ。",
+      "direction": "自分に言い聞かせる、少し焦り",
+      "tts": {
+        "speaker_name": "男声3",
+        "speed_scale": 0.92,
+        "intonation_scale": 1.04,
+        "accent_overrides": []
+      },
+      "irodori": {
+        "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。暗い森でお母さんを探し、自分に言い聞かせる独り言。",
+        "duration_scale": 1.0
+      },
+      "noise": {
+        "enabled": false,
+        "level": 0
+      },
+      "fx": {}
+    },
+    {
+      "id": "takashi_07",
+      "filename": "takashi_07.wav",
+      "character": "takashi",
+      "scene": "独り言・気配",
+      "text": "右のほうから、なにか聞こえてくる～?",
+      "direction": "遠くの声を聞いて、つぶやく",
+      "tts": {
+        "speaker_name": "男声3",
+        "speed_scale": 0.99,
+        "intonation_scale": 1.02,
+        "accent_overrides": []
+      },
+      "irodori": {
+        "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。物音に気づき、小声で呟く独り言。",
+        "duration_scale": 1.0,
+        "seed": 2026101809
+      },
+      "noise": {
+        "enabled": false,
+        "level": 0
+      },
+      "fx": {}
+    },
+    {
+      "id": "takashi_08",
+      "filename": "takashi_08.wav",
+      "character": "takashi",
+      "scene": "独り言・疑い",
+      "text": "お母さんの声だけど、変。お母さんなのかなぁ？",
+      "direction": "遠くの声を聞いて、迷う",
+      "tts": {
+        "speaker_name": "男声3",
+        "speed_scale": 0.91,
+        "intonation_scale": 1.05,
+        "accent_overrides": []
+      },
+      "irodori": {
+        "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。聞こえた声に違和感を覚え、戸惑う独り言。",
+        "duration_scale": 1.02
+      },
+      "noise": {
+        "enabled": false,
+        "level": 0
+      },
+      "fx": {}
+    },
+    {
+      "id": "takashi_09",
+      "filename": "takashi_09.wav",
+      "character": "takashi",
+      "scene": "独り言・確信",
+      "text": "お母さんの声だ、うん、まちがいない。",
+      "direction": "自分に納得させる、少し安心",
+      "tts": {
+        "speaker_name": "男声3",
+        "speed_scale": 0.94,
+        "intonation_scale": 1.03,
+        "accent_overrides": []
+      },
+      "irodori": {
+        "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。遠くの声を聞き分け、自分に言い聞かせて確かめる独り言。",
+        "duration_scale": 1.0
+      },
+      "noise": {
+        "enabled": false,
+        "level": 0
+      },
+      "fx": {}
+    },
+    {
+      "id": "takashi_10",
+      "filename": "takashi_10.wav",
+      "character": "takashi",
+      "scene": "独り言・分岐",
+      "text": "こっちの道じゃなくて、引き返さなきゃ。",
+      "direction": "迷い、自分に言い聞かせて引き返す",
+      "tts": {
+        "speaker_name": "男声3",
+        "speed_scale": 0.99,
+        "intonation_scale": 1.02,
+        "accent_overrides": []
+      },
+      "irodori": {
+        "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。道を間違えたと気づき、引き返す決心をつぶやく独り言。",
+        "duration_scale": 1.0,
+        "seed": 2026101810
+      },
+      "noise": {
+        "enabled": false,
+        "level": 0
+      },
+      "fx": {}
+    },
+    {
+      "id": "takashi_11",
+      "filename": "takashi_11.wav",
+      "character": "takashi",
+      "scene": "独り言・決意",
+      "text": "お母さん見つけなきゃ、帰れないよね。",
+      "direction": "自分に言い聞かせる、少し焦り",
+      "tts": {
+        "speaker_name": "男声3",
+        "speed_scale": 0.99,
+        "intonation_scale": 1.02,
+        "accent_overrides": []
+      },
+      "irodori": {
+        "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。お母さんを探し続けなければ帰れないと、少し焦りながら自分に言い聞かせる独り言。",
+        "duration_scale": 1.0,
+        "seed": 2026101812
+      },
+      "noise": {
+        "enabled": false,
+        "level": 0
+      },
+      "fx": {}
     }
   ]
 }
