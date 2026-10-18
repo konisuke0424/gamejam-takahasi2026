@@ -55,10 +55,15 @@ namespace KaiForest
 
         static GameManager GM => GameManager.I;
 
-        /// <summary>The checks follow the first monster; the others are stopped so they can't interfere.</summary>
+        /// <summary>
+        /// The checks below are for the mother stage (hunter + mother), so jump there; they follow one
+        /// hunter, and every other monster (traps' too) is stopped so it can't interfere.
+        /// </summary>
         static void HaltExtraMonsters()
         {
-            for (int i = 1; i < GM.Monsters.Count; i++) GM.Monsters[i].Halt();
+            GM.Director.DebugJumpTo(Stage.Mother);
+            foreach (var m in GM.Monsters)
+                if (m != GM.Monster) m.Halt();
         }
 
         static IEnumerator WaitReady()

@@ -13,6 +13,8 @@ namespace KaiForest
     /// Chase: saw the lantern, runs at him; loses him after a while out of sight, or gives up after
     /// chaseMaxDuration. Its calls bring the other monsters within alertRadius to where he is, so two
     /// can close in at once. Retreat: walks away ignoring the boy for retreatDuration, then searches again.
+    /// A trap's monster has a territory (SetTerritory): it wanders inside it, only notices the boy
+    /// while he is inside, and chases him no further than its edge.
     /// </summary>
     public class MonsterAI : MonoBehaviour
     {
@@ -58,6 +60,11 @@ namespace KaiForest
         public MonsterBody Body { get; private set; }
         public float DistanceToPlayer { get; private set; } = 999f;
         public int ChaseCount { get; private set; }
+        /// <summary>True for a trap's monster, which keeps to its area.</summary>
+        public bool HasTerritory { get; private set; }
+
+        Vector3 territoryCenter;
+        float territoryRadius;
 
         ForestMap forest;
         PlayerController player;
@@ -93,8 +100,7 @@ namespace KaiForest
             motor = gameObject.AddComponent<NpcMotor>();
             motor.turnSpeed = 300f;
             Voice = gameObject.AddComponent<VoiceEmitter>();
-            Voice.audibleRange = 200f;
-            Voice.loudness = 1f;
+            Voice.kind = VoiceKind.Fake;
             // Tripo model with animations, else the Blender model, else the primitive one.
             Body = MonsterBody.Build(transform, height);
             Rig = Body != null ? Body.Rig
@@ -129,6 +135,29 @@ namespace KaiForest
 
         public void Teleport(Vector3 p) => motor.Teleport(p);
 
+        /// <summary>Keeps this monster inside the circle (a monster trap's area).</summary>
+        public void SetTerritory(Vector3 center, float radius)
+        {
+            HasTerritory = true;
+            territoryCenter = new Vector3(center.x, 0f, center.z);
+            territoryRadius = radius;
+        }
+
+        public bool InTerritory(Vector3 p)
+        {
+            if (!HasTerritory) return true;
+            var d = p - territoryCenter; d.y = 0f;
+            return d.sqrMagnitude <= territoryRadius * territoryRadius;
+        }
+
+        /// <summary>The point itself, or the nearest point on the territory's edge.</summary>
+        Vector3 KeepInside(Vector3 p)
+        {
+            if (InTerritory(p)) return p;
+            var d = p - territoryCenter; d.y = 0f;
+            return territoryCenter + d.normalized * territoryRadius;
+        }
+
         public void Halt()
         {
             Active = false;
@@ -157,11 +186,17 @@ namespace KaiForest
             var away = transform.position - player.transform.position; away.y = 0f;
             if (away.sqrMagnitude < 0.01f) away = Random.insideUnitSphere;
             away.y = 0f;
-            motor.MoveTo(forest.FindOpenPoint(transform.position + away.normalized * retreatDistance, 10f), retreatSpeed);
+            var target = KeepInside(transform.position + away.normalized * retreatDistance);
+            motor.MoveTo(KeepInside(forest.FindOpenPoint(target, HasTerritory ? 4f : 10f)), retreatSpeed);
         }
 
         void PickSearchTarget()
         {
+            if (HasTerritory)
+            {
+                motor.MoveTo(forest.FindOpenPoint(territoryCenter, territoryRadius * 0.8f), searchSpeed);
+                return;
+            }
             // It does not know where the boy is, but it is drawn to him.
             Vector3 center;
             if (Random.value < searchTowardPlayerChance)
@@ -183,6 +218,7 @@ namespace KaiForest
                 if (m == this || m == null || !m.Active || m.Frozen) continue;
                 if (m.State == MonsterState.Chase || m.State == MonsterState.Retreat) continue;
                 if ((m.transform.position - transform.position).sqrMagnitude > alertRadius * alertRadius) continue;
+                if (!m.InTerritory(at)) continue; // a trap's monster doesn't leave its area
                 m.lastKnown = at;
                 m.lookAroundUntil = 0f;
                 m.Enter(MonsterState.Investigate);
@@ -214,11 +250,12 @@ namespace KaiForest
             }
 
             bool sees = false, hears = false;
+            bool inside = InTerritory(pp);
             if (Time.time >= nextPerceive || State == MonsterState.Chase)
             {
                 nextPerceive = Time.time + 0.2f;
-                sees = d < sightDistance && LineOfSight();
-                hears = d < (player.IsMoving ? hearMovingDistance : hearStillDistance);
+                sees = inside && d < sightDistance && LineOfSight();
+                hears = inside && d < (player.IsMoving ? hearMovingDistance : hearStillDistance);
             }
 
             switch (State)
@@ -235,6 +272,7 @@ namespace KaiForest
                     if (Time.time < lookAroundUntil) { motor.Stop(); transform.Rotate(0f, 70f * Time.deltaTime, 0f); }
                     else
                     {
+                        lastKnown = KeepInside(lastKnown);
                         motor.MoveTo(lastKnown, investigateSpeed);
                         var toLast = lastKnown - transform.position; toLast.y = 0f;
                         if (toLast.magnitude < 1.2f)
@@ -247,7 +285,8 @@ namespace KaiForest
                     break;
 
                 case MonsterState.Chase:
-                    if (sees || d < 4f) { lastSeen = Time.time; lastKnown = pp; }
+                    // A trap's monster follows him along its edge when he steps out, then loses him.
+                    if (sees || d < 4f) { lastSeen = Time.time; lastKnown = KeepInside(pp); }
                     if (Time.time >= nextAlert) { nextAlert = Time.time + alertInterval; AlertOthers(lastKnown); }
                     float speed = chaseSpeed;
                     if (Time.time < lungeUntil) speed = lungeSpeed;

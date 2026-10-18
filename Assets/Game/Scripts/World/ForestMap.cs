@@ -26,19 +26,34 @@ namespace KaiForest
         public Vector3 ExitPosition => exit != null ? Flat(exit.transform.position) : Vector3.zero;
         public int TreeCount { get; private set; }
         public Landmark[] Landmarks { get; private set; }
+        /// <summary>The checkpoints and traps placed in the scene (KaiForest > Map > Place Checkpoints and Traps).</summary>
+        public CheckpointItem[] Items { get; private set; }
+        public DeerTrap[] DeerTraps { get; private set; }
+        public MonsterTrap[] MonsterTraps { get; private set; }
+        public MotherSpawn MotherSpawn { get; private set; }
 
         void Awake()
         {
             Instance = this;
             var trees = new List<ForestTree>();
             var landmarks = new List<Landmark>();
+            var items = new List<CheckpointItem>();
+            var deer = new List<DeerTrap>();
+            var traps = new List<MonsterTrap>();
             foreach (var go in gameObject.scene.GetRootGameObjects())
             {
                 trees.AddRange(go.GetComponentsInChildren<ForestTree>());
                 landmarks.AddRange(go.GetComponentsInChildren<Landmark>());
+                items.AddRange(go.GetComponentsInChildren<CheckpointItem>(true));
+                deer.AddRange(go.GetComponentsInChildren<DeerTrap>(true));
+                traps.AddRange(go.GetComponentsInChildren<MonsterTrap>(true));
+                if (MotherSpawn == null) MotherSpawn = go.GetComponentInChildren<MotherSpawn>(true);
             }
             TreeCount = trees.Count;
             Landmarks = landmarks.ToArray();
+            Items = items.ToArray();
+            DeerTraps = deer.ToArray();
+            MonsterTraps = traps.ToArray();
 
             // Forest.unity opened on its own and played: bring in the game scene too.
             if (FindAnyObjectByType<GameManager>() == null && Application.CanStreamedLevelBeLoaded(GameManager.SceneName))

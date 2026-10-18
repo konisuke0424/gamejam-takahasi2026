@@ -572,6 +572,9 @@ namespace KaiForest.EditorTools
             {
                 foreach (var e in go.GetComponentsInChildren<MapExit>()) clearings.Add(new KeyValuePair<Vector2, float>(Flat(e.transform.position), 11f));
                 foreach (var l in go.GetComponentsInChildren<Landmark>()) clearings.Add(new KeyValuePair<Vector2, float>(Flat(l.transform.position), l.ClearingRadius));
+                // Mother's things must not end up under a bush; she needs room to stand.
+                foreach (var i in go.GetComponentsInChildren<CheckpointItem>(true)) clearings.Add(new KeyValuePair<Vector2, float>(Flat(i.transform.position), 2.5f));
+                foreach (var s in go.GetComponentsInChildren<MotherSpawn>(true)) clearings.Add(new KeyValuePair<Vector2, float>(Flat(s.transform.position), 4f));
             }
 
             rng = new System.Random(Seed + 99);

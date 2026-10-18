@@ -39,15 +39,15 @@ namespace KaiForest
         public const float FogDensity = 0.085f;
 
         [Header("Monsters")]
-        [Tooltip("森にいる化け物の数")]
-        public int monsterCount = 2;
+        [Tooltip("かんざしを拾ったあとに現れる、森じゅうでカイを追ってくる化け物の数（トラップの化け物は別）")]
+        public int monsterCount = 1;
         [Tooltip("化け物どうしが最初にこれ以上離れて現れる（m）")]
         public float monsterSpacing = 25f;
-        [Tooltip("化け物はスタートからこれ以上離れて現れる（m）。小さいほど早く出会う")]
+        [Tooltip("化け物はカイ（かんざしを拾った場所）からこれ以上離れて現れる（m）。小さいほど早く出会う")]
         public float monsterMinFromStart = 35f;
         [Tooltip("化け物はお母さんの待つ場所からこれ以上離れて現れる（m）")]
         public float monsterMinFromMother = 25f;
-        [Tooltip("スタートからお母さんへの道すじの左右この幅（m）に化け物を出す。0 にするとマップ全体から選ぶ")]
+        [Tooltip("カイからお母さんへの道すじの左右この幅（m）に化け物を出す。0 にするとマップ全体から選ぶ")]
         public float monsterRouteWidth = 35f;
         [Tooltip("化け物ごとに最初の呼び声をずらす（秒）。同じ声が一斉に聞こえないように")]
         public float monsterCallStagger = 4.5f;
@@ -76,9 +76,11 @@ namespace KaiForest
         public ForestMap Map { get; private set; }
         public PlayerController Player { get; private set; }
         public MotherAI Mother { get; private set; }
+        /// <summary>Every monster: the traps' (from the kanzashi stage) and the hunters (mother stage).</summary>
         public List<MonsterAI> Monsters { get; } = new List<MonsterAI>();
-        /// <summary>The first monster (AutoTest follows this one).</summary>
-        public MonsterAI Monster => Monsters.Count > 0 ? Monsters[0] : null;
+        /// <summary>The first hunter, else the first monster (AutoTest follows this one).</summary>
+        public MonsterAI Monster => Monsters.Find(m => !m.HasTerritory) ?? (Monsters.Count > 0 ? Monsters[0] : null);
+        public StageDirector Director { get; private set; }
         public AmbienceController Ambience { get; private set; }
         public PlayerStamina Stamina { get; private set; }
         public float PlayTime { get; private set; }
@@ -86,9 +88,10 @@ namespace KaiForest
 
         Canvas canvas;
         Image fade;
-        CanvasGroup titleGroup, endGroup, storyGroup, hintGroup;
-        Text storyText, endSub, endHint, titleHint, debugText;
-        RawImage endImage;
+        CanvasGroup titleGroup, endGroup, storyGroup, hintGroup, messageGroup, deerGroup;
+        Text storyText, endSub, endHint, titleHint, debugText, pickupHint, messageText;
+        RawImage endImage, deerImage;
+        Coroutine messageRoutine, deerRoutine;
         Vignette vignette;
         ChromaticAberration chroma;
         float baseVignette, baseChroma;
@@ -144,23 +147,17 @@ namespace KaiForest
             Player.Init(mats, audioBank.steps);
             Player.Teleport(Map.StartPosition, Map.StartYaw);
 
-            var home = Map.exit != null ? Map.exit.MotherHome : Map.ExitPosition;
+            // Mother waits at her marker (Forest.unity), or in front of the real torii if there is none.
+            var spawn = Map.MotherSpawn;
+            var home = spawn != null ? spawn.Home : Map.exit != null ? Map.exit.MotherHome : Map.ExitPosition;
             var mgo = new GameObject("Mother") { layer = 2 };
             Mother = mgo.AddComponent<MotherAI>();
             Mother.Init(Map, Player, audioBank, mats, home);
-            if (Map.exit != null) Mother.wanderRadius = Map.exit.wanderRadius;
+            if (spawn != null) Mother.wanderRadius = spawn.wanderRadius;
+            else if (Map.exit != null) Mother.wanderRadius = Map.exit.wanderRadius;
             Mother.Teleport(Map.FindOpenPoint(home, 3f));
 
-            for (int i = 0; i < Mathf.Max(1, monsterCount); i++)
-            {
-                var xgo = new GameObject($"Monster{i + 1}") { layer = 2 };
-                var monster = xgo.AddComponent<MonsterAI>();
-                monster.firstCallDelay += i * monsterCallStagger;
-                monster.Init(Map, Player, audioBank, mats);
-                monster.Teleport(PickMonsterSpawn(home));
-                Monsters.Add(monster);
-            }
-
+            // Monsters come later, stage by stage (StageDirector).
             Stamina = pgo.AddComponent<PlayerStamina>();
             Stamina.Init(Monsters);
 
@@ -168,7 +165,25 @@ namespace KaiForest
             Ambience.Init(audioBank, Player, Monsters, Stamina);
 
             backdrop = Backdrop.Create(Player.Cam.transform);
+
+            Director = gameObject.AddComponent<StageDirector>();
+            Director.Init(this);
         }
+
+        /// <summary>Creates a monster (not yet active) at the given spot and adds it to Monsters.</summary>
+        public MonsterAI SpawnMonster(string name, Vector3 position)
+        {
+            var go = new GameObject(name) { layer = 2 };
+            var monster = go.AddComponent<MonsterAI>();
+            monster.firstCallDelay += Monsters.Count * monsterCallStagger;
+            monster.Init(Map, Player, audioBank, mats);
+            monster.Teleport(position);
+            Monsters.Add(monster);
+            return monster;
+        }
+
+        /// <summary>Where a hunter appears: between the boy and his mother, away from both.</summary>
+        public Vector3 PickHunterSpawn() => PickMonsterSpawn(Player.transform.position, Mother.Home);
 
         public static bool HasArg(string a)
         {
@@ -229,12 +244,12 @@ namespace KaiForest
             moon.transform.rotation = Quaternion.Euler(55f, -40f, 0f);
         }
 
-        Vector3 PickMonsterSpawn(Vector3 motherHome)
+        Vector3 PickMonsterSpawn(Vector3 from, Vector3 motherHome)
         {
             // On the way from the boy to his mother (within monsterRouteWidth of that line), away from
             // both ends and from the other monsters. If there's no room, the spacing rule is dropped
             // first, then the route rule.
-            var start = Map.StartPosition;
+            var start = new Vector3(from.x, 0f, from.z);
             var route = motherHome - start;
             var side = Vector3.Cross(Vector3.up, route.normalized);
             float h = Map.halfSize - 25f;
@@ -318,11 +333,10 @@ namespace KaiForest
         {
             if (State == GameState.Playing) return;
             State = GameState.Playing;
-            PlayTime = 0f;
+            PlayTime = StageDirector.SavedPlayTime; // a retry from a checkpoint keeps counting
             Player.ControlEnabled = true;
             LockCursor(true);
-            Mother.Activate();
-            foreach (var m in Monsters) m.Activate();
+            Director.Begin(); // wakes the current stage: its voice, traps, monsters, mother
         }
 
         /// <summary>
@@ -354,6 +368,8 @@ namespace KaiForest
             Player.ControlEnabled = false;
             LockCursor(false);
             foreach (var m in Monsters) m.Halt();
+            Director.StopAll();
+            StageDirector.ClearCheckpoint(); // the next game starts from the beginning
             Mother.SayFound();
             Ambience.FadeTo(0.3f, 3f);
             Ambience.PlayOneShot(audioBank.clearChime, 0.8f);
@@ -394,6 +410,8 @@ namespace KaiForest
             Mother.Active = false;
             Mother.Voice.Stop();
             foreach (var m in Monsters) m.Halt();
+            Director.StopAll();
+            ShowPickupHint(null);
             Ambience.FadeTo(0f, 0.4f);
             Ambience.PlayOneShot(audioBank.catchLine.near, 1f);
             Ambience.PlayOneShot(audioBank.gameOverSting, 0.85f);
@@ -442,7 +460,7 @@ namespace KaiForest
             endImage.SetNativeSize();
             endImage.rectTransform.sizeDelta *= 0.62f;
             endSub.text = "あれは、おかあさんじゃ　なかった。";
-            endHint.text = "クリックで　もういちど";
+            endHint.text = StageDirector.HasCheckpoint ? "クリックで　つづきから" : "クリックで　もういちど";
             endHint.enabled = true;
             yield return new WaitForSeconds(0.3f);
             yield return Fade(endGroup, 1f, 0.8f);
@@ -492,6 +510,9 @@ namespace KaiForest
 
             var kb = Keyboard.current;
             if (kb != null && kb.f1Key.wasPressedThisFrame) debugHud = !debugHud;
+            // Dev only: F2 skips to the next stage (not a checkpoint).
+            if (kb != null && kb.f2Key.wasPressedThisFrame && State == GameState.Playing && (Application.isEditor || Debug.isDebugBuild))
+                Director.DebugAdvance();
             debugText.enabled = debugHud;
             if (debugHud) debugText.text = DebugString();
         }
@@ -506,7 +527,10 @@ namespace KaiForest
                 var m = Monsters[i];
                 monsters.Append($"monster{i + 1} {m.DistanceToPlayer:0.0}m  {m.State}  calls {m.Voice.PlayCount}  last {m.Voice.LastLineId}\n");
             }
+            var item = Director.Current;
+            string target = item != null ? $"{item.displayName} {Vector3.Distance(pp, item.transform.position):0.0}m" : "mother";
             return $"state {State}  t {PlayTime:0.0}s  fps {1f / Mathf.Max(Time.smoothDeltaTime, 0.0001f):0}  kai ({pp.x:0.0}, {pp.z:0.0}) yaw {Player.Yaw:0}\n" +
+                   $"stage {Director.Stage}  find {target}  checkpoint {StageDirector.HasCheckpoint}\n" +
                    $"mother {dm:0.0}m  calls {Mother.Voice.PlayCount}  last {Mother.Voice.LastLineId}  noticed {Mother.Noticed}\n" +
                    monsters +
                    $"stamina {Stamina.Stamina * 100f:0}%  exhaustion {Stamina.Exhaustion:0.00}  hearing {Hearing.Volume:0.00}\n" +
@@ -514,6 +538,64 @@ namespace KaiForest
         }
 
         // ------------------------------------------------------------------ UI
+
+        /// <summary>"クリックで　〇〇を　拾う" under the view; null hides it.</summary>
+        public void ShowPickupHint(string text)
+        {
+            if (pickupHint == null) return;
+            pickupHint.enabled = text != null;
+            if (text != null) pickupHint.text = text;
+        }
+
+        /// <summary>A line of text that fades in, stays a while and fades out.</summary>
+        public void ShowMessage(string text, float hold = 3.5f)
+        {
+            if (messageRoutine != null) StopCoroutine(messageRoutine);
+            messageRoutine = StartCoroutine(MessageRoutine(text, hold));
+        }
+
+        IEnumerator MessageRoutine(string text, float hold)
+        {
+            messageText.text = text;
+            yield return Fade(messageGroup, 1f, 0.6f);
+            yield return new WaitForSeconds(hold);
+            yield return Fade(messageGroup, 0f, 1.2f);
+        }
+
+        /// <summary>A checkpoint item was picked up (StageDirector has already moved on).</summary>
+        public void OnPickedUp(CheckpointItem item)
+        {
+            Ambience.PlayOneShot(audioBank.clearChime, 0.4f);
+            if (!string.IsNullOrEmpty(item.message)) ShowMessage(item.message);
+        }
+
+        /// <summary>Deer trap: a deer leaps at the screen with a shriek. Only a scare; play goes on.</summary>
+        public void PlayDeerScare(Texture2D image)
+        {
+            if (image == null) return;
+            if (deerRoutine != null) StopCoroutine(deerRoutine);
+            deerRoutine = StartCoroutine(DeerScareRoutine(image));
+        }
+
+        IEnumerator DeerScareRoutine(Texture2D image)
+        {
+            const float length = 1.3f, fadeFrom = 0.85f;
+            deerImage.texture = image;
+            var rt = deerImage.rectTransform;
+            Ambience.PlayOneShot(audioBank.gameOverSting, 1f);
+            for (float t = 0f; t < length; t += Time.deltaTime)
+            {
+                // Bursts out of the dark in a tenth of a second, then shudders and fades.
+                float pop = Mathf.Clamp01(t / 0.1f);
+                float calm = 1f - t / length;
+                rt.localScale = Vector3.one * (Mathf.Lerp(0.3f, 1.15f, 1f - (1f - pop) * (1f - pop)) + Mathf.Sin(t * 47f) * 0.02f * calm);
+                rt.anchoredPosition = Random.insideUnitCircle * 18f * calm;
+                deerGroup.alpha = t < fadeFrom ? 1f : Mathf.InverseLerp(length, fadeFrom, t);
+                if (chroma != null) chroma.intensity.value = 1f;
+                yield return null;
+            }
+            deerGroup.alpha = 0f;
+        }
 
         IEnumerator Fade(CanvasGroup g, float target, float seconds)
         {
@@ -565,7 +647,8 @@ namespace KaiForest
             MakeText(titleGroup.transform,
                 "マウスを動かす　見回す\n" +
                 "左ボタンを押している間　前へ進む\n" +
-                "右ボタンを押している間　うしろへ下がる",
+                "右ボタンを押している間　うしろへ下がる\n" +
+                "落ちているものの近くで左クリック　拾う",
                 26, new Color(0.62f, 0.6f, 0.58f), new Vector2(0f, -150f));
             MakeText(titleGroup.transform, "ヘッドホン推奨", 22, new Color(0.5f, 0.45f, 0.42f), new Vector2(0f, -300f));
             titleHint = MakeText(titleGroup.transform, "クリックで　はじめる", 34, Color.white, new Vector2(0f, -390f));
@@ -578,9 +661,23 @@ namespace KaiForest
             storyGroup.alpha = 0f;
 
             hintGroup = MakeGroup(go.transform, "Hint");
-            MakeText(hintGroup.transform, "マウス：見回す　　左長押し：前へ　　右長押し：うしろへ　　Esc：カーソルを出す（クリックで戻る）",
+            MakeText(hintGroup.transform, "マウス：見回す　　左長押し：前へ　　右長押し：うしろへ　　近くで左クリック：拾う　　Esc：カーソルを出す（クリックで戻る）",
                 22, new Color(0.7f, 0.68f, 0.64f, 0.8f), new Vector2(0f, 480f));
             hintGroup.alpha = 0f;
+
+            pickupHint = MakeText(go.transform, "", 30, new Color(0.95f, 0.9f, 0.8f), new Vector2(0f, -330f));
+            pickupHint.enabled = false;
+
+            messageGroup = MakeGroup(go.transform, "Message");
+            messageText = MakeText(messageGroup.transform, "", 34, new Color(0.88f, 0.84f, 0.78f), new Vector2(0f, -200f));
+            messageText.lineSpacing = 1.15f;
+            messageGroup.alpha = 0f;
+
+            // The deer that leaps at the screen (deer trap): over the game, under the end screens.
+            deerGroup = MakeGroup(go.transform, "DeerScare");
+            deerImage = MakeRect(deerGroup.transform, "Deer", Vector2.zero, new Vector2(1080f, 1080f), false).gameObject.AddComponent<RawImage>();
+            deerImage.raycastTarget = false;
+            deerGroup.alpha = 0f;
 
             endGroup = MakeGroup(go.transform, "End");
             endImage = MakeRect(endGroup.transform, "EndImage", new Vector2(0f, 110f), Vector2.zero, false).gameObject.AddComponent<RawImage>();

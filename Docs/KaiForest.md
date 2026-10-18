@@ -6,8 +6,26 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 森にはお母さんの声をまねる化け物がいて、本物と偽物の声を聞き分けることが攻略の鍵になる。
 
 - お母さんに触れたらクリア / 化け物に捕まったらゲームオーバー
-- 出口（お母さんの居場所）は `Forest.unity` に置いた鳥居（`Torii_Exit`）1か所。壊れた鳥居（`BrokenTorii`）は偽の出口としての飾り
+- 本物の出口は `Forest.unity` に置いた鳥居（`Torii_Exit`）1か所。壊れた鳥居（`BrokenTorii`）は偽の出口としての飾り
 - 森は `Forest.unity` に置いたオブジェクトそのもの（下の「マップの編集」を参照）
+
+## 進み方（チェックポイント）
+
+3つの段階を順に進む。拾い物がチェックポイントで、捕まると最後に拾った場所からやり直し（「クリックで　つづきから」）。お母さんに会うとチェックポイントは消え、次は最初から。
+
+| 段階 | 探すもの | 本物の声が聞こえる場所 | 森にいる偽物 |
+|---|---|---|---|
+| 1 | お母さんの**ハンカチ** | ハンカチ | なし（追ってくる化け物も、偽物の声もない） |
+| 2 | お母さんの**かんざし** | かんざし | 鹿トラップ・化け物トラップ（偽物の声で呼ぶ） |
+| 3 | **お母さん**（かんざしを拾うと現れる） | お母さん | トラップ＋森じゅうを追ってくる化け物 1体 |
+
+- 拾うのは、落ちている物の近く（1.8m 以内。「クリックで　〇〇を　拾う」と出る）で左クリック。そのクリックで前へは進まない
+- 拾うと、その物の文（`CheckpointItem.message`）が画面に出る
+- **鹿トラップ**: 偽物の声で呼ぶ。半径 1m に入ると鹿の絵が画面に飛び出す（驚かすだけでゲームオーバーにはならない）。1回きり
+- **化け物トラップ**: 半径 20m の縄張りに化け物が1体いて、偽物の声で呼ぶ。縄張りに入ったカイだけに気づき、縄張りの縁まで追ってくる（外へ逃げると縁で見失う）。捕まるとゲームオーバー
+- 段階3の化け物は、かんざしを拾った場所とお母さんのあいだの道すじに現れる（数は `GameManager.monsterCount`）
+- `Forest.unity` にチェックポイントもトラップも何も置いていないときは、ゲームが既定の場所（配置メニューと同じ場所）に自分で置いて始める。一部だけ置いてあるときは置いてあるものだけを使い、ハンカチ・かんざしが無い段階はとばす
+- 仕組み：`StageDirector`（段階・チェックポイント・拾う操作・トラップと化け物の出現）。F2（エディタと開発ビルドだけ）で次の段階へとばせる（チェックポイントにはならない）
 
 ## マップの編集（Forest.unity）
 
@@ -17,7 +35,12 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 |---|---|---|
 | `ForestMap` | マップの根元。歩ける範囲（`halfSize`、黄色の枠）を持つ | 範囲を変えたら `Walls` も合わせて動かす |
 | `PlayerStart` | カイのスタート地点と向き（緑の球と矢印） | 動かす・回す |
-| `Landmarks/Torii_Exit` | 本物の出口。お母さんはこの前方 4m を中心に半径 20m を歩く（水色の円） | 動かす。前方（青い矢印）がカイの来る側 |
+| `Landmarks/Torii_Exit` | 本物の出口。`Checkpoints/Mother` が無いときは、お母さんはこの前方 4m を中心に半径 20m を歩く（水色の円） | 動かす。前方（青い矢印）がカイの来る側 |
+| `Checkpoints/Handkerchief` | お母さんのハンカチ（段階1で探す）。黄色の円が拾える範囲 | 動かす。拾ったときの文などは Inspector の `CheckpointItem` |
+| `Checkpoints/Kanzashi` | お母さんのかんざし（段階2で探す） | 同上 |
+| `Checkpoints/Mother` | 段階3でお母さんが現れる場所。水色の円が歩き回る範囲（`wanderRadius`）。お母さんの見本の人形はエディタでだけ見える | 動かす・回す |
+| `Checkpoints/DeerTrap` | 鹿トラップ。赤い円（半径 `triggerRadius` = 1m）に入ると鹿が飛び出す。絵は `scareImage` | 動かす・複製・削除 |
+| `Checkpoints/MonsterTrap` | 化け物トラップ。橙の円（半径 `areaRadius` = 20m）が化け物の縄張り | 動かす・複製・削除 |
 | `Landmarks/*` | 地蔵・祠・大杉などの目印、壊れた鳥居 | 動かす・複製・削除。`Assets/Game/Map/Prefabs/Landmarks` から追加 |
 | `Trees/Area_*/Cedar_*` | 杉（8種類のプレハブ、約4000本） | 動かす・複製・削除。`Assets/Game/Map/Prefabs/Trees` から追加 |
 | `Undergrowth` | 茂み・石・草・枝を区画ごとにまとめたメッシュ | 直接は編集しない。目印や出口を動かしたら `KaiForest > Map > Rebake Undergrowth` で、それらを避けて撒き直す |
@@ -26,7 +49,11 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 - プレハブ（杉・目印・鳥居）は仮の見た目。モデルを差し替えるとシーン上の全部が置き換わる。当たり判定（Collider）は残すこと（AI の視線や移動に使う）
 - `KaiForest > Map > Rebuild Forest Scene From Seed` は**手での編集をすべて捨てて**最初の配置に戻す
 - `KaiForest > Map > Regenerate Placeholder Prefabs` はプレハブを仮の見た目に作り直す（差し替えたモデルは失われる）
-- 化け物（2体）は、スタートからお母さんへの道すじの左右 35m 以内で、スタートから 35m 以上・お母さんから 25m 以上・化け物どうし 25m 以上離れた空き地にランダムに現れる（場所が足りないときは、まず化け物どうしの距離、次に道すじの条件をあきらめる）
+- **チェックポイントとトラップの配置**: メニュー `KaiForest > Map > Place Checkpoints and Traps` で、足りないものをスタートから出口への道すじに沿って `ForestMap/Checkpoints` の下に置く（ハンカチ・かんざし・お母さん各1、鹿トラップ3、化け物トラップ2）。あとは手で動かす。もう置いてある種類は増やさない
+- 円や名前はシーンビューの表示（ギズモ）で、ゲーム中には見えない。トラップ自体もゲーム中は見えない（化け物トラップの化け物は見える）
+- プレハブは `Assets/Game/Map/Prefabs/Checkpoints`（ハンカチ・かんざしは仮の見た目。中の `Model` を差し替えてよい。近くでかすかに光る `Glint` 付き）。`KaiForest > Map > Regenerate Checkpoint Prefabs` で仮の見た目に作り直す
+- 置いたあとに茂みが物にかぶっていたら `Rebake Undergrowth`（ハンカチ・かんざし・お母さんのまわりは空けて撒き直す）
+- 段階3の化け物は、かんざしを拾った場所からお母さんへの道すじの左右 35m 以内で、カイから 35m 以上・お母さんから 25m 以上・ほかの化け物から 25m 以上離れた空き地に現れる（場所が足りないときは、まず化け物どうしの距離、次に道すじの条件をあきらめる）
 
 ## 操作（マウスのみ）
 
@@ -35,8 +62,12 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 | マウスを動かす | 見回す（クリック不要。上下は ±10度まで＝`PlayerController.pitchLimit`） |
 | 左ボタンを押している間 | 前へ進む |
 | 右ボタンを押している間 | うしろへ下がる |
+| 落ちている物の近くで左クリック | 拾う（ハンカチ・かんざし） |
 | Esc | カーソルのロックを外す（プレイ中にクリックするとまたロックされる） |
-| F1（開発用） | デバッグ表示（距離・AI状態・最後に再生した声） |
+| F1（開発用） | デバッグ表示（段階・探す物までの距離・AI状態・最後に再生した声） |
+| F2（開発用） | 次の段階へとばす（エディタと開発ビルドだけ） |
+
+視点の感度は `PlayerController.lookSensitivity`（ゆっくり動かしたとき 0.225度/ピクセル）。左右はマウスを速く振るほど大きく回り、すばやく振ると最大で1.5倍（`lookAcceleration`）になるので、大きく振れば振り返れる。回りすぎるときは `lookAcceleration` を 0 にするか、`lookSensitivity` を下げる。
 
 プレイ中はカーソルを画面に固定（ポインターロック）して、マウスの動きだけで向きを変える。ブラウザの仕様でロックはクリックしたときにだけかかる。埋め込み先のページ（unityroom など）がポインターロックを許可していないと、ロックされずに画面の端で回れなくなる。
 
@@ -52,8 +83,8 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 
 ## AI
 
-- **お母さん**: 出口の周り半径20mを歩きながら 4〜7.5秒おきに呼ぶ。ランタンが見える距離（11m）に来るとカイに歩み寄る。
-- **化け物（2体）**: それぞれが下の動きをする。数・現れる場所・最初の呼び声のずらし方は `Main.unity` の `GameManager`（`monsterCount` / `monsterSpacing` / `monsterMinFromStart` / `monsterMinFromMother` / `monsterRouteWidth` / `monsterCallStagger`）で変えられる。スタミナ・心音・画面の揺らぎは、いちばん近い化け物と「どれか1体でも追っているか」で決まる。
+- **お母さん**: 段階3で `Checkpoints/Mother` に現れ、そのまわり半径20mを歩きながら 4〜7.5秒おきに呼ぶ。ランタンが見える距離（11m）に来るとカイに歩み寄る。段階1・2では、ハンカチ・かんざしから同じように本物の声がする。
+- **化け物**: 段階3で現れて森じゅうを追ってくる化け物（初期値 1体）と、化け物トラップの化け物（縄張りの中だけ）。どれも下の動きをする（トラップの化け物は縄張りの中を歩き、縄張りの中のカイにだけ気づく）。数・現れる場所・最初の呼び声のずらし方は `Main.unity` の `GameManager`（`monsterCount` / `monsterSpacing` / `monsterMinFromStart` / `monsterMinFromMother` / `monsterRouteWidth` / `monsterCallStagger`）で変えられる。スタミナ・心音・画面の揺らぎは、いちばん近い化け物と「どれか1体でも追っているか」で決まる。
   - Search（9割はカイの半径18m以内を行き先にして、8秒ごとに選び直す。カイの居場所は知らないが寄ってくる）→ Investigate（足音が聞こえたら音の場所へ。歩いていると22m、止まっていると6mで気づく）→ Chase（16m以内でランタンが見えたら追う。6秒見失うと調査に戻る）→ Retreat（10秒追いかけたら諦め、4秒間カイを無視して反対方向へ去ってから探索に戻る）。追跡中はときどき一気に距離を詰めてくる。退却中も、ぶつかるほど近づけば捕まる。1体に捕まった時点で全員止まる。
   - 追っている化け物の呼び声は仲間を呼ぶ。半径50m以内で探索・調査中のほかの化け物は、2秒ごとに伝わるカイの居場所へ向かう（2体以上に同時に追われることがある）。`MonsterAI.alertRadius` を 0 にすると、それぞれ独立して動く。
 - **捕まったとき**: 化け物がカイの前で覆いかぶさり、視界がその顔の正面へ一気に引き寄せられて、顔が画面いっぱいに映る（揺れながら約1.6秒）→ 暗転。手のランタンは画面右下から下へ落ちて画面外に消え、暗くなった光が顔を下から照らす（白飛びしない）。時間・視野角・顔との距離・ランタンの明るさは `Main.unity` の `GameManager`（`scareDuration` / `scareFov` / `scareFaceDistance` / `scareLanternLight`）で調整できる
@@ -79,6 +110,7 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 | ランタン（とデバッグ用の昼モード） | `Assets/Game/Resources/LanternSettings.asset`（メニュー `KaiForest > Lantern Settings` で選択） | 下表 |
 | スタミナ | `Assets/Game/Resources/StaminaSettings.asset`（メニュー `KaiForest > Stamina Settings` で選択） | 減る秒数・回復・影響が出始める残量・息切れの音量・聞こえにくさの強さ |
 | 遠景 | `Assets/Game/Resources/BackdropSettings.asset`（メニュー `KaiForest > Backdrop Settings` で選択） | 下の「遠景」 |
+| 声の聞こえ方 | `Assets/Game/Resources/VoiceSettings.asset`（メニュー `KaiForest > Voice Settings` で選択） | 下の「声の聞こえ方」 |
 
 | ランタンの項目 | 意味 | 初期値 |
 |---|---|---|
@@ -90,6 +122,23 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 - 点光源は距離の2乗で暗くなるので、Range だけ広げても遠くはほとんど明るくならない
 - 霧の濃さは固定（`GameManager.FogDensity` = 0.085。約10m先が半分かすみ、20m先はほぼ見えない）
 - このファイルは `Setup Project` では上書きされない。消えた場合はスクリプトの読み込み時に初期値で作り直される
+
+### 声の聞こえ方
+
+お母さんの声（お母さん・ハンカチ・かんざし）と偽物の声（化け物・鹿トラップ）の、距離による小さくなり方。音量 = min(1, (基準距離 ÷ (基準距離＋距離))^Falloff × 1.35) × 端のフェード × 種類ごとの音量 × スタミナによる聞こえにくさ。
+
+| 項目 | 意味 | 初期値 |
+|---|---|---|
+| Falloff | 小さくなり方。大きいほど早く小さくなる（1 で距離2倍ごとに約-6dB、1.3 で約-8dB） | 1.3 |
+| Reference Distance | 基準の距離（m）。これより近いとほぼ最大 | 6 |
+| Mother Range | お母さんの声が聞こえる距離（m）。75%から小さくなり始め、ここで無音 | 120 |
+| Fake Range | 偽物の声が聞こえる距離（m） | 90 |
+| Mother Loudness / Fake Loudness | 種類ごとの音量（倍率） | 1 / 1 |
+| Near Distance / Far Distance | この間で、はっきりした声からこもった遠くの声へ切り替わる（m） | 6 / 45 |
+
+初期値での音量の目安：10m 0.38、20m 0.20、30m 0.13、50m 0.07。お母さんの声は約 90m から、偽物の声は約 68m から消え始める。
+
+- 初期配置ではスタートからハンカチまで約60m。範囲や Falloff を強くしすぎると、段階1のスタートで道しるべの声が聞こえなくなるので注意
 
 ### 遠景（月夜の山並み）
 
@@ -132,6 +181,7 @@ WebGL版は `Builds/WebGL` に出力（Gzip＋Decompression Fallback なので�
 | 声（本番: Irodori） | `Tools/audio_irodori` → `sync_irodori_export.py` | `Assets/Game/Audio/Voices` |
 | 環境音など | `build_audio.py`（プロト声と一緒に回すとき） | `Assets/Game/Audio/Sfx` |
 | 地面・樹皮テクスチャ、見出し文字 | `Tools/gen_textures.py` | `Assets/Game/Textures`, `Assets/Game/UI` |
+| 鹿トラップの絵（仮。本番の絵で上書きしてよい） | `Tools/gen_deer_scare.py` | `Assets/Game/Resources/UI_DeerScare.png` |
 | 化け物のモデル（Tripo、使用中） | `Tools/blender/convert_tripo_monster.py`（元は `Art/Source/Tripo/Monster100_run.glb`） | `Assets/Game/Resources/Monster100/`、`Art/Source/Previews/monster100_*.png` |
 | 化け物のモデル（Blender、予備） | `Tools/blender/build_monster.py` | `Art/Source/Monster.blend`、`Assets/Game/Resources/MonsterModel.kfmodel`、`Art/Source/Previews/monster_*.png` |
 

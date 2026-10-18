@@ -15,11 +15,19 @@ namespace KaiForest
         public float walkSpeed = 2.9f;
         public float backSpeed = 1.5f;
         public float acceleration = 7f;
-        public float lookSensitivity = 0.15f;
+        [Tooltip("視点の感度（度/ピクセル）。ゆっくり動かしたときはこの値")]
+        public float lookSensitivity = 0.225f;
+        [Tooltip("マウスを速く振るほど左右に大きく回る。速く振ったときの感度は lookSensitivity ×（1 + この値）")]
+        public float lookAcceleration = 0.5f;
+        [Tooltip("この速さ（ピクセル/秒）から加速が始まり、lookAccelerationFullSpeed で最大になる")]
+        public float lookAccelerationStartSpeed = 400f;
+        public float lookAccelerationFullSpeed = 2500f;
         [Tooltip("上下の視点の限界（度）。上にも下にもこの角度まで")]
         public float pitchLimit = 10f;
-        [Tooltip("1フレームのマウス移動量の上限（ピクセル）。カーソルをロックした直後の跳ねで視点が飛ぶのを防ぐ")]
-        public float maxLookDeltaPerFrame = 150f;
+        [Tooltip("マウスの速さの上限（ピクセル/秒）。ブラウザでときどき来る跳ねで視点が飛ぶのを防ぐ（フレームレートに関係なく効く）")]
+        public float maxLookSpeed = 12000f;
+        [Tooltip("カーソルをロックした直後、この時間（秒）はマウスの動きを無視する。ロック直後の跳ねで視点が飛ぶのを防ぐ")]
+        public float lookMuteAfterLock = 0.1f;
         public float eyeHeight = 1.25f;
         public float stepDistance = 0.78f;
         public float fieldOfView = 68f;
@@ -59,8 +67,8 @@ namespace KaiForest
         AudioSource stepSource;
         AudioClip[] steps;
         LanternSettings lanternSettings;
-        bool controlEnabled, waitForRelease;
-        float yaw, pitch, speed, vy, stepAccum, bobPhase, lastYaw;
+        bool controlEnabled, waitForRelease, wasLocked;
+        float yaw, pitch, speed, vy, stepAccum, bobPhase, lastYaw, lookMuteUntil;
         Vector3 lanternBasePos;
         Quaternion lookOverride;
         float lookOverrideWeight;
@@ -131,6 +139,9 @@ namespace KaiForest
             lookOverrideWeight = Mathf.Clamp01(weight);
         }
 
+        /// <summary>Ignores the mouse buttons until they are released (a click that picked something up shouldn't also walk).</summary>
+        public void HoldUntilRelease() => waitForRelease = true;
+
         /// <summary>Pulls the camera towards a world position and narrows the view to fov (the jump scare). Weight 0 = normal.</summary>
         public void SetViewOverride(Vector3 worldPos, float weight, float fov)
         {
@@ -153,8 +164,15 @@ namespace KaiForest
                     l = r = false;
                 }
                 // Looking needs no button: the mouse always turns the view.
-                Vector2 d = Vector2.ClampMagnitude(mouse.delta.ReadValue(), maxLookDeltaPerFrame);
-                yaw += d.x * lookSensitivity;
+                bool locked = Cursor.lockState == CursorLockMode.Locked;
+                if (locked && !wasLocked) lookMuteUntil = Time.unscaledTime + lookMuteAfterLock;
+                wasLocked = locked;
+                Vector2 d = mouse.delta.ReadValue();
+                if (Time.unscaledTime < lookMuteUntil) d = Vector2.zero;
+                d = Vector2.ClampMagnitude(d, maxLookSpeed * Mathf.Max(dt, 1f / 120f));
+                // A quick swing turns further, so a flick of the wrist can turn him round.
+                float swing = Mathf.InverseLerp(lookAccelerationStartSpeed, lookAccelerationFullSpeed, Mathf.Abs(d.x) / Mathf.Max(dt, 0.0001f));
+                yaw += d.x * lookSensitivity * (1f + lookAcceleration * swing);
                 pitch = Mathf.Clamp(pitch - d.y * lookSensitivity, -pitchLimit, pitchLimit);
                 if (l && !r) input = 1f;
                 else if (r && !l) input = -1f;

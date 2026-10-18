@@ -21,9 +21,12 @@ namespace KaiForest.EditorTools
             Lantern();
             Stamina();
             Backdrop();
+            Voice();
         }
 
         public static LanternSettings Lantern() => Ensure<LanternSettings>(LanternSettings.ResourceName);
+
+        public static VoiceSettings Voice() => Ensure<VoiceSettings>(VoiceSettings.ResourceName);
 
         public static StaminaSettings Stamina()
         {
@@ -83,6 +86,9 @@ namespace KaiForest.EditorTools
 
         [MenuItem("KaiForest/Backdrop Settings")]
         static void SelectBackdrop() => Select(Backdrop());
+
+        [MenuItem("KaiForest/Voice Settings")]
+        static void SelectVoice() => Select(Voice());
 
         static void Select(Object o)
         {

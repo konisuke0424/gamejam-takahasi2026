@@ -36,8 +36,7 @@ namespace KaiForest
             cc.height = 1.6f; cc.radius = 0.3f; cc.center = new Vector3(0f, 0.8f, 0f);
             motor = gameObject.AddComponent<NpcMotor>();
             Voice = gameObject.AddComponent<VoiceEmitter>();
-            Voice.audibleRange = 300f;
-            Voice.loudness = 1f;
+            Voice.kind = VoiceKind.Mother;
             Rig = CharacterFactory.BuildMother(transform, mats);
             lanternBase = Rig.light.intensity;
         }
