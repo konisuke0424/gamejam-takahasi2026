@@ -55,6 +55,17 @@ namespace KaiForest
 
         static GameManager GM => GameManager.I;
 
+        /// <summary>
+        /// The checks below are for the mother stage (hunter + mother), so jump there; they follow one
+        /// hunter, and every other monster (traps' too) is stopped so it can't interfere.
+        /// </summary>
+        static void HaltExtraMonsters()
+        {
+            GM.Director.DebugJumpTo(Stage.Mother);
+            foreach (var m in GM.Monsters)
+                if (m != GM.Monster) m.Halt();
+        }
+
         static IEnumerator WaitReady()
         {
             float t = 0f;
@@ -72,6 +83,7 @@ namespace KaiForest
             yield return new WaitForSeconds(2.2f);
             yield return Shot("02_intro");
             GM.SkipIntro();
+            HaltExtraMonsters();
             yield return new WaitForSeconds(1.0f);
             yield return Shot("03_start");
 
@@ -128,8 +140,13 @@ namespace KaiForest
             while (GM.Monster.State != MonsterState.Chase && chaseWait < 3f) { chaseWait += Time.deltaTime; yield return null; }
             Check("monster chases when close", GM.Monster.State == MonsterState.Chase, $"state={GM.Monster.State}");
 
-            // Get away and find the mother.
+            // A frozen monster stays in Chase, so stamina should keep draining (10 s from full to empty).
             GM.Monster.Frozen = true;
+            float st0 = GM.Stamina.Stamina;
+            yield return new WaitForSeconds(2f);
+            Check("stamina drains while chased", GM.Stamina.Stamina < st0 - 0.1f, $"stamina {st0:0.00} -> {GM.Stamina.Stamina:0.00}");
+
+            // Get away and find the mother.
             GM.Monster.Teleport(GM.Map.StartPosition + new Vector3(60f, 0f, 0f));
             var mom = GM.Mother.transform.position;
             var away = GM.Map.FindOpenPoint(mom + (GM.Map.StartPosition - mom).normalized * 6f, 1f);
@@ -156,6 +173,7 @@ namespace KaiForest
             yield return new WaitForSeconds(0.5f);
             Check("retry goes straight to play", GM.State == GameState.Playing, $"state={GM.State}");
             GM.SkipIntro();
+            HaltExtraMonsters();
             yield return new WaitForSeconds(0.5f);
             var mp2 = GM.Monster.transform.position;
             GM.Player.Teleport(mp2 + new Vector3(0f, 0f, 1.0f), 180f);

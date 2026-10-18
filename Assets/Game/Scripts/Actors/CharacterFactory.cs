@@ -38,6 +38,29 @@ namespace KaiForest
             return r;
         }
 
+        /// <summary>Resources name of the modelled monster (Tools/blender/build_monster.py -> KaiModelImporter).</summary>
+        public const string MonsterModelResource = "MonsterModel";
+
+        /// <summary>
+        /// The Blender-made monster if it has been imported, otherwise null (callers fall back to
+        /// <see cref="BuildMonster"/>). Its parts keep the same joints, so the animation is unchanged.
+        /// </summary>
+        public static Rig BuildMonsterFromModel(Transform parent)
+        {
+            var asset = Resources.Load<GameObject>(MonsterModelResource);
+            if (asset == null) return null;
+            var model = Object.Instantiate(asset, parent, false);
+            model.name = "Model";
+            var parts = model.GetComponent<ModelRig>();
+            if (parts == null || !parts.IsComplete)
+            {
+                Object.Destroy(model);
+                return null;
+            }
+            return new Rig { root = parent, body = parts.body, head = parts.head, armL = parts.armL, armR = parts.armR };
+        }
+
+        /// <summary>Primitive placeholder monster, used when the modelled one isn't available.</summary>
         public static Rig BuildMonster(Transform parent, MaterialLibrary m)
         {
             var r = new Rig { root = parent };

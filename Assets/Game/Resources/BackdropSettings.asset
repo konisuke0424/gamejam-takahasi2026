@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e38b85f6aecf5e2418eb0a8387d23df0, type: 3}
+  m_Name: BackdropSettings
+  m_EditorClassIdentifier: Assembly-CSharp::KaiForest.BackdropSettings
+  visible: 1
+  texture: {fileID: 2800000, guid: dfebd4bb65c53cc4b8ad6f3e78165e87, type: 3}
+  shader: {fileID: 4800000, guid: e876e9fcb75937347949cab63e01343a, type: 3}
+  copies: 2
+  bottomAngle: -60
+  topAngle: 60
+  yaw: 0
+  brightness: 1
+  fogMix: 0

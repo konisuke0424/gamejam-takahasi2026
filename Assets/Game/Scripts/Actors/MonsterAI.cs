@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace KaiForest
@@ -10,29 +11,44 @@ namespace KaiForest
     /// intonation, and the takes themselves warble / stutter / end wrong (baked by build_audio.py).
     /// Search: drifts around the boy's rough area. Investigate: heard footsteps, walks to the sound.
     /// Chase: saw the lantern, runs at him; loses him after a while out of sight, or gives up after
-    /// chaseMaxDuration. Retreat: walks away ignoring the boy for retreatDuration, then searches again.
+    /// chaseMaxDuration. Its calls bring the other monsters within alertRadius to where he is, so two
+    /// can close in at once. Retreat: walks away ignoring the boy for retreatDuration, then searches again.
+    /// A trap's monster has a territory (SetTerritory): it wanders inside it, only notices the boy
+    /// while he is inside, and chases him no further than its edge.
     /// </summary>
     public class MonsterAI : MonoBehaviour
     {
-        public float searchSpeed = 1.5f;
-        public float investigateSpeed = 2.1f;
+        public float searchSpeed = 1.9f;
+        public float investigateSpeed = 2.4f;
         public float chaseSpeed = 2.6f;
         public float lungeSpeed = 3.4f;
-        public float hearMovingDistance = 15f;
-        public float hearStillDistance = 4.5f;
-        public float sightDistance = 12f;
+        public float hearMovingDistance = 22f;
+        public float hearStillDistance = 6f;
+        public float sightDistance = 16f;
         public float catchDistance = 1.3f;
-        public float loseSightTime = 4.5f;
+        public float loseSightTime = 6f;
         [Tooltip("これだけ追いかけたら諦めて退却する（秒）")]
         public float chaseMaxDuration = 10f;
         [Tooltip("退却中はカイを無視する（秒）。終わると探索に戻る")]
-        public float retreatDuration = 8f;
-        public float retreatDistance = 40f;
+        public float retreatDuration = 4f;
+        public float retreatDistance = 20f;
         public float retreatSpeed = 2.0f;
-        public float searchAroundPlayerRadius = 35f;
+        [Tooltip("探索の行き先は、この確率でカイのまわり（searchAroundPlayerRadius 以内）。残りはマップのどこか")]
+        public float searchTowardPlayerChance = 0.9f;
+        public float searchAroundPlayerRadius = 18f;
+        [Tooltip("探索の行き先を選び直す間隔（秒）。短いほどカイの動きについてくる")]
+        public float searchRetargetTime = 8f;
+        [Tooltip("追っている化け物の声が届く距離（m）。この中のほかの化け物もカイの居場所へ寄ってくる。0 で無効")]
+        public float alertRadius = 50f;
+        [Tooltip("追っている間、ほかの化け物へ居場所を伝え直す間隔（秒）")]
+        public float alertInterval = 2f;
         public Vector2 callGap = new Vector2(5.5f, 10f);
         public Vector2 chaseCallGap = new Vector2(1.5f, 3.5f);
         public float firstCallDelay = 7f;
+        [Tooltip("モデルの背の高さ（m）。Tripo のモデル（Resources/Monster100）をこの高さに拡大する")]
+        public float height = 2.6f;
+        [Tooltip("走りアニメの脚の速さ。1 で足と地面が合う。上げると脚の回転が速くなる（少し滑る）")]
+        public float runAnimPace = 1.25f;
 
         public bool Active { get; set; }
         public bool Frozen { get; set; }
@@ -40,8 +56,15 @@ namespace KaiForest
         public float StateTime => Time.time - stateSince;
         public VoiceEmitter Voice { get; private set; }
         public CharacterFactory.Rig Rig { get; private set; }
+        /// <summary>The animated Tripo model, or null when one of the older stand-ins is used.</summary>
+        public MonsterBody Body { get; private set; }
         public float DistanceToPlayer { get; private set; } = 999f;
         public int ChaseCount { get; private set; }
+        /// <summary>True for a trap's monster, which keeps to its area.</summary>
+        public bool HasTerritory { get; private set; }
+
+        Vector3 territoryCenter;
+        float territoryRadius;
 
         ForestMap forest;
         PlayerController player;
@@ -49,8 +72,25 @@ namespace KaiForest
         NpcMotor motor;
         AudioSource breath, stepSource;
         Vector3 lastKnown;
-        float stateSince, lastSeen, nextCall, nextPerceive, nextLunge, lungeUntil, stepTimer, lookAroundUntil;
+        float stateSince, lastSeen, nextCall, nextPerceive, nextLunge, lungeUntil, stepTimer, lookAroundUntil, nextAlert;
         int last1 = -1, last2 = -1;
+
+        /// <summary>The active monster nearest the boy, or null when none is active.</summary>
+        public static MonsterAI Nearest(IReadOnlyList<MonsterAI> monsters)
+        {
+            MonsterAI best = null;
+            foreach (var m in monsters)
+                if (m != null && m.Active && (best == null || m.DistanceToPlayer < best.DistanceToPlayer)) best = m;
+            return best;
+        }
+
+        /// <summary>True while any active monster is chasing the boy.</summary>
+        public static bool AnyChasing(IReadOnlyList<MonsterAI> monsters)
+        {
+            foreach (var m in monsters)
+                if (m != null && m.Active && m.State == MonsterState.Chase) return true;
+            return false;
+        }
 
         public void Init(ForestMap f, PlayerController p, AudioBank b, MaterialLibrary mats)
         {
@@ -60,9 +100,11 @@ namespace KaiForest
             motor = gameObject.AddComponent<NpcMotor>();
             motor.turnSpeed = 300f;
             Voice = gameObject.AddComponent<VoiceEmitter>();
-            Voice.audibleRange = 200f;
-            Voice.loudness = 1f;
-            Rig = CharacterFactory.BuildMonster(transform, mats);
+            Voice.kind = VoiceKind.Fake;
+            // Tripo model with animations, else the Blender model, else the primitive one.
+            Body = MonsterBody.Build(transform, height);
+            Rig = Body != null ? Body.Rig
+                : CharacterFactory.BuildMonsterFromModel(transform) ?? CharacterFactory.BuildMonster(transform, mats);
 
             breath = Make3D(bank.monsterBreath, true, 20f);
             stepSource = Make3D(null, false, 25f);
@@ -93,6 +135,29 @@ namespace KaiForest
 
         public void Teleport(Vector3 p) => motor.Teleport(p);
 
+        /// <summary>Keeps this monster inside the circle (a monster trap's area).</summary>
+        public void SetTerritory(Vector3 center, float radius)
+        {
+            HasTerritory = true;
+            territoryCenter = new Vector3(center.x, 0f, center.z);
+            territoryRadius = radius;
+        }
+
+        public bool InTerritory(Vector3 p)
+        {
+            if (!HasTerritory) return true;
+            var d = p - territoryCenter; d.y = 0f;
+            return d.sqrMagnitude <= territoryRadius * territoryRadius;
+        }
+
+        /// <summary>The point itself, or the nearest point on the territory's edge.</summary>
+        Vector3 KeepInside(Vector3 p)
+        {
+            if (InTerritory(p)) return p;
+            var d = p - territoryCenter; d.y = 0f;
+            return territoryCenter + d.normalized * territoryRadius;
+        }
+
         public void Halt()
         {
             Active = false;
@@ -107,6 +172,7 @@ namespace KaiForest
                 ChaseCount++;
                 nextCall = Time.time + 0.2f;
                 nextLunge = Time.time + 1.5f;
+                nextAlert = 0f;
             }
             State = s;
             stateSince = Time.time;
@@ -120,14 +186,20 @@ namespace KaiForest
             var away = transform.position - player.transform.position; away.y = 0f;
             if (away.sqrMagnitude < 0.01f) away = Random.insideUnitSphere;
             away.y = 0f;
-            motor.MoveTo(forest.FindOpenPoint(transform.position + away.normalized * retreatDistance, 10f), retreatSpeed);
+            var target = KeepInside(transform.position + away.normalized * retreatDistance);
+            motor.MoveTo(KeepInside(forest.FindOpenPoint(target, HasTerritory ? 4f : 10f)), retreatSpeed);
         }
 
         void PickSearchTarget()
         {
+            if (HasTerritory)
+            {
+                motor.MoveTo(forest.FindOpenPoint(territoryCenter, territoryRadius * 0.8f), searchSpeed);
+                return;
+            }
             // It does not know where the boy is, but it is drawn to him.
             Vector3 center;
-            if (Random.value < 0.7f)
+            if (Random.value < searchTowardPlayerChance)
             {
                 Vector2 o = Random.insideUnitCircle * searchAroundPlayerRadius;
                 center = player.transform.position + new Vector3(o.x, 0f, o.y);
@@ -135,6 +207,22 @@ namespace KaiForest
             else
                 center = new Vector3(Random.Range(-forest.halfSize, forest.halfSize), 0f, Random.Range(-forest.halfSize, forest.halfSize));
             motor.MoveTo(forest.FindOpenPoint(center, 12f), searchSpeed);
+        }
+
+        /// <summary>Calls the other monsters nearby over to where the boy is.</summary>
+        void AlertOthers(Vector3 at)
+        {
+            if (alertRadius <= 0f || GameManager.I == null) return;
+            foreach (var m in GameManager.I.Monsters)
+            {
+                if (m == this || m == null || !m.Active || m.Frozen) continue;
+                if (m.State == MonsterState.Chase || m.State == MonsterState.Retreat) continue;
+                if ((m.transform.position - transform.position).sqrMagnitude > alertRadius * alertRadius) continue;
+                if (!m.InTerritory(at)) continue; // a trap's monster doesn't leave its area
+                m.lastKnown = at;
+                m.lookAroundUntil = 0f;
+                m.Enter(MonsterState.Investigate);
+            }
         }
 
         bool LineOfSight()
@@ -162,11 +250,12 @@ namespace KaiForest
             }
 
             bool sees = false, hears = false;
+            bool inside = InTerritory(pp);
             if (Time.time >= nextPerceive || State == MonsterState.Chase)
             {
                 nextPerceive = Time.time + 0.2f;
-                sees = d < sightDistance && LineOfSight();
-                hears = d < (player.IsMoving ? hearMovingDistance : hearStillDistance);
+                sees = inside && d < sightDistance && LineOfSight();
+                hears = inside && d < (player.IsMoving ? hearMovingDistance : hearStillDistance);
             }
 
             switch (State)
@@ -174,7 +263,7 @@ namespace KaiForest
                 case MonsterState.Search:
                     if (sees) Enter(MonsterState.Chase);
                     else if (hears) { lastKnown = pp; Enter(MonsterState.Investigate); }
-                    else if (!motor.HasTarget || Time.time - motor.TargetSetTime > 20f) PickSearchTarget();
+                    else if (!motor.HasTarget || Time.time - motor.TargetSetTime > searchRetargetTime) PickSearchTarget();
                     break;
 
                 case MonsterState.Investigate:
@@ -183,6 +272,7 @@ namespace KaiForest
                     if (Time.time < lookAroundUntil) { motor.Stop(); transform.Rotate(0f, 70f * Time.deltaTime, 0f); }
                     else
                     {
+                        lastKnown = KeepInside(lastKnown);
                         motor.MoveTo(lastKnown, investigateSpeed);
                         var toLast = lastKnown - transform.position; toLast.y = 0f;
                         if (toLast.magnitude < 1.2f)
@@ -195,7 +285,9 @@ namespace KaiForest
                     break;
 
                 case MonsterState.Chase:
-                    if (sees || d < 4f) { lastSeen = Time.time; lastKnown = pp; }
+                    // A trap's monster follows him along its edge when he steps out, then loses him.
+                    if (sees || d < 4f) { lastSeen = Time.time; lastKnown = KeepInside(pp); }
+                    if (Time.time >= nextAlert) { nextAlert = Time.time + alertInterval; AlertOthers(lastKnown); }
                     float speed = chaseSpeed;
                     if (Time.time < lungeUntil) speed = lungeSpeed;
                     else if (d < 6f && Time.time > nextLunge) { lungeUntil = Time.time + 1.2f; nextLunge = Time.time + 4.5f; }
@@ -240,7 +332,8 @@ namespace KaiForest
         void UpdateSounds()
         {
             bool chasing = Active && State == MonsterState.Chase;
-            breath.volume = Mathf.MoveTowards(breath.volume, chasing ? 0.9f : (Active ? 0.15f : 0f), Time.deltaTime * 1.5f);
+            float breathTarget = (chasing ? 0.9f : (Active ? 0.15f : 0f)) * Hearing.Volume;
+            breath.volume = Mathf.MoveTowards(breath.volume, breathTarget, Time.deltaTime * 1.5f);
             float v = motor != null ? motor.Velocity.magnitude : 0f;
             if (v > 0.3f && bank.monsterSteps != null && bank.monsterSteps.Length > 0)
             {
@@ -248,7 +341,7 @@ namespace KaiForest
                 if (stepTimer <= 0f)
                 {
                     stepTimer = 1.25f;
-                    stepSource.volume = chasing ? 0.9f : 0.35f;
+                    stepSource.volume = (chasing ? 0.9f : 0.35f) * Hearing.Volume;
                     stepSource.pitch = Random.Range(0.8f, 1.0f);
                     stepSource.PlayOneShot(bank.monsterSteps[Random.Range(0, bank.monsterSteps.Length)]);
                 }
@@ -258,8 +351,18 @@ namespace KaiForest
         /// <summary>Degrees the whole body bends forward over the boy during the capture.</summary>
         public float ScareLean { get; set; }
 
+        /// <summary>Which way its face looks (the capture close-up sits in front of it).</summary>
+        public Vector3 FaceForward(Vector3 viewer) =>
+            Body != null ? Body.FaceForward : (viewer - Rig.head.position).normalized;
+
         void Animate()
         {
+            bool chasing = State == MonsterState.Chase && Active;
+            if (Body != null)
+            {
+                Body.Drive(motor != null ? motor.Velocity.magnitude : 0f, chasing, ScareLean, runAnimPace);
+                return;
+            }
             float t = Time.time;
             if (ScareLean > 0f)
             {
@@ -271,7 +374,6 @@ namespace KaiForest
                 Rig.armR.localRotation = Quaternion.Euler(-70f, 0f, -25f);
                 return;
             }
-            bool chasing = State == MonsterState.Chase && Active;
             float v = motor != null ? Mathf.Clamp01(motor.Velocity.magnitude / chaseSpeed) : 0f;
             Rig.body.localRotation = Quaternion.Euler((chasing ? 14f : 3f) * v + Mathf.Sin(t * 0.9f) * 2f, 0f, Mathf.Sin(t * 1.3f) * 3f);
             Rig.body.localPosition = new Vector3(0f, Mathf.Sin(t * 1.1f) * 0.04f, 0f);

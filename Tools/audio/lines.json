@@ -1,5 +1,5 @@
 {
-  "_comment": "声のセリフ表。gen_tts.ps1 が Windows 音声合成(Haruka)で raw/*.wav を作り、build_audio.py が加工して Assets/Game/Audio/Voices に書き出す。本番の声に差し替えるときは raw/<id>.wav を録音データで置き換えて build_audio.py だけ回せばよい。",
+  "_comment": "声のセリフ表。Haruka プロト: gen_tts.ps1 → raw → build_audio.py。本番 Irodori: audio_irodori が near/far まで作り sync で Voices へ（本 JSON は ID 一覧とプロト用）。mother_11 は Irodori 内 ID、ゲームは mother_found。",
   "voice": "Microsoft Haruka Desktop",
   "lines": [
     { "id": "mother_01", "kind": "mother", "text": "カイー！", "rate": "-15%", "pitch": "+10%" },
