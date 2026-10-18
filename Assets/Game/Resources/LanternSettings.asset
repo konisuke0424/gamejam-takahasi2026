@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ec7d88f8d29d9b43983e9920ebfc983, type: 3}
   m_Name: LanternSettings
   m_EditorClassIdentifier: Assembly-CSharp::KaiForest.LanternSettings
-  range: 11
-  intensity: 22
-  daylight: 1
+  range: 300
+  intensity: 30
+  daylight: 0
