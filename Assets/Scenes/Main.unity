@@ -151,11 +151,11 @@ MonoBehaviour:
   mats: {fileID: 11400000, guid: 71915964d2f77b64682c490a09ff3ffd, type: 2}
   audioBank: {fileID: 11400000, guid: d2461d0fb4d68ff41b05eacaee9e1cfc, type: 2}
   uiFont: {fileID: 12800000, guid: fe104833e5d23544ea691855986253ed, type: 3}
+  titleFont: {fileID: 0}
   titleTexture: {fileID: 2800000, guid: 3a2c775bdd505f84c93defb6dbf2109b, type: 3}
   clearTexture: {fileID: 2800000, guid: 8d14e2dd686e3f648b5a9cdac69216e8, type: 3}
   gameOverTexture: {fileID: 2800000, guid: 0fb5c325dbc835e49921e35854685922, type: 3}
   volume: {fileID: 2075905215}
-  fogDensity: 0.085
   fogColor: {r: 0.012, g: 0.016, b: 0.024, a: 1}
   ambientColor: {r: 0.05, g: 0.055, b: 0.075, a: 1}
 --- !u!4 &1664643562

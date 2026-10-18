@@ -30,6 +30,7 @@ namespace KaiForest
         public MaterialLibrary mats;
         public AudioBank audioBank;
         public Font uiFont;
+        public Font titleFont;
         public Texture2D titleTexture;
         public Texture2D clearTexture;
         public Texture2D gameOverTexture;
@@ -70,6 +71,8 @@ namespace KaiForest
         void Awake()
         {
             I = this;
+            uiFont = Resources.Load<Font>("KaiForest/Fonts/HGRGY") ?? uiFont;
+            titleFont = Resources.Load<Font>("KaiForest/Fonts/aoyagireisyosimo_ttf") ?? uiFont;
             viewSettings = LanternSettings.Load();
             ApplyRenderSettings();
             BuildMoon();
@@ -486,19 +489,14 @@ namespace KaiForest
             fade.color = Color.black;
 
             titleGroup = MakeGroup(go.transform, "Title");
-            var title = MakeRect(titleGroup.transform, "Logo", new Vector2(0f, 210f), Vector2.zero, false).gameObject.AddComponent<RawImage>();
+            var title = MakeRect(titleGroup.transform, "Logo", new Vector2(0f, 160f), Vector2.zero, false).gameObject.AddComponent<RawImage>();
             title.texture = titleTexture;
             title.raycastTarget = false;
             title.SetNativeSize();
-            title.rectTransform.sizeDelta *= 0.75f;
-            MakeText(titleGroup.transform, "―　本物の声を、聞き分けて　―", 34, new Color(0.75f, 0.7f, 0.65f), new Vector2(0f, 40f));
-            MakeText(titleGroup.transform,
-                "マウスを動かす　見回す\n" +
-                "左ボタンを押している間　前へ進む\n" +
-                "右ボタンを押している間　うしろへ下がる",
-                26, new Color(0.62f, 0.6f, 0.58f), new Vector2(0f, -150f));
-            MakeText(titleGroup.transform, "ヘッドホン推奨", 22, new Color(0.5f, 0.45f, 0.42f), new Vector2(0f, -300f));
-            titleHint = MakeText(titleGroup.transform, "クリックで　はじめる", 34, Color.white, new Vector2(0f, -390f));
+            title.rectTransform.sizeDelta *= 1.2f;
+            MakeText(titleGroup.transform, "―　本物の声を、聞き分けて　―", 60, new Color(0.75f, 0.7f, 0.65f), new Vector2(0f, 0f), titleFont);
+            MakeText(titleGroup.transform, "ヘッドホン推奨", 50, new Color(0.5f, 0.45f, 0.42f), new Vector2(0f, -300f));
+            titleHint = MakeText(titleGroup.transform, "クリックで　はじめる", 40, Color.white, new Vector2(0f, -390f));
             var medalRoot = MakeRect(titleGroup.transform, "ClearMedal", new Vector2(-134f, -42f), new Vector2(86f, 96f), false);
             medalRoot.anchorMin = medalRoot.anchorMax = medalRoot.pivot = new Vector2(1f, 1f);
             titleMedalRibbons = new Image[2];
@@ -571,11 +569,11 @@ namespace KaiForest
             return g;
         }
 
-        Text MakeText(Transform parent, string text, int size, Color color, Vector2 pos)
+        Text MakeText(Transform parent, string text, int size, Color color, Vector2 pos, Font fontOverride = null)
         {
             var rt = MakeRect(parent, "Text", pos, new Vector2(1800f, 200f), false);
             var t = rt.gameObject.AddComponent<Text>();
-            t.font = uiFont;
+            t.font = fontOverride != null ? fontOverride : uiFont;
             t.text = text;
             t.fontSize = size;
             t.color = color;
