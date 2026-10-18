@@ -13,13 +13,11 @@
 Usage:
   py scripts/build_takashi_reference_voice_tool.py
   py scripts/build_takashi_reference_voice_tool.py --post-only
-  py scripts/build_takashi_reference_voice_tool.py --candidates-only
 """
 import argparse
 import json
 import shutil
 import subprocess
-from dataclasses import replace
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -86,54 +84,6 @@ def world_pass(x, params: ChildVoiceParams, title: str) -> tuple:
     return y, meta
 
 
-def build_candidates(
-    raw: Path, base: ChildVoiceParams, variants: list[dict], baseline_ref: str
-) -> None:
-    """同じ takashi_irodori から F0 目標だけ変えた試聴用 WAV を出力（本番 takashi.wav は触らない）。"""
-    if not raw.is_file():
-        raise SystemExit(f"加工前 WAV がありません: {raw}")
-    x = load_mono(raw)
-    manifest: list[dict] = []
-    for v in variants:
-        vid = v.get("id") or Path(v["file"]).stem
-        rel = v["file"]
-        out = ROOT / rel
-        target = float(v["target_f0_median_hz"])
-        note = v.get("note", "")
-        p = replace(base, target_f0_median_hz=target)
-        if "formant_alpha" in v:
-            p = replace(p, formant_alpha=float(v["formant_alpha"]))
-        if "fine_semitones" in v:
-            p = replace(p, fine_semitones=float(v["fine_semitones"]))
-        print(f"候補 {vid}: F0 目標 {target:.0f} Hz → {rel}")
-        y, meta = apply_child_voice_world(x, p)
-        write_reference(y, out)
-        after = meta["after"]
-        manifest.append(
-            {
-                "id": vid,
-                "file": rel,
-                "target_f0_median_hz": target,
-                "after_f0_median_hz": round(after.median, 1) if after.median > 0 else None,
-                "note": note,
-            }
-        )
-        print(format_f0_report("   処理後", after))
-    manifest_path = ROOT / "assets/reference/takashi_reference_candidates.json"
-    baseline = baseline_ref
-    payload = {
-        "source": "takashi_irodori.wav",
-        "baseline_production": {
-            "file": baseline,
-            "note": "現行本番参照（採用済み hi2 / target 352 Hz）。候補と必ず聞き比べる",
-        },
-        "listening_hint": "前回 315/328/336 は加工後 F0 が 318〜334 Hz で差が約1半音のため区別しづらい。今回は約270/310/345 Hz 目標で約2〜3半音刻み。",
-        "candidates": manifest,
-    }
-    manifest_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print("試聴マニフェスト:", manifest_path)
-
-
 def main():
     ap = argparse.ArgumentParser(
         prog="build_takashi_reference_voice_tool",
@@ -143,11 +93,6 @@ def main():
         "--post-only",
         action="store_true",
         help="Irodori を飛ばし、既存 takashi_irodori.wav から takashi.wav だけ作る",
-    )
-    ap.add_argument(
-        "--candidates-only",
-        action="store_true",
-        help="voice_script の takashi_reference_candidates から試聴用 WAV だけ作る（本番 takashi.wav は更新しない）",
     )
     args = ap.parse_args()
 
@@ -163,13 +108,6 @@ def main():
     out = ROOT / d.get("takashi_reference", "assets/reference/takashi.wav")
     raw = ROOT / d.get("takashi_reference_irodori", "assets/reference/takashi_irodori.wav")
     params = params_from_config(d)
-
-    if args.candidates_only:
-        variants = d.get("takashi_reference_candidates") or []
-        if not variants:
-            raise SystemExit("takashi_reference_candidates が空です（voice_script.json）")
-        build_candidates(raw, params, variants, d.get("takashi_reference", "assets/reference/takashi.wav"))
-        return
 
     if not args.post_only:
         if not (repo / "infer.py").is_file():

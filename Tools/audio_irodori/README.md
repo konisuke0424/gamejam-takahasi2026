@@ -97,8 +97,8 @@ uv run --no-sync python infer.py `
 | 本番ファイル | `assets/reference/takashi.wav` |
 | 加工前（固定） | `assets/reference/takashi_irodori.wav`（Irodori のみ。比較・再加工の入力） |
 | 基準セリフ | `お母さん～どこにいるの？`（`takashi_reference_text`） |
-| WORLD パラメータ | `takashi_reference_target_f0_median_hz` **310**、`takashi_reference_formant_alpha` **0.52** |
-| 加工後の目安 | 有声 F0 中央値 おおよそ **304〜310 Hz**（話速は変えない） |
+| WORLD パラメータ | `takashi_reference_target_f0_median_hz` **352**、`takashi_reference_formant_alpha` **0.52** |
+| 加工後の目安 | 有声 F0 中央値 おおよそ **352 Hz**（話速は変えない） |
 
 セリフ生成時の caption は `takashi_caption_base` ＋ 各シーンの演技メモ（「幼い」「高い」など子供声の指定は **入れない**）。
 
@@ -114,7 +114,7 @@ uv run --no-sync python infer.py `
 1. **Irodori を固定** … 「お母さん～」の呼び方を試行し、`takashi_irodori.wav` を採用（caption は自然な若い男性の演技向け。子供声は後処理に任せる）。
 2. **WORLD で複数試作** … 同じ `takashi_irodori.wav` から F0 目標だけ変えた WAV を並べて試聴（例: 315 / 328 / 336 / **352** / 368 / 384 Hz 目標など）。
 3. **聴き比べ** … 制作側・第三者向けに、F0 目標の異なる試作 WAV を複数用意して比較した（採用後は削除済み）。
-4. **決定** … 当初 **352 Hz**（hi2）→ 試聴後 **310 Hz**（`takashi_ref_mid_310`）を採用。音源を `takashi.wav` に置き、上表のパラメータを `voice_script.json` の正とした。
+4. **決定** … F0 目標 **352 Hz** の試作を採用。音源を `takashi.wav` に置き、上表のパラメータを `voice_script.json` の正とした。
 
 `assets/reference/` に置くのは **`takashi_irodori.wav` と `takashi.wav` の 2 本だけ**です。
 
@@ -146,23 +146,13 @@ py scripts/build_takashi_reference_voice_tool.py
 py scripts/build_takashi_reference_voice_tool.py --post-only
 ```
 
-**F0 だけ変えた試聴候補**（`takashi_irodori.wav` 固定。本番 `takashi.wav` は更新しない）:
-
-```powershell
-py scripts/build_takashi_reference_voice_tool.py --candidates-only
-```
-
-`voice_script.json` の `takashi_reference_candidates` に id・出力パス・`target_f0_median_hz` を列挙。生成後は `assets/reference/takashi_reference_candidates.json` に加工後 F0 の目安が書かれる。
-
-**聞き比べの注意:** F0 目標を 315 / 328 / 336 のように近づけると、加工後は 318〜334 Hz 程度に固まり **約1半音差**で区別しづらい。試聴用は **270 / 310 / 345 Hz 前後**など **2〜3半音以上**空ける。現行本番 `takashi.wav`（352 Hz）も必ず同時に聞く。
-
 設定の正本は `voice_script.json` の `takashi_reference_*`。専用ツールは処理前後の F0 をコンソールに表示します。
 
 #### 本番パラメータ（`voice_script.json`）
 
 | キー | 採用値の意味 |
 | --- | --- |
-| `takashi_reference_target_f0_median_hz` | WORLD の F0 目標中央値（**310**） |
+| `takashi_reference_target_f0_median_hz` | WORLD の F0 目標中央値（**352**） |
 | `takashi_reference_formant_alpha` | フォルマント追従の強さ（**0.52**） |
 | `takashi_reference_f0_goal_min_hz` / `_max_hz` | クリップ用レンジ（**260** / **400**） |
 | `takashi_reference_fine_semitones` | WORLD 後の半音微調整（**0**） |

@@ -10,28 +10,7 @@
     "takashi_reference_text": "お母さん～どこにいるの？",
     "takashi_reference_caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。暗い森で本当の母を探している。「お母さん～」は母を遠くから呼ぶ、伸ばした呼びかけ。疑問符で区切らず、一続きの自然な会話として「どこにいるの？」に続ける。朗読調・説明口調にしない。作り声は使わない。",
     "takashi_caption_base": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。",
-    "takashi_reference_target_f0_median_hz": 310,
-    "takashi_reference_candidates": [
-      {
-        "id": "low_272",
-        "file": "assets/reference/takashi_ref_low_272.wav",
-        "target_f0_median_hz": 272,
-        "formant_alpha": 0.48,
-        "note": "低め（hi2より約3半音低い目安）。落ち着いた少年"
-      },
-      {
-        "id": "mid_310",
-        "file": "assets/reference/takashi_ref_mid_310.wav",
-        "target_f0_median_hz": 310,
-        "note": "中間（旧本番 315 付近）。hi2採用前に近い高さ"
-      },
-      {
-        "id": "high_345",
-        "file": "assets/reference/takashi_ref_high_345.wav",
-        "target_f0_median_hz": 345,
-        "note": "やや高めだが hi2(352)より少し低い"
-      }
-    ],
+    "takashi_reference_target_f0_median_hz": 352,
     "takashi_reference_f0_goal_min_hz": 260,
     "takashi_reference_f0_goal_max_hz": 400,
     "takashi_reference_f0_scale_max": 2.2,
@@ -61,7 +40,7 @@
     "mother/chase/catch等のID・セリフ・参照音声はV6から維持。",
     "たかし（takashi_XX）は別参照 takashi.wav。独り言・近距離用。妖怪FXは付けない。",
     "たかし: Irodori は自然な演技のみ（若い男性・子供声は caption で作らない）。10歳の声質は WORLD 後処理（takashi_caption_base + 各シーンの演技メモ）。",
-    "たかし基準音: takashi_irodori.wav + WORLD → takashi.wav の2本のみ。採用 target F0 310 Hz（takashi_ref_mid_310）。",
+    "たかし基準音: takashi_irodori.wav + WORLD → takashi.wav の2本のみ。採用 target F0 352 Hz。",
     "Irodori: cfg_scale_text 4.0（infer 既定3.0より強め）。参照音と caption が台詞と違うときのすり替えを抑える。各 voice の irodori で上書き可。",
     "たかし: takashi_infer_use_caption=false（infer に長い caption を渡さない）。takashi_cfg_scale_text 6 / speaker 2.5（参照 takashi.wav の別台詞への引っ張りを弱める）。100%保証はない。",
     "たかし: 末尾幻覚→ duration_scale 0.92 + speech_trim（幻覚区間 tail_start 手前で切り、本編は main_end より手前に戻さない）。",
@@ -693,7 +672,7 @@
       "filename": "takashi_03.wav",
       "character": "takashi",
       "scene": "独り言・探索",
-      "text": "お母さん、いったいどこにいるんだろう？",
+      "text": "お母さん、どこにいるんだろう。",
       "direction": "小さな声で、自分に言い聞かせる",
       "tts": {
         "speaker_name": "男声3",
@@ -749,99 +728,6 @@
       },
       "irodori": {
         "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。暗い森で見つけた物に気づき、戸惑いながら自分に言い聞かせる独り言。",
-        "duration_scale": 1.0
-      },
-      "noise": {
-        "enabled": false,
-        "level": 0
-      },
-      "fx": {}
-    },
-    {
-      "id": "takashi_06",
-      "filename": "takashi_06.wav",
-      "character": "takashi",
-      "scene": "独り言・探索",
-      "text": "お母さん、どこだろう。探さなきゃ。",
-      "direction": "自分に言い聞かせる、少し焦り",
-      "tts": {
-        "speaker_name": "男声3",
-        "speed_scale": 0.92,
-        "intonation_scale": 1.04,
-        "accent_overrides": []
-      },
-      "irodori": {
-        "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。暗い森でお母さんを探し、自分に言い聞かせる独り言。",
-        "duration_scale": 1.0
-      },
-      "noise": {
-        "enabled": false,
-        "level": 0
-      },
-      "fx": {}
-    },
-    {
-      "id": "takashi_07",
-      "filename": "takashi_07.wav",
-      "character": "takashi",
-      "scene": "独り言・気配",
-      "text": "右のほうから、なにか聞こえてくる～?",
-      "direction": "遠くの声を聞いて、つぶやく",
-      "tts": {
-        "speaker_name": "男声3",
-        "speed_scale": 0.99,
-        "intonation_scale": 1.02,
-        "accent_overrides": []
-      },
-      "irodori": {
-        "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。物音に気づき、小声で呟く独り言。",
-        "duration_scale": 1.0,
-        "seed": 2026101809
-      },
-      "noise": {
-        "enabled": false,
-        "level": 0
-      },
-      "fx": {}
-    },
-    {
-      "id": "takashi_08",
-      "filename": "takashi_08.wav",
-      "character": "takashi",
-      "scene": "独り言・疑い",
-      "text": "お母さんの声だけど、変。お母さんなのかなぁ？",
-      "direction": "遠くの声を聞いて、迷う",
-      "tts": {
-        "speaker_name": "男声3",
-        "speed_scale": 0.91,
-        "intonation_scale": 1.05,
-        "accent_overrides": []
-      },
-      "irodori": {
-        "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。聞こえた声に違和感を覚え、戸惑う独り言。",
-        "duration_scale": 1.02
-      },
-      "noise": {
-        "enabled": false,
-        "level": 0
-      },
-      "fx": {}
-    },
-    {
-      "id": "takashi_09",
-      "filename": "takashi_09.wav",
-      "character": "takashi",
-      "scene": "独り言・確信",
-      "text": "お母さんの声だ、うん、まちがいない。",
-      "direction": "自分に納得させる、少し安心",
-      "tts": {
-        "speaker_name": "男声3",
-        "speed_scale": 0.94,
-        "intonation_scale": 1.03,
-        "accent_overrides": []
-      },
-      "irodori": {
-        "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。遠くの声を聞き分け、自分に言い聞かせて確かめる独り言。",
         "duration_scale": 1.0
       },
       "noise": {
