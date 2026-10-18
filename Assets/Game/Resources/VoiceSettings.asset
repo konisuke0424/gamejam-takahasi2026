@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KaiForest.VoiceSettings
   falloff: 1.3
   referenceDistance: 6
-  motherRange: 120
-  fakeRange: 90
+  motherRange: 100
+  fakeRange: 60
   motherLoudness: 1
   fakeLoudness: 1
   nearDistance: 6
