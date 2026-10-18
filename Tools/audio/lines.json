@@ -25,6 +25,12 @@
 
     { "id": "chase_01", "kind": "chase", "text": "カイ、カイ、カイ、カイ、カイ", "rate": "+30%", "pitch": "-10%", "fx": { "warble": 2.0, "down": 3.0 } },
     { "id": "chase_02", "kind": "chase", "text": "みつけた", "rate": "-35%", "pitch": "-20%", "fx": { "warble": 2.5, "down": 5.0, "tailDrop": 2.0 } },
-    { "id": "catch_01", "kind": "catch", "text": "カイイイイイ", "rate": "-30%", "pitch": "-30%", "fx": { "warble": 4.0, "down": 9.0 } }
+    { "id": "catch_01", "kind": "catch", "text": "カイイイイイ", "rate": "-30%", "pitch": "-30%", "fx": { "warble": 4.0, "down": 9.0 } },
+
+    { "id": "takashi_01", "kind": "takashi", "text": "これ、僕がお母さんに母の日にプレゼントしたハンカチだ。", "rate": "-5%", "pitch": "+15%" },
+    { "id": "takashi_02", "kind": "takashi", "text": "あれ？お母さんは？", "rate": "-8%", "pitch": "+18%" },
+    { "id": "takashi_03", "kind": "takashi", "text": "お母さん、どこにいるんだろう。", "rate": "-10%", "pitch": "+12%" },
+    { "id": "takashi_04", "kind": "takashi", "text": "あれ？お母さんの声が、他にも聞こえてくる？", "rate": "-5%", "pitch": "+15%" },
+    { "id": "takashi_05", "kind": "takashi", "text": "あれ？これってお母さんのかみかざりだ。どうして？", "rate": "-6%", "pitch": "+16%" }
   ]
 }

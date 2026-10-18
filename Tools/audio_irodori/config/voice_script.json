@@ -5,16 +5,46 @@
     "repo_path": "D:/tools/Irodori-TTS",
     "model": "Aratako/Irodori-TTS-v4-Small",
     "reference": "assets/reference/mother.wav",
+    "takashi_reference": "assets/reference/takashi.wav",
+    "takashi_reference_irodori": "assets/reference/takashi_irodori.wav",
+    "takashi_reference_text": "お母さん～どこにいるの？",
+    "takashi_reference_caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。暗い森で本当の母を探している。「お母さん～」は母を遠くから呼ぶ、伸ばした呼びかけ。疑問符で区切らず、一続きの自然な会話として「どこにいるの？」に続ける。朗読調・説明口調にしない。作り声は使わない。",
+    "takashi_caption_base": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。",
+    "takashi_reference_target_f0_median_hz": 352,
+    "takashi_reference_f0_goal_min_hz": 260,
+    "takashi_reference_f0_goal_max_hz": 400,
+    "takashi_reference_f0_scale_max": 2.2,
+    "takashi_reference_formant_alpha": 0.52,
+    "takashi_reference_fine_semitones": 0,
+    "takashi_reference_duration_scale": 1.0,
+    "takashi_reference_cfg_scale_caption": 2.0,
+    "takashi_reference_seed": 20261020,
     "device": "cpu",
     "num_steps": 40,
-    "seed": 20261017
+    "seed": 20261017,
+    "cfg_scale_text": 4.0,
+    "cfg_scale_caption": 3.0,
+    "cfg_scale_speaker": 5.0,
+    "takashi_cfg_scale_text": 6.0,
+    "takashi_cfg_scale_caption": 1.5,
+    "takashi_cfg_scale_speaker": 2.5,
+    "takashi_infer_use_caption": false,
+    "takashi_duration_scale": 0.92,
+    "takashi_trim_trailing_speech": true
   },
   "notes": [
     "原案はかい。今回の音声素材はユーザー指定で「たかし」に変更。",
     "VOICEVOX用tts設定は履歴として残しておりIrodoriでは使用しない。",
     "directionは演出メモ。実際の合成指示はirodori.caption。",
     "V7はIrodori自身に妖怪の演技を指定し、Pythonでは原音を残す二重声・揺らぎ・語尾低下・短いエコーを補助的に適用。ノイズ加工は全件無効。",
-    "mother/chase/catch等のID・セリフ・参照音声はV6から維持。"
+    "mother/chase/catch等のID・セリフ・参照音声はV6から維持。",
+    "たかし（takashi_XX）は別参照 takashi.wav。独り言・近距離用。妖怪FXは付けない。",
+    "たかし: Irodori は自然な演技のみ（若い男性・子供声は caption で作らない）。10歳の声質は WORLD 後処理（takashi_caption_base + 各シーンの演技メモ）。",
+    "たかし基準音: takashi_irodori.wav + WORLD → takashi.wav の2本のみ。採用 target F0 352 Hz。",
+    "Irodori: cfg_scale_text 4.0（infer 既定3.0より強め）。参照音と caption が台詞と違うときのすり替えを抑える。各 voice の irodori で上書き可。",
+    "たかし: takashi_infer_use_caption=false（infer に長い caption を渡さない）。takashi_cfg_scale_text 6 / speaker 2.5（参照 takashi.wav の別台詞への引っ張りを弱める）。100%保証はない。",
+    "たかし: 末尾幻覚→ duration_scale 0.92 + speech_trim（幻覚区間 tail_start 手前で切り、本編は main_end より手前に戻さない）。",
+    "たかし台詞: 「えっ、」は不安定→「あれ？」寄り。短い行は語尾に「どうして？」等を足し約5秒前後にすると安定しやすい（README §2-4）。"
   ],
   "voices": [
     {
@@ -590,6 +620,121 @@
         "tailDrop": 1.61,
         "ghostEcho": 0.17
       }
+    },
+    {
+      "id": "takashi_01",
+      "filename": "takashi_01.wav",
+      "character": "takashi",
+      "scene": "独り言・ハンカチ",
+      "text": "これ、僕がお母さんに母の日にプレゼントしたハンカチだ。",
+      "direction": "懐かしそうに、少し照れながら",
+      "tts": {
+        "speaker_name": "男声3",
+        "speed_scale": 0.95,
+        "intonation_scale": 1.05,
+        "accent_overrides": []
+      },
+      "irodori": {
+        "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。暗い森の中、お母さんへの思い出を懐かしそうに語る独り言。",
+        "duration_scale": 1.0
+      },
+      "noise": {
+        "enabled": false,
+        "level": 0
+      },
+      "fx": {}
+    },
+    {
+      "id": "takashi_02",
+      "filename": "takashi_02.wav",
+      "character": "takashi",
+      "scene": "独り言・不安",
+      "text": "あれ？お母さんは？",
+      "direction": "鳥居の前で戸惑い、声が少し上ずる",
+      "tts": {
+        "speaker_name": "男声3",
+        "speed_scale": 0.92,
+        "intonation_scale": 1.1,
+        "accent_overrides": []
+      },
+      "irodori": {
+        "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。期待と違う状況で、戸惑いながら呟く。",
+        "duration_scale": 1.0
+      },
+      "noise": {
+        "enabled": false,
+        "level": 0
+      },
+      "fx": {}
+    },
+    {
+      "id": "takashi_03",
+      "filename": "takashi_03.wav",
+      "character": "takashi",
+      "scene": "独り言・探索",
+      "text": "お母さん、どこにいるんだろう。",
+      "direction": "小さな声で、自分に言い聞かせる",
+      "tts": {
+        "speaker_name": "男声3",
+        "speed_scale": 0.9,
+        "intonation_scale": 1.0,
+        "accent_overrides": []
+      },
+      "irodori": {
+        "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。暗い森で一人、お母さんを探して少し不安げな独り言。",
+        "duration_scale": 1.0
+      },
+      "noise": {
+        "enabled": false,
+        "level": 0
+      },
+      "fx": {}
+    },
+    {
+      "id": "takashi_04",
+      "filename": "takashi_04.wav",
+      "character": "takashi",
+      "scene": "独り言・聞き分け",
+      "text": "あれ？お母さんの声が、他にも聞こえてくる？",
+      "direction": "はっとして、戸惑い",
+      "tts": {
+        "speaker_name": "男声3",
+        "speed_scale": 0.93,
+        "intonation_scale": 1.08,
+        "accent_overrides": []
+      },
+      "irodori": {
+        "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。不気味な状況に気づき、はっとして焦る独り言。",
+        "duration_scale": 1.05
+      },
+      "noise": {
+        "enabled": false,
+        "level": 0
+      },
+      "fx": {}
+    },
+    {
+      "id": "takashi_05",
+      "filename": "takashi_05.wav",
+      "character": "takashi",
+      "scene": "独り言・髪飾り",
+      "text": "あれ？これってお母さんのかみかざりだ。どうして？",
+      "direction": "手に取って気づき、小さく呟く",
+      "tts": {
+        "speaker_name": "男声3",
+        "speed_scale": 0.94,
+        "intonation_scale": 1.06,
+        "accent_overrides": []
+      },
+      "irodori": {
+        "caption": "日本語を話す若い男性の自然な声。落ち着いた声質で、普通の会話に近い話し方。母への「お母さん」は呼びかけとして自然に話し、説明口調や朗読調にしない。大げさな感情表現や作り声は使わない。暗い森で見つけた物に気づき、戸惑いながら自分に言い聞かせる独り言。",
+        "duration_scale": 1.0
+      },
+      "noise": {
+        "enabled": false,
+        "level": 0
+      },
+      "fx": {}
     }
   ]
 }

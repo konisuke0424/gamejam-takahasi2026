@@ -1,6 +1,7 @@
 """Irodori export を Unity 用の near / far ペアにする。
 
 build_audio.py の距離用加工と同じパラメータ。Haruka プロト用の妖怪FXは含めない。
+たかし（独り言・心の声）は湿ったリバーブをかけず、near は原音に近く far は軽いローパスのみ。
 """
 from pathlib import Path
 
@@ -93,10 +94,15 @@ def write_near_far_pair(
         x = _mother_touch(x, line_index)
     x = _normalize(_trim(x, 0.005))
 
-    # 近距離: 軽いリバーブ。遠距離: ローパス後に強めのリバーブ（WebGL 用の2ファイル運用）。
-    near = _normalize(_reverb(x, 1.2, 0.12, 4000), 0.89)
-    far = _butter(x, "lowpass", 1100, 4)
-    far = _normalize(_reverb(far, 2.0, 0.45, 1500), 0.89)
+    if character == "takashi":
+        # 独り言・心の声。妖怪用の ghostEcho とは別だが、森の残響も焼き込まない。
+        near = _normalize(x, 0.89)
+        far = _normalize(_butter(x, "lowpass", 3200, 2) * 0.94, 0.89)
+    else:
+        # 近距離: 軽いリバーブ。遠距離: ローパス後に強めのリバーブ（WebGL 用の2ファイル運用）。
+        near = _normalize(_reverb(x, 1.2, 0.12, 4000), 0.89)
+        far = _butter(x, "lowpass", 1100, 4)
+        far = _normalize(_reverb(far, 2.0, 0.45, 1500), 0.89)
 
     sf.write(str(near_wav), near, SR, subtype="PCM_16")
     sf.write(str(far_wav), far, SR, subtype="PCM_16")
