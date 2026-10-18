@@ -16,6 +16,9 @@ namespace KaiForest
         AudioSource near, far;
         Transform listener;
         VoiceSettings settings;
+        /// <summary>A voice line started: the emitter, how loud the boy hears it (0..1) and how long it lasts.</summary>
+        public static event System.Action<VoiceEmitter, float, float> Played;
+
         public bool IsPlaying => near != null && near.isPlaying;
         public int PlayCount { get; private set; }
         public string LastLineId { get; private set; }
@@ -50,13 +53,15 @@ namespace KaiForest
             near.clip = line.near;
             far.clip = line.far != null ? line.far : line.near;
             near.pitch = far.pitch = pitch;
-            UpdateMix();
+            float heard = UpdateMix();
             near.Play();
             far.Play();
             PlayCount++;
             LastLineId = line.id;
             LastPlayTime = Time.time;
-            return line.near.length / Mathf.Max(0.1f, pitch);
+            float length = line.near.length / Mathf.Max(0.1f, pitch);
+            Played?.Invoke(this, heard, length);
+            return length;
         }
 
         public void Stop()
@@ -72,12 +77,13 @@ namespace KaiForest
             if (IsPlaying) UpdateMix();
         }
 
-        void UpdateMix()
+        /// <summary>Sets the near/far volumes for the listener's distance; returns the total gain heard.</summary>
+        float UpdateMix()
         {
             if (listener == null)
             {
                 var l = FindAnyObjectByType<AudioListener>();
-                if (l == null) return;
+                if (l == null) return 0f;
                 listener = l.transform;
             }
             float d = Vector3.Distance(listener.position, transform.position);
@@ -86,6 +92,7 @@ namespace KaiForest
             float mix = Mathf.Max(Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(settings.nearDistance, settings.farDistance, d)), Hearing.Muffle);
             near.volume = gain * (1f - mix);
             far.volume = gain * mix;
+            return gain;
         }
     }
 }

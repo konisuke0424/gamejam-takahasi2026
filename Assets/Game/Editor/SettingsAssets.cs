@@ -14,6 +14,10 @@ namespace KaiForest.EditorTools
         const string PantClipPath = "Assets/Game/Audio/Sfx/player_pant.wav";
         const string BackdropImagePath = "Assets/Denim/back.png";
         const string MotherImagePath = "Assets/Denim/mother.png";
+        const string VoicesDir = "Assets/Game/Audio/Voices/";
+        const string IntroImagePath = "Assets/Denim/nikki01.png";
+        const string ClearImagePath = "Assets/Denim/nikki02.png";
+        const string ClearTitlePath = "Assets/Game/UI/UI_GameClear.png";
 
         static SettingsAssets() => EditorApplication.delayCall += EnsureAll;
 
@@ -24,6 +28,61 @@ namespace KaiForest.EditorTools
             Backdrop();
             Voice();
             MotherBillboard();
+            Story();
+            BoyVoice();
+        }
+
+        /// <summary>Also fills in the boy's lines (Assets/Game/Audio/Voices/takashi_06..09.wav) where empty.</summary>
+        public static BoyVoiceSettings BoyVoice()
+        {
+            var s = Ensure<BoyVoiceSettings>(BoyVoiceSettings.ResourceName);
+            bool dirty = false;
+            AudioClip Fill(AudioClip current, string file)
+            {
+                if (current != null) return current;
+                var clip = AssetDatabase.LoadAssetAtPath<AudioClip>(VoicesDir + file);
+                dirty |= clip != null;
+                return clip;
+            }
+            s.startLine = Fill(s.startLine, "takashi_06.wav");
+            s.wallLine = Fill(s.wallLine, "takashi_06.wav");
+            s.forkLine = Fill(s.forkLine, "takashi_07.wav");
+            s.fakeHeardLine = Fill(s.fakeHeardLine, "takashi_08.wav");
+            s.motherHeardLine = Fill(s.motherHeardLine, "takashi_09.wav");
+            if (dirty)
+            {
+                EditorUtility.SetDirty(s);
+                AssetDatabase.SaveAssets();
+            }
+            return s;
+        }
+
+        /// <summary>Also fills in the diary pictures (Assets/Denim/nikki01.png, nikki02.png) if they are empty.</summary>
+        public static StorySettings Story()
+        {
+            var s = Ensure<StorySettings>(StorySettings.ResourceName);
+            bool dirty = false;
+            if (s.introImage == null)
+            {
+                s.introImage = AssetDatabase.LoadAssetAtPath<Texture2D>(IntroImagePath);
+                dirty |= s.introImage != null;
+            }
+            if (s.clearImage == null)
+            {
+                s.clearImage = AssetDatabase.LoadAssetAtPath<Texture2D>(ClearImagePath);
+                dirty |= s.clearImage != null;
+            }
+            if (s.clearTitleImage == null)
+            {
+                s.clearTitleImage = AssetDatabase.LoadAssetAtPath<Texture2D>(ClearTitlePath);
+                dirty |= s.clearTitleImage != null;
+            }
+            if (dirty)
+            {
+                EditorUtility.SetDirty(s);
+                AssetDatabase.SaveAssets();
+            }
+            return s;
         }
 
         /// <summary>
@@ -126,6 +185,12 @@ namespace KaiForest.EditorTools
 
         [MenuItem("KaiForest/Voice Settings")]
         static void SelectVoice() => Select(Voice());
+
+        [MenuItem("KaiForest/Boy Voice Settings")]
+        static void SelectBoyVoice() => Select(BoyVoice());
+
+        [MenuItem("KaiForest/Story Settings")]
+        static void SelectStory() => Select(Story());
 
         [MenuItem("KaiForest/Mother Picture Material")]
         static void SelectMotherBillboard() => Select(MotherBillboard());

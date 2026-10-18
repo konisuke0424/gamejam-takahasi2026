@@ -7,16 +7,16 @@ namespace KaiForest
 
     /// <summary>
     /// Something of mother's lying in the forest (placed in Forest.unity). While it is the one to find,
-    /// her real voice calls from it; clicking within pickupRadius picks it up, which is a checkpoint
+    /// her real voice calls from it; walking within pickupRadius picks it up, which is a checkpoint
     /// (see StageDirector). Hidden until its stage comes, and gone once picked up, together with its
     /// markers (e.g. a sparkle particle placed next to it).
     /// </summary>
     public class CheckpointItem : MonoBehaviour
     {
         public ItemKind kind;
-        [Tooltip("拾える距離（m）。この中でクリックすると拾う")]
+        [Tooltip("拾える距離（m）。この中に入ると拾う（クリック不要）")]
         public float pickupRadius = 3f;
-        [Tooltip("「クリックで　〇〇を　拾う」に出る名前")]
+        [Tooltip("呼び名（F1 のデバッグ表示に出る）")]
         public string displayName = "ハンカチ";
         [Tooltip("拾ったときに画面に出る文")]
         [TextArea] public string message = "";

@@ -3,9 +3,10 @@
 Headline text is rendered to PNG from an installed Japanese font (the font file itself is
 NOT shipped with the game, only the rendered image). Body text in-game uses Noto Sans JP.
 
-Usage: python Tools/gen_textures.py
+Usage: python Tools/gen_textures.py [--headlines]   (--headlines: only the headline images)
 """
 import os
+import sys
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
@@ -85,10 +86,52 @@ def headline(name, text, size, color, glow):
     print("ui", name, img.size)
 
 
+def rich_headline(name, text, size, top, bottom, outline, glow):
+    """A showier headline: gold-ish vertical gradient fill, dark brush outline, warm glow and a drop shadow."""
+    font = ImageFont.truetype(find_font(), size)
+    stroke = max(2, size // 28)
+    l, t, r, b = font.getbbox(text, stroke_width=stroke)
+    pad = size // 2
+    w, h = r - l + pad * 2, b - t + pad * 2
+    at = (pad - l, pad - t)
+
+    def mask(stroke_width=0):
+        m = Image.new("L", (w, h), 0)
+        ImageDraw.Draw(m).text(at, text, font=font, fill=255, stroke_width=stroke_width, stroke_fill=255)
+        return m
+
+    fill_mask, outline_mask = mask(), mask(stroke)
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    # Drop shadow, then the warm glow around the letters.
+    shadow = Image.new("RGBA", (w, h), (0, 0, 0, 200))
+    shadow.putalpha(outline_mask.filter(ImageFilter.GaussianBlur(size / 14)).point(lambda a: int(a * 0.8)))
+    img.alpha_composite(shadow, (size // 40, size // 28))
+    halo = Image.new("RGBA", (w, h), glow[:3] + (0,))
+    halo.putalpha(outline_mask.filter(ImageFilter.GaussianBlur(size / 6)).point(lambda a: int(a * glow[3] / 255)))
+    img.alpha_composite(halo)
+    img.alpha_composite(halo)
+    # Brush outline, then the gradient fill inside it.
+    edge = Image.new("RGBA", (w, h), outline)
+    edge.putalpha(outline_mask)
+    img.alpha_composite(edge)
+    ys = np.linspace(0.0, 1.0, h)[:, None, None]
+    top_c, bottom_c = np.array(top, float), np.array(bottom, float)
+    grad = top_c * (1 - ys) + bottom_c * ys
+    grad = np.broadcast_to(grad, (h, w, 3))
+    fill = Image.fromarray(np.clip(grad, 0, 255).astype(np.uint8), "RGB").convert("RGBA")
+    fill.putalpha(fill_mask)
+    img.alpha_composite(fill)
+    os.makedirs(OUT_UI, exist_ok=True)
+    img.save(os.path.join(OUT_UI, name))
+    print("ui", name, img.size)
+
+
 if __name__ == "__main__":
-    ground()
-    bark()
+    if "--headlines" not in sys.argv:
+        ground()
+        bark()
     headline("UI_Title.png", "まねごえの森", 200, (235, 230, 220, 255), (200, 40, 30, 150))
     headline("UI_Clear.png", "おかあさんに、あえた", 150, (255, 240, 215, 255), (255, 170, 80, 170))
     headline("UI_GameOver.png", "つかまった", 190, (190, 20, 20, 255), (90, 0, 0, 200))
+    rich_headline("UI_GameClear.png", "ゲームクリア", 220, (255, 246, 210), (214, 140, 52), (48, 22, 10, 255), (255, 170, 70, 230))
     print("textures done")

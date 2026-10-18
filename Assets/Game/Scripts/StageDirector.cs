@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace KaiForest
 {
@@ -15,7 +14,7 @@ namespace KaiForest
     }
 
     /// <summary>
-    /// Runs the stages and checkpoints. Picking up an item (click within its reach) moves to the next
+    /// Runs the stages and checkpoints. Picking up an item (walking within its reach) moves to the next
     /// stage and is a checkpoint: after a capture, the retry starts there, where it was picked up.
     /// Reaching mother clears the checkpoint. If nothing at all is placed in Forest.unity, the default
     /// set is put at the default spots (CheckpointLayout); if only some is, a stage whose item is
@@ -140,23 +139,15 @@ namespace KaiForest
 
         void Update()
         {
-            if (gm == null) return;
-            var item = gm.State == GameState.Playing ? Current : null;
-            bool near = item != null && item.InReach(gm.Player.transform.position);
-            gm.ShowPickupHint(near ? $"クリックで　{item.displayName}を　拾う" : null);
-            if (near && Clicked()) PickUp(item);
-        }
-
-        static bool Clicked()
-        {
-            var mouse = GameManager.IgnoreMouse ? null : Mouse.current;
-            return mouse != null && mouse.leftButton.wasPressedThisFrame;
+            if (gm == null || gm.State != GameState.Playing) return;
+            // Walking up to it is enough: no click needed.
+            var item = Current;
+            if (item != null && item.InReach(gm.Player.transform.position)) PickUp(item);
         }
 
         void PickUp(CheckpointItem item)
         {
             item.Take();
-            gm.Player.HoldUntilRelease(); // the click shouldn't also walk him forward
             gm.OnPickedUp(item);
             Stage = SkipMissing(Stage + 1);
             saved = new Checkpoint

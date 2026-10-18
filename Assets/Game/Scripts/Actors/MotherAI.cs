@@ -3,11 +3,14 @@ using UnityEngine;
 namespace KaiForest
 {
     /// <summary>
-    /// Wanders around the exit calling for Kai with many different, natural lines.
-    /// Walks to the boy once she can see his lantern; touching her clears the game.
+    /// Calls for Kai with many different, natural lines; touching her clears the game. By default she
+    /// stands still at her spot (stayPut); otherwise she wanders around it and walks to the boy once
+    /// she can see his lantern.
     /// </summary>
     public class MotherAI : MonoBehaviour
     {
+        [Tooltip("オンなら置いた場所から動かない（歩き回らず、カイを見つけても近寄らない）")]
+        public bool stayPut = true;
         public float wanderRadius = 20f;
         public float walkSpeed = 1.0f;
         public float approachSpeed = 1.9f;
@@ -72,13 +75,14 @@ namespace KaiForest
 
             if (SeesPlayer(d))
             {
+                // Seeing him, she calls more often (and comes to him unless she stays put).
                 if (!Noticed) { Noticed = true; nextCall = Mathf.Min(nextCall, Time.time + 0.4f); }
-                motor.MoveTo(player.transform.position, approachSpeed);
+                if (!stayPut) motor.MoveTo(player.transform.position, approachSpeed);
             }
             else
             {
                 if (Noticed && d > noticeDistance * 1.6f) Noticed = false;
-                if (!motor.HasTarget || Time.time - motor.TargetSetTime > 18f)
+                if (!stayPut && (!motor.HasTarget || Time.time - motor.TargetSetTime > 18f))
                 {
                     if (waitUntil < 0f) waitUntil = Time.time + Random.Range(1.5f, 4f);
                     else if (Time.time > waitUntil)

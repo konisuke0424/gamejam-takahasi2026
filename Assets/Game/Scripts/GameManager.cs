@@ -88,14 +88,23 @@ namespace KaiForest
 
         Canvas canvas;
         Image fade;
-        CanvasGroup titleGroup, endGroup, storyGroup, hintGroup, messageGroup, deerGroup;
-        Text storyText, endSub, endHint, titleHint, debugText, pickupHint, messageText;
-        RawImage endImage, deerImage;
+        CanvasGroup titleGroup, endGroup, diaryGroup, hintGroup, messageGroup, deerGroup;
+        Text endSub, endHint, titleHint, debugText, messageText;
+        RawImage endImage, deerImage, diaryImage;
+        AspectRatioFitter diaryFit;
+        RectTransform resultBlock;
+        RawImage resultTitle;
+        Text resultTitleText, resultTime, resultHint;
+        CanvasGroup resultTitleGroup, resultTimeGroup;
+        /// <summary>Width of the "ゲームクリア" headline on the ending page (canvas units, before Result Scale).</summary>
+        const float ResultTitleWidth = 760f;
+        float clearStartedAt;
+        StorySettings storySettings;
         Coroutine messageRoutine, deerRoutine;
         Vignette vignette;
         ChromaticAberration chroma;
         float baseVignette, baseChroma;
-        bool debugHud;
+        bool debugHud, openingLine;
         Coroutine introRoutine;
         LanternSettings viewSettings;
 
@@ -103,6 +112,7 @@ namespace KaiForest
         {
             I = this;
             viewSettings = LanternSettings.Load();
+            storySettings = StorySettings.Load();
             ApplyRenderSettings();
             BuildMoon();
             BuildUI();
@@ -153,13 +163,16 @@ namespace KaiForest
             var mgo = new GameObject("Mother") { layer = 2 };
             Mother = mgo.AddComponent<MotherAI>();
             Mother.Init(Map, Player, audioBank, mats, home);
+            // She stands exactly on her marker unless it is set to wander.
+            Mother.stayPut = spawn == null || !spawn.wander;
             if (spawn != null) Mother.wanderRadius = spawn.wanderRadius;
             else if (Map.exit != null) Mother.wanderRadius = Map.exit.wanderRadius;
-            Mother.Teleport(Map.FindOpenPoint(home, 3f));
+            Mother.Teleport(Mother.stayPut ? home : Map.FindOpenPoint(home, 3f));
 
             // Monsters come later, stage by stage (StageDirector).
             Stamina = pgo.AddComponent<PlayerStamina>();
             Stamina.Init(Monsters);
+            pgo.AddComponent<BoyVoice>().Init(Map); // his own lines (start, outer wall, fork, voices heard)
 
             Ambience = gameObject.AddComponent<AmbienceController>();
             Ambience.Init(audioBank, Player, Monsters, Stamina);
@@ -280,6 +293,7 @@ namespace KaiForest
         public void BeginGame()
         {
             if (State != GameState.Title) return;
+            openingLine = true; // "I have to find mother" once play starts (not on retries)
             introRoutine = StartCoroutine(IntroRoutine(false));
         }
 
@@ -295,38 +309,115 @@ namespace KaiForest
                 yield return FadeImage(0f, 0.8f);
                 yield break;
             }
-            yield return Fade(titleGroup, 0f, 0.6f);
-            fade.color = Color.black;
-            yield return ShowStory("森で、迷子に　なってしまった。", 2.6f);
-            yield return ShowStory("おかあさんの声が　きこえる……\n\nでも、この森には\n人の声を　まねる　化け物が　いるらしい。", 4.2f);
+            // The title dissolves into the diary page, which stays a few seconds and then dissolves
+            // straight into the forest.
+            var s = storySettings;
+            if (s.introImage != null)
+            {
+                ShowDiary(s.introImage);
+                yield return CrossFade(titleGroup, diaryGroup, s.titleToIntroSeconds);
+                fade.color = new Color(0f, 0f, 0f, 0f); // hidden behind the page now
+                yield return new WaitForSeconds(s.introSeconds);
+            }
+            else yield return Fade(titleGroup, 0f, 0.6f);
             StartPlaying();
-            yield return FadeIntoPlay(2.5f);
+            yield return IntoPlay(s.introToGameSeconds);
         }
 
-        IEnumerator FadeIntoPlay(float seconds)
+        /// <summary>Dissolves whatever covers the forest (the diary page, the dark title veil) away, then shows the controls hint.</summary>
+        IEnumerator IntoPlay(float seconds)
         {
-            yield return FadeImage(0f, seconds);
+            float veil = fade.color.a, page = diaryGroup.alpha;
+            for (float t = 0f; t < seconds; t += Time.deltaTime)
+            {
+                float k = t / seconds;
+                fade.color = new Color(0f, 0f, 0f, Mathf.Lerp(veil, 0f, k));
+                diaryGroup.alpha = Mathf.Lerp(page, 0f, k);
+                yield return null;
+            }
+            fade.color = new Color(0f, 0f, 0f, 0f);
+            diaryGroup.alpha = 0f;
             hintGroup.alpha = 1f;
             yield return new WaitForSeconds(14f);
             yield return Fade(hintGroup, 0f, 2f);
         }
 
-        /// <summary>A click during the opening story jumps straight into play.</summary>
+        /// <summary>A click during the opening diary page jumps straight into play.</summary>
         void SkipStory()
         {
             if (introRoutine != null) StopCoroutine(introRoutine);
             titleGroup.alpha = 0f;
-            storyGroup.alpha = 0f;
             StartPlaying();
-            introRoutine = StartCoroutine(FadeIntoPlay(0.6f));
+            introRoutine = StartCoroutine(IntoPlay(0.6f));
         }
 
-        IEnumerator ShowStory(string text, float hold)
+        /// <summary>Puts a diary page up (alpha is left to the caller); withResult adds the clear result on it.</summary>
+        void ShowDiary(Texture2D page, bool withResult = false)
         {
-            storyText.text = text;
-            yield return Fade(storyGroup, 1f, 0.9f);
-            yield return new WaitForSeconds(hold);
-            yield return Fade(storyGroup, 0f, 0.7f);
+            diaryImage.texture = page;
+            diaryImage.enabled = page != null;
+            diaryFit.aspectRatio = page != null ? (float)page.width / page.height : 16f / 9f;
+            resultBlock.gameObject.SetActive(withResult);
+            if (!withResult) return;
+            var at = storySettings.resultPosition;
+            resultBlock.anchorMin = resultBlock.anchorMax = new Vector2(at.x, 1f - at.y);
+            resultBlock.anchoredPosition = Vector2.zero;
+            resultBlock.localScale = Vector3.one * storySettings.resultScale;
+            // Headline sized to its picture; the time sits just under it, the click hint under that.
+            var head = storySettings.clearTitleImage;
+            resultTitle.texture = head;
+            resultTitle.enabled = head != null;
+            resultTitleText.enabled = head == null;
+            float th = head != null ? ResultTitleWidth * head.height / head.width : 160f;
+            var tr = resultTitle.rectTransform;
+            tr.pivot = new Vector2(0.5f, 0.5f);
+            tr.sizeDelta = new Vector2(ResultTitleWidth, th);
+            tr.anchoredPosition = new Vector2(ResultTitleWidth * 0.5f, -th * 0.5f);
+            tr.localScale = Vector3.one;
+            resultTitle.color = Color.white;
+            resultTime.rectTransform.anchoredPosition = new Vector2(ResultTitleWidth * 0.04f, -th + 12f);
+            resultHint.rectTransform.anchoredPosition = new Vector2(ResultTitleWidth * 0.04f, -th - 52f);
+            int sec = Mathf.FloorToInt(PlayTime);
+            resultTime.text = $"クリア時間　{sec / 60}分{sec % 60:00}秒";
+            resultTitleGroup.alpha = 0f;
+            resultTimeGroup.alpha = 0f;
+            resultHint.enabled = false;
+        }
+
+        /// <summary>
+        /// The headline bursts in (scaling down from big, with a chime) partway through the page's
+        /// fade, then the clear time fades in under it.
+        /// </summary>
+        IEnumerator RevealResult(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            Ambience.PlayOneShot(audioBank.clearChime, 0.6f);
+            var tr = resultTitle.rectTransform;
+            const float pop = 0.8f;
+            for (float t = 0f; t < pop; t += Time.deltaTime)
+            {
+                float k = 1f - Mathf.Pow(1f - t / pop, 3f);
+                tr.localScale = Vector3.one * Mathf.Lerp(1.4f, 1f, k);
+                resultTitleGroup.alpha = Mathf.Clamp01(t / (pop * 0.5f));
+                yield return null;
+            }
+            tr.localScale = Vector3.one;
+            resultTitleGroup.alpha = 1f;
+            yield return new WaitForSeconds(0.25f);
+            yield return Fade(resultTimeGroup, 1f, 0.6f);
+        }
+
+        IEnumerator CrossFade(CanvasGroup from, CanvasGroup to, float seconds)
+        {
+            float a = from.alpha, b = to.alpha;
+            for (float t = 0f; t < seconds; t += Time.deltaTime)
+            {
+                from.alpha = Mathf.Lerp(a, 0f, t / seconds);
+                to.alpha = Mathf.Lerp(b, 1f, t / seconds);
+                yield return null;
+            }
+            from.alpha = 0f;
+            to.alpha = 1f;
         }
 
         void StartPlaying()
@@ -337,6 +428,17 @@ namespace KaiForest
             Player.ControlEnabled = true;
             LockCursor(true);
             Director.Begin(); // wakes the current stage: its voice, traps, monsters, mother
+            if (openingLine && BoyVoice.Instance != null) StartCoroutine(OpeningLineRoutine());
+            openingLine = false;
+        }
+
+        /// <summary>"I have to find mother": he stays where he is, unable to move or look round, until he has said it.</summary>
+        IEnumerator OpeningLineRoutine()
+        {
+            Player.ControlEnabled = false;
+            float until = Time.time + BoyVoice.Instance.SayStart() + 0.2f;
+            while (Time.time < until && State == GameState.Playing) yield return null;
+            if (State == GameState.Playing) Player.ControlEnabled = true;
         }
 
         /// <summary>
@@ -356,8 +458,9 @@ namespace KaiForest
         {
             if (introRoutine != null) StopCoroutine(introRoutine);
             titleGroup.alpha = 0f;
-            storyGroup.alpha = 0f;
+            diaryGroup.alpha = 0f;
             fade.color = new Color(0f, 0f, 0f, 0f);
+            openingLine = false; // no waiting on the opening line here
             StartPlaying();
         }
 
@@ -365,11 +468,13 @@ namespace KaiForest
         {
             if (State != GameState.Playing) return;
             State = GameState.Clear;
+            clearStartedAt = Time.time;
             Player.ControlEnabled = false;
             LockCursor(false);
             foreach (var m in Monsters) m.Halt();
             Director.StopAll();
             StageDirector.ClearCheckpoint(); // the next game starts from the beginning
+            if (BoyVoice.Instance != null) BoyVoice.Instance.Stop();
             Mother.SayFound();
             Ambience.FadeTo(0.3f, 3f);
             Ambience.PlayOneShot(audioBank.clearChime, 0.8f);
@@ -386,19 +491,37 @@ namespace KaiForest
                 Player.LanternScale = Mathf.Lerp(1f, 0.12f, t / 0.8f);
                 yield return null;
             }
-            CanRestart = true; // a click from here on retries; the clear screen keeps playing out otherwise
-            yield return new WaitForSeconds(1.6f);
-            fade.color = new Color(0.06f, 0.035f, 0.02f, 0f);
-            yield return FadeImage(0.88f, 2f);
-            endImage.texture = clearTexture;
-            endImage.SetNativeSize();
-            endImage.rectTransform.sizeDelta *= 0.62f;
-            int sec = Mathf.FloorToInt(PlayTime);
-            endSub.text = $"森を　ぬけるまで　{sec / 60}分{sec % 60:00}秒";
-            endHint.text = "クリックで　もういちど";
-            endHint.enabled = false;
-            yield return Fade(endGroup, 1f, 1.5f);
-            endHint.enabled = true;
+            // Then the forest cross-fades into the diary page of the two of them, with the result in its
+            // dark upper-left corner: that page is the ending. A click on it goes back to the title.
+            var s = storySettings;
+            yield return new WaitForSeconds(s.clearDelaySeconds);
+            ShowDiary(s.clearImage, true);
+            var reveal = StartCoroutine(RevealResult(s.clearFadeSeconds * 0.6f));
+            yield return Fade(diaryGroup, 1f, s.clearFadeSeconds);
+            yield return reveal;
+            FinishEnding();
+        }
+
+        /// <summary>Seconds from meeting mother until the ending page and its result are fully up.</summary>
+        float EndingLength => 1.5f + storySettings.clearDelaySeconds + Mathf.Max(storySettings.clearFadeSeconds, storySettings.clearFadeSeconds * 0.6f + 1.65f);
+
+        /// <summary>The ending page and result are up: from now a click returns to the title.</summary>
+        void FinishEnding()
+        {
+            if (!resultBlock.gameObject.activeSelf) ShowDiary(storySettings.clearImage, true);
+            diaryGroup.alpha = 1f;
+            resultTitleGroup.alpha = 1f;
+            resultTimeGroup.alpha = 1f;
+            resultTitle.rectTransform.localScale = Vector3.one;
+            resultHint.enabled = true;
+            CanRestart = true;
+        }
+
+        /// <summary>After the ending: back to the title screen, for a new game from the start.</summary>
+        public void ReturnToTitle()
+        {
+            SkipTitle = false;
+            SceneManager.LoadScene(SceneName, LoadSceneMode.Single);
         }
 
         public void OnCaught(MonsterAI who)
@@ -411,7 +534,7 @@ namespace KaiForest
             Mother.Voice.Stop();
             foreach (var m in Monsters) m.Halt();
             Director.StopAll();
-            ShowPickupHint(null);
+            if (BoyVoice.Instance != null) BoyVoice.Instance.Stop();
             Ambience.FadeTo(0f, 0.4f);
             Ambience.PlayOneShot(audioBank.catchLine.near, 1f);
             Ambience.PlayOneShot(audioBank.gameOverSting, 0.85f);
@@ -494,6 +617,16 @@ namespace KaiForest
                     if (click && Cursor.lockState != CursorLockMode.Locked) LockCursor(true);
                     break;
                 case GameState.Clear:
+                    // Also by the clock, in case the ending coroutine was cut short (e.g. a recompile during Play).
+                    if (!CanRestart && Time.time >= clearStartedAt + EndingLength + 0.5f) FinishEnding();
+                    if (CanRestart)
+                    {
+                        resultHint.color = new Color(0.85f, 0.8f, 0.74f, 0.45f + 0.45f * Mathf.Sin(Time.time * 2.4f));
+                        float glow = 0.9f + 0.1f * Mathf.Sin(Time.time * 1.6f); // the headline breathes softly
+                        resultTitle.color = new Color(glow, glow, glow, 1f);
+                    }
+                    if (click && CanRestart) ReturnToTitle();
+                    break;
                 case GameState.Caught:
                     if (click && CanRestart) Restart();
                     break;
@@ -513,8 +646,24 @@ namespace KaiForest
             // Dev only: F2 skips to the next stage (not a checkpoint).
             if (kb != null && kb.f2Key.wasPressedThisFrame && State == GameState.Playing && (Application.isEditor || Debug.isDebugBuild))
                 Director.DebugAdvance();
+            // Dev only: N goes straight to the ending's doorstep (mother stage, 4 m in front of her).
+            if (kb != null && kb.nKey.wasPressedThisFrame && State == GameState.Playing && (Application.isEditor || Debug.isDebugBuild))
+                DebugMeetMother();
             debugText.enabled = debugHud;
             if (debugHud) debugText.text = DebugString();
+        }
+
+        /// <summary>Dev: puts the boy 4 m in front of mother in the mother stage; one step and it's the ending.</summary>
+        public void DebugMeetMother()
+        {
+            var home = Mother.Home;
+            var away = Player.transform.position - home;
+            away.y = 0f;
+            away = away.sqrMagnitude > 0.01f ? away.normalized : Vector3.back;
+            var spot = home + away * 4f;
+            // Teleport first so the hunter appears far from where he now stands.
+            Player.Teleport(spot, Mathf.Atan2(-away.x, -away.z) * Mathf.Rad2Deg);
+            Director.DebugJumpTo(Stage.Mother);
         }
 
         public string DebugString()
@@ -539,14 +688,6 @@ namespace KaiForest
         }
 
         // ------------------------------------------------------------------ UI
-
-        /// <summary>"クリックで　〇〇を　拾う" under the view; null hides it.</summary>
-        public void ShowPickupHint(string text)
-        {
-            if (pickupHint == null) return;
-            pickupHint.enabled = text != null;
-            if (text != null) pickupHint.text = text;
-        }
 
         /// <summary>A line of text that fades in, stays a while and fades out.</summary>
         public void ShowMessage(string text, float hold = 3.5f)
@@ -648,26 +789,46 @@ namespace KaiForest
             MakeText(titleGroup.transform,
                 "マウスを動かす　見回す\n" +
                 "左ボタンを押している間　前へ進む\n" +
-                "右ボタンを押している間　うしろへ下がる\n" +
-                "落ちているものの近くで左クリック　拾う",
+                "右ボタンを押している間　うしろへ下がる",
                 26, new Color(0.62f, 0.6f, 0.58f), new Vector2(0f, -150f));
             MakeText(titleGroup.transform, "ヘッドホン推奨", 22, new Color(0.5f, 0.45f, 0.42f), new Vector2(0f, -300f));
             titleHint = MakeText(titleGroup.transform, "クリックで　はじめる", 34, Color.white, new Vector2(0f, -390f));
             titleGroup.alpha = 0f;
 
-            storyGroup = MakeGroup(go.transform, "Story");
-            storyText = MakeText(storyGroup.transform, "", 40, new Color(0.85f, 0.82f, 0.78f), new Vector2(0f, 20f));
-            storyText.lineSpacing = 1.15f;
-            MakeText(storyGroup.transform, "クリックで　とばす", 22, new Color(0.55f, 0.52f, 0.48f, 0.8f), new Vector2(0f, -470f));
-            storyGroup.alpha = 0f;
+            // Diary pages (StorySettings): the opening and the ending, fitted to the screen on black.
+            diaryGroup = MakeGroup(go.transform, "Diary");
+            var black = MakeRect(diaryGroup.transform, "Black", Vector2.zero, Vector2.zero, true).gameObject.AddComponent<Image>();
+            black.color = Color.black;
+            black.raycastTarget = false;
+            var page = MakeRect(diaryGroup.transform, "Page", Vector2.zero, Vector2.zero, true);
+            diaryImage = page.gameObject.AddComponent<RawImage>();
+            diaryImage.raycastTarget = false;
+            diaryFit = page.gameObject.AddComponent<AspectRatioFitter>();
+            diaryFit.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
+            // The result, on the ending page's dark upper-left corner (placed by StorySettings.resultPosition).
+            resultBlock = MakeRect(page, "Result", Vector2.zero, new Vector2(ResultTitleWidth, 320f), false);
+            resultBlock.pivot = new Vector2(0f, 1f);
+            // The gold brush headline (StorySettings.clearTitleImage); pivot in its middle so it can pop in.
+            var titleRect = MakeRect(resultBlock, "Title", Vector2.zero, new Vector2(ResultTitleWidth, 195f), false);
+            titleRect.anchorMin = titleRect.anchorMax = new Vector2(0f, 1f);
+            resultTitle = titleRect.gameObject.AddComponent<RawImage>();
+            resultTitle.raycastTarget = false;
+            resultTitleGroup = titleRect.gameObject.AddComponent<CanvasGroup>();
+            resultTitleText = MakeText(titleRect, "ゲームクリア", 110, new Color(1f, 0.86f, 0.55f), Vector2.zero);
+            resultTitleText.gameObject.AddComponent<Outline>().effectColor = new Color(0.2f, 0.09f, 0.03f, 1f);
+            resultTime = ResultLine(resultBlock, "", 40, new Color(0.98f, 0.94f, 0.86f), 0f);
+            var outline = resultTime.gameObject.AddComponent<Outline>();
+            outline.effectColor = new Color(0.08f, 0.04f, 0.02f, 0.95f);
+            outline.effectDistance = new Vector2(2f, -2f);
+            resultTimeGroup = resultTime.gameObject.AddComponent<CanvasGroup>();
+            resultHint = ResultLine(resultBlock, "クリックで　タイトルへ", 26, new Color(0.85f, 0.8f, 0.74f), 0f);
+            resultBlock.gameObject.SetActive(false);
+            diaryGroup.alpha = 0f;
 
             hintGroup = MakeGroup(go.transform, "Hint");
-            MakeText(hintGroup.transform, "マウス：見回す　　左長押し：前へ　　右長押し：うしろへ　　近くで左クリック：拾う　　Esc：カーソルを出す（クリックで戻る）",
+            MakeText(hintGroup.transform, "マウス：見回す　　左長押し：前へ　　右長押し：うしろへ　　Esc：カーソルを出す（クリックで戻る）",
                 22, new Color(0.7f, 0.68f, 0.64f, 0.8f), new Vector2(0f, 480f));
             hintGroup.alpha = 0f;
-
-            pickupHint = MakeText(go.transform, "", 30, new Color(0.95f, 0.9f, 0.8f), new Vector2(0f, -330f));
-            pickupHint.enabled = false;
 
             messageGroup = MakeGroup(go.transform, "Message");
             messageText = MakeText(messageGroup.transform, "", 34, new Color(0.88f, 0.84f, 0.78f), new Vector2(0f, -200f));
@@ -693,6 +854,18 @@ namespace KaiForest
             dr.anchoredPosition = new Vector2(16f, -12f);
             debugText.alignment = TextAnchor.UpperLeft;
             debugText.enabled = false;
+        }
+
+        /// <summary>A left-aligned line of the result block, y down from its top-left corner.</summary>
+        Text ResultLine(RectTransform block, string text, int size, Color color, float y)
+        {
+            var t = MakeText(block, text, size, color, Vector2.zero);
+            var rt = t.rectTransform;
+            rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0f, 1f);
+            rt.anchoredPosition = new Vector2(0f, y);
+            rt.sizeDelta = new Vector2(640f, size * 1.5f);
+            t.alignment = TextAnchor.UpperLeft;
+            return t;
         }
 
         static RectTransform MakeRect(Transform parent, string name, Vector2 pos, Vector2 size, bool stretch)

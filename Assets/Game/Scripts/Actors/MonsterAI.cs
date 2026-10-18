@@ -79,6 +79,7 @@ namespace KaiForest
         public static MonsterAI Nearest(IReadOnlyList<MonsterAI> monsters)
         {
             MonsterAI best = null;
+            if (monsters == null) return null; // e.g. after a script reload during Play
             foreach (var m in monsters)
                 if (m != null && m.Active && (best == null || m.DistanceToPlayer < best.DistanceToPlayer)) best = m;
             return best;
@@ -87,6 +88,7 @@ namespace KaiForest
         /// <summary>True while any active monster is chasing the boy.</summary>
         public static bool AnyChasing(IReadOnlyList<MonsterAI> monsters)
         {
+            if (monsters == null) return false;
             foreach (var m in monsters)
                 if (m != null && m.Active && m.State == MonsterState.Chase) return true;
             return false;

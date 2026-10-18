@@ -18,6 +18,8 @@ namespace KaiForest
             public Vector3 handkerchief, kanzashi, mother;
             public float motherYaw;
             public Vector3[] deer, monster;
+            /// <summary>The boy's line at the first fork: a little way along from the start.</summary>
+            public Vector3 fork;
         }
 
         public static Spots DefaultSpots(ForestMap map)
@@ -38,6 +40,7 @@ namespace KaiForest
                 motherYaw = Mathf.Atan2(face.x, face.z) * Mathf.Rad2Deg,
                 deer = new[] { Along(0.4f, -8f), Along(0.55f, 9f), Along(0.78f, -6f) },
                 monster = new[] { Along(0.5f, 32f), Along(0.85f, -28f) },
+                fork = Along(0.12f, 0f),
             };
             Random.state = saved;
             return s;
@@ -101,6 +104,14 @@ namespace KaiForest
             return go;
         }
 
+        /// <summary>The first fork's line (its clip comes from Boy Voice Settings' Fork Line).</summary>
+        public static GameObject ForkVoiceTrigger()
+        {
+            var go = new GameObject("VoiceTrigger_Fork");
+            go.AddComponent<VoiceTrigger>();
+            return go;
+        }
+
         /// <summary>A faint warm glint so a small thing on the forest floor can be spotted up close.</summary>
         static void Glint(Transform parent, float height)
         {
@@ -135,6 +146,7 @@ namespace KaiForest
             var image = Resources.Load<Texture2D>(DeerImageResource);
             foreach (var p in s.deer) Put(DeerTrap(image), p, 0f);
             foreach (var p in s.monster) Put(MonsterTrap(), p, 0f);
+            Put(ForkVoiceTrigger(), s.fork, 0f);
             return root;
         }
     }

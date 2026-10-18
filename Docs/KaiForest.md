@@ -13,13 +13,33 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 
 3つの段階を順に進む。拾い物がチェックポイントで、捕まると最後に拾った場所からやり直し（「クリックで　つづきから」）。お母さんに会うとチェックポイントは消え、次は最初から。
 
+- **はじまり**: タイトルでクリック → 日記の絵（`nikki01.png`）へディゾルブ（1秒）→ 3秒見せる（クリックでとばせる）→ 本編へディゾルブ（1.5秒）。捕まったあとのやり直しは日記なしで本編へ
+- **おわり**: お母さんに会うと、顔を見たあと本編から日記の絵（`nikki02.png`）へクロスフェード（2秒）。これがクリア画面で、絵の左上に金色の筆文字の「ゲームクリア」（`UI_GameClear.png`）が大きく飛び込み（チャイム付き）、続いてクリア時間がふわっと出る。そのあと「クリックで　タイトルへ」が点滅し、クリックでタイトルへ戻る。リザルトの位置と大きさは Story Settings の `Result Position`（絵の左上からの割合）と `Result Scale`。見出し画像は `python Tools/gen_textures.py --headlines` で作り直せる
+- 絵と秒数は `Assets/Game/Resources/StorySettings.asset`（メニュー `KaiForest > Story Settings`）。絵は画面に収まる大きさで、余白は黒
+
+### 主人公のセリフ（`BoyVoice`）
+
+主人公の心の声として、方向のない音で流す（スタミナによる聞こえにくさの影響は受けない）。自分のセリフどうしは重ならない。
+
+| いつ | セリフ | 頻度 |
+|---|---|---|
+| タイトルから始めて本編が見え始めたとき | `takashi_06`「お母さんを探さなきゃ」。言い終わるまで、その場から動けず見回せない | 1回（捕まったあとのやり直しでは言わない） |
+| 外周の見えない壁（`ForestMap/Walls`）にぶつかったとき | `takashi_06`（これ以上進めないことを伝える） | 20秒に1回まで |
+| 分かれ道のトリガー（`VoiceTrigger`）に入ったとき | `takashi_07`「右側から声が聞こえる」 | トリガーごとに1回 |
+| 偽物の声（化け物・鹿トラップ）が聞こえたとき | `takashi_08` | 60秒に1回まで |
+| お母さんの声（お母さん・ハンカチ・かんざし）が聞こえたとき | `takashi_09` | 90秒に1回まで |
+
+- 声を聞いたときのセリフは、その声がある程度の大きさ（0.1 以上）で聞こえたときだけ、声が終わって 0.6 秒後に言う。どのセリフどうしも最低12秒あける
+- 音声ファイル・待ち時間・音量は `Assets/Game/Resources/BoyVoiceSettings.asset`（メニュー `KaiForest > Boy Voice Settings`）。ファイルは `Assets/Game/Audio/Voices/takashi_06〜09.wav` が自動で入る
+- 分かれ道のトリガーは `Checkpoints/VoiceTrigger_Fork`（緑の円、半径4m）。初期は段階1（ハンカチを探している間）だけ言う。`Place Checkpoints and Traps` で置き、本当の分かれ道へ動かす。別のセリフを言わせたいときは複製して `Line` に音声を入れる
+
 | 段階 | 探すもの | 本物の声が聞こえる場所 | 森にいる偽物 |
 |---|---|---|---|
 | 1 | お母さんの**ハンカチ** | ハンカチ | なし（追ってくる化け物も、偽物の声もない） |
 | 2 | お母さんの**かんざし** | かんざし | 鹿トラップ・化け物トラップ（偽物の声で呼ぶ） |
 | 3 | **お母さん**（かんざしを拾うと現れる） | お母さん | トラップ＋森じゅうを追ってくる化け物 1体 |
 
-- 拾うのは、落ちている物の近く（3m 以内＝`CheckpointItem.pickupRadius`。「クリックで　〇〇を　拾う」と出る）で左クリック。そのクリックで前へは進まない
+- 落ちている物は、近く（3m 以内＝`CheckpointItem.pickupRadius`）に入るだけで拾う（クリック不要）
 - 物のそばに置いた目印（パーティクルなど）は物と一緒に現れ、拾うと一緒に消える。`CheckpointItem.markers` に入れたもの、空なら物から 4m 以内に単独で（何かの子でなく）置いたパーティクル
 - 拾うと、その物の文（`CheckpointItem.message`）が画面に出る
 - **鹿トラップ**: 偽物の声で呼ぶ。半径 1m に入ると鹿の絵が画面に飛び出す（驚かすだけでゲームオーバーにはならない）。1回きり
@@ -39,7 +59,7 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 | `Landmarks/Torii_Exit` | 本物の出口。`Checkpoints/Mother` が無いときは、お母さんはこの前方 4m を中心に半径 20m を歩く（水色の円） | 動かす。前方（青い矢印）がカイの来る側 |
 | `Checkpoints/Handkerchief` | お母さんのハンカチ（段階1で探す）。黄色の円が拾える範囲 | 動かす。拾える範囲・拾ったときの文・目印（`markers`）は Inspector の `CheckpointItem` |
 | `Checkpoints/Kanzashi` | お母さんのかんざし（段階2で探す） | 同上 |
-| `Checkpoints/Mother` | 段階3でお母さんが現れる場所。水色の円が歩き回る範囲（`wanderRadius`）。お母さんの見本（画像）はエディタでだけ見える（古い人形のままなら `KaiForest > Map > Regenerate Mother Prefab`） | 動かす・回す |
+| `Checkpoints/Mother` | 段階3でお母さんが現れる場所。お母さんはここから動かない（`Wander` をオンにすると、水色の円＝`wanderRadius` の中を歩き回り、カイを見つけると近寄る）。お母さんの見本（画像）はエディタでだけ見える（古い人形のままなら `KaiForest > Map > Regenerate Mother Prefab`） | 動かす・回す |
 | `Checkpoints/DeerTrap` | 鹿トラップ。赤い円（半径 `triggerRadius` = 1m）に入ると鹿が飛び出す。絵は `scareImage` | 動かす・複製・削除 |
 | `Checkpoints/MonsterTrap` | 化け物トラップ。橙の円（半径 `areaRadius` = 20m）が化け物の縄張り | 動かす・複製・削除 |
 | `Landmarks/*` | 地蔵・祠・大杉などの目印、壊れた鳥居 | 動かす・複製・削除。`Assets/Game/Map/Prefabs/Landmarks` から追加 |
@@ -63,10 +83,10 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 | マウスを動かす | 見回す（クリック不要。上下は ±10度まで＝`PlayerController.pitchLimit`） |
 | 左ボタンを押している間 | 前へ進む |
 | 右ボタンを押している間 | うしろへ下がる |
-| 落ちている物の近くで左クリック | 拾う（ハンカチ・かんざし） |
 | Esc | カーソルのロックを外す（プレイ中にクリックするとまたロックされる） |
 | F1（開発用） | デバッグ表示（段階・探す物までの距離・AI状態・最後に再生した声） |
 | F2（開発用） | 次の段階へとばす（エディタと開発ビルドだけ） |
+| N（開発用） | お母さんの段階へとばし、お母さんの4m手前へ移動（エンディングの確認用。エディタと開発ビルドだけ） |
 
 視点の感度は `PlayerController.lookSensitivity`（ゆっくり動かしたとき 0.225度/ピクセル）。左右はマウスを速く振るほど大きく回り、すばやく振ると最大で1.5倍（`lookAcceleration`）になるので、大きく振れば振り返れる。回りすぎるときは `lookAcceleration` を 0 にするか、`lookSensitivity` を下げる。
 
@@ -84,7 +104,7 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 
 ## AI
 
-- **お母さん**: 段階3で `Checkpoints/Mother` に現れ、そのまわり半径20mを歩きながら 4〜7.5秒おきに呼ぶ。ランタンが見える距離（11m）に来るとカイに歩み寄る。段階1・2では、ハンカチ・かんざしから同じように本物の声がする。
+- **お母さん**: 段階3で `Checkpoints/Mother` のちょうどその場所に現れ、動かずに 4〜7.5秒おきに呼ぶ。ランタンが見える距離（11m）にカイが来ると、呼ぶ間隔が半分になる。触れる（2m 以内に入る）とクリア。`Checkpoints/Mother` の `Wander` をオンにすると、前のように歩き回ってカイに歩み寄る。段階1・2では、ハンカチ・かんざしから同じように本物の声がする。
   - 見た目は `Assets/Denim/mother.png` の立ち絵（高さ 1.6m）。左右にだけ回って常にカイの方を向く（`Billboard`）。顔の前（カイの側）1.1m に明かりがあり、どちらへ歩いても顔が照らされる。マテリアルは `Resources/MotherBillboard.mat`（メニュー `KaiForest > Mother Picture Material`。画像の透明な部分で切り抜き）。画像を差し替えたら `CharacterFactory` の、画像の中での足元・身長・顔の位置の割合も合わせる
 - **化け物**: 段階3で現れて森じゅうを追ってくる化け物（初期値 1体）と、化け物トラップの化け物（縄張りの中だけ）。どれも下の動きをする（トラップの化け物は縄張りの中を歩き、縄張りの中のカイにだけ気づく）。数・現れる場所・最初の呼び声のずらし方は `Main.unity` の `GameManager`（`monsterCount` / `monsterSpacing` / `monsterMinFromStart` / `monsterMinFromMother` / `monsterRouteWidth` / `monsterCallStagger`）で変えられる。スタミナ・心音・画面の揺らぎは、いちばん近い化け物と「どれか1体でも追っているか」で決まる。
   - Search（9割はカイの半径18m以内を行き先にして、8秒ごとに選び直す。カイの居場所は知らないが寄ってくる）→ Investigate（足音が聞こえたら音の場所へ。歩いていると22m、止まっていると6mで気づく）→ Chase（16m以内でランタンが見えたら追う。6秒見失うと調査に戻る）→ Retreat（10秒追いかけたら諦め、4秒間カイを無視して反対方向へ去ってから探索に戻る）。追跡中はときどき一気に距離を詰めてくる。退却中も、ぶつかるほど近づけば捕まる。1体に捕まった時点で全員止まる。
@@ -113,6 +133,7 @@ GameJam プロトタイプ。仕様: Obsidian `Projects/GameJam.md`
 | スタミナ | `Assets/Game/Resources/StaminaSettings.asset`（メニュー `KaiForest > Stamina Settings` で選択） | 減る秒数・回復・影響が出始める残量・息切れの音量・聞こえにくさの強さ |
 | 遠景 | `Assets/Game/Resources/BackdropSettings.asset`（メニュー `KaiForest > Backdrop Settings` で選択） | 下の「遠景」 |
 | 声の聞こえ方 | `Assets/Game/Resources/VoiceSettings.asset`（メニュー `KaiForest > Voice Settings` で選択） | 下の「声の聞こえ方」 |
+| はじまりとおわりの日記 | `Assets/Game/Resources/StorySettings.asset`（メニュー `KaiForest > Story Settings` で選択） | 日記の絵（はじまり・おわり）、ディゾルブ・表示の秒数 |
 
 | ランタンの項目 | 意味 | 初期値 |
 |---|---|---|
@@ -182,7 +203,7 @@ WebGL版は `Builds/WebGL` に出力（Gzip＋Decompression Fallback なので�
 | 声（プロト: Haruka） | `gen_tts.ps1` + `build_audio.py` | `Assets/Game/Audio/Voices` など |
 | 声（本番: Irodori） | `Tools/audio_irodori` → `sync_irodori_export.py` | `Assets/Game/Audio/Voices` |
 | 環境音など | `build_audio.py`（プロト声と一緒に回すとき） | `Assets/Game/Audio/Sfx` |
-| 地面・樹皮テクスチャ、見出し文字 | `Tools/gen_textures.py` | `Assets/Game/Textures`, `Assets/Game/UI` |
+| 地面・樹皮テクスチャ、見出し文字（タイトル・ゲームクリアなど。`--headlines` で見出しだけ） | `Tools/gen_textures.py` | `Assets/Game/Textures`, `Assets/Game/UI` |
 | 鹿トラップの絵（仮。本番の絵で上書きしてよい） | `Tools/gen_deer_scare.py` | `Assets/Game/Resources/UI_DeerScare.png` |
 | 化け物のモデル（Tripo、使用中） | `Tools/blender/convert_tripo_monster.py`（元は `Art/Source/Tripo/Monster100_run.glb`） | `Assets/Game/Resources/Monster100/`、`Art/Source/Previews/monster100_*.png` |
 | 化け物のモデル（Blender、予備） | `Tools/blender/build_monster.py` | `Art/Source/Monster.blend`、`Assets/Game/Resources/MonsterModel.kfmodel`、`Art/Source/Previews/monster_*.png` |

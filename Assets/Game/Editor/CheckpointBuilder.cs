@@ -98,6 +98,7 @@ namespace KaiForest.EditorTools
                 foreach (var p in spots.deer) Add("DeerTrap", p, 0f);
             if (map.GetComponentsInChildren<MonsterTrap>(true).Length == 0)
                 foreach (var p in spots.monster) Add("MonsterTrap", p, 0f);
+            if (map.GetComponentsInChildren<VoiceTrigger>(true).Length == 0) Add("VoiceTrigger_Fork", spots.fork, 0f);
             return added;
         }
 
@@ -112,6 +113,7 @@ namespace KaiForest.EditorTools
             if (overwrite || Missing("Mother")) Save(BuildMother(m), "Mother");
             if (overwrite || Missing("DeerTrap")) Save(CheckpointLayout.DeerTrap(AssetDatabase.LoadAssetAtPath<Texture2D>(DeerImagePath)), "DeerTrap");
             if (overwrite || Missing("MonsterTrap")) Save(CheckpointLayout.MonsterTrap(), "MonsterTrap");
+            if (overwrite || Missing("VoiceTrigger_Fork")) Save(CheckpointLayout.ForkVoiceTrigger(), "VoiceTrigger_Fork");
             AssetDatabase.SaveAssets();
         }
 

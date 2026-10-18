@@ -119,7 +119,7 @@ namespace KaiForest
             var xp = GM.Monster.transform.position;
             GM.Player.Teleport(GM.Map.StartPosition, 0f);
             yield return new WaitForSeconds(8f);
-            Check("mother moves", Vector3.Distance(mp, GM.Mother.transform.position) > 1f, $"d={Vector3.Distance(mp, GM.Mother.transform.position):0.0}");
+            Check("mother stays put", Vector3.Distance(mp, GM.Mother.transform.position) < 0.5f, $"d={Vector3.Distance(mp, GM.Mother.transform.position):0.0}");
             Check("monster moves", Vector3.Distance(xp, GM.Monster.transform.position) > 1f, $"d={Vector3.Distance(xp, GM.Monster.transform.position):0.0}");
             Check("mother calls", GM.Mother.Voice.PlayCount > 0, $"calls={GM.Mother.Voice.PlayCount}");
             Check("monster calls", GM.Monster.Voice.PlayCount > 0, $"calls={GM.Monster.Voice.PlayCount}");
