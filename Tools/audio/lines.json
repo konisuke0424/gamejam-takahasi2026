@@ -31,6 +31,10 @@
     { "id": "takashi_02", "kind": "takashi", "text": "あれ？お母さんは？", "rate": "-8%", "pitch": "+18%" },
     { "id": "takashi_03", "kind": "takashi", "text": "お母さん、どこにいるんだろう。", "rate": "-10%", "pitch": "+12%" },
     { "id": "takashi_04", "kind": "takashi", "text": "あれ？お母さんの声が、他にも聞こえてくる？", "rate": "-5%", "pitch": "+15%" },
-    { "id": "takashi_05", "kind": "takashi", "text": "あれ？これってお母さんのかみかざりだ。どうして？", "rate": "-6%", "pitch": "+16%" }
+    { "id": "takashi_05", "kind": "takashi", "text": "あれ？これってお母さんのかみかざりだ。どうして？", "rate": "-6%", "pitch": "+16%" },
+    { "id": "takashi_06", "kind": "takashi", "text": "お母さん、どこだろう。探さなきゃ。", "rate": "-8%", "pitch": "+14%" },
+    { "id": "takashi_07", "kind": "takashi", "text": "右のほうから、なにか聞こえるぞ？", "rate": "-6%", "pitch": "+15%" },
+    { "id": "takashi_08", "kind": "takashi", "text": "お母さんの声だけど、変。お母さんなのかなぁ？", "rate": "-7%", "pitch": "+14%" },
+    { "id": "takashi_09", "kind": "takashi", "text": "お母さんの声だ、うん、まちがいない。", "rate": "-6%", "pitch": "+15%" }
   ]
 }

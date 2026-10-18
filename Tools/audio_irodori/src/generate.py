@@ -184,7 +184,10 @@ def main():
             print('再加工:', outpath, flush=True)
             continue
         irod = v["irodori"]
-        seed = (int(defaults["seed"]) + zlib.crc32(v["id"].encode())) % 2147483647
+        if irod.get("seed") is not None:
+            seed = int(irod["seed"]) % 2147483647
+        else:
+            seed = (int(defaults["seed"]) + zlib.crc32(v["id"].encode())) % 2147483647
         command = [
             "uv",
             "run",
