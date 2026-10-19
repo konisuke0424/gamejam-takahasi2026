@@ -15,10 +15,12 @@ namespace KaiForest
         public static BoyVoice Instance { get; private set; }
 
         BoyVoiceSettings settings;
+        VoiceSettings voiceSettings;
         AudioSource source;
         AudioClip pending;
         Transform walls;
         float pendingAt, nextAny, nextFake, nextMother, nextWall;
+        bool motherHeardOnce; // he has reacted to mother's voice once this run (from the title or a retry)
 
         public bool IsSpeaking => source != null && source.isPlaying;
 
@@ -26,6 +28,7 @@ namespace KaiForest
         {
             Instance = this;
             settings = BoyVoiceSettings.Load();
+            voiceSettings = VoiceSettings.Load();
             source = gameObject.AddComponent<AudioSource>();
             source.playOnAwake = false;
             source.spatialBlend = 0f;
@@ -46,10 +49,24 @@ namespace KaiForest
             if (walls == null || !hit.collider.transform.IsChildOf(walls)) return;
             if (!Playing || Time.time < nextWall || pending != null || IsSpeaking) return;
             nextWall = Time.time + settings.wallCooldown;
-            Say(settings.wallLine);
+            Say(PickOne(settings.wallLines));
+        }
+
+        /// <summary>One of the clips at random, each as likely as the others (empty slots skipped).</summary>
+        static AudioClip PickOne(AudioClip[] clips)
+        {
+            if (clips == null) return null;
+            AudioClip chosen = null;
+            int seen = 0;
+            foreach (var c in clips)
+                if (c != null && Random.Range(0, ++seen) == 0) chosen = c;
+            return chosen;
         }
 
         static bool Playing => GameManager.I != null && GameManager.I.State == GameState.Playing;
+
+        /// <summary>His volume times the current line's own (Voice Settings > Line Volumes); read every frame for live tuning.</summary>
+        float LineVolume => settings.volume * voiceSettings.VolumeOf(source.clip);
 
         /// <summary>Says the line after delay seconds (a line already waiting is replaced). For lines that must be said.</summary>
         public void Say(AudioClip clip, float delay = 0f)
@@ -77,10 +94,18 @@ namespace KaiForest
             if (!Playing || pending != null || IsSpeaking || Time.time < nextAny) return;
             bool fake = voice.kind == VoiceKind.Fake;
             var clip = fake ? settings.fakeHeardLine : settings.motherHeardLine;
-            if (clip == null || heard < (fake ? settings.fakeHeardMinVolume : settings.motherHeardMinVolume)) return;
+            // The first time he hears mother, any voice he can hear at all will do: at the start she is
+            // far off and faint, and he shouldn't stay silent until he is close.
+            bool first = !fake && !motherHeardOnce && settings.motherHeardFirstAnyVolume;
+            float min = first ? 0.001f : fake ? settings.fakeHeardMinVolume : settings.motherHeardMinVolume;
+            if (clip == null || heard < min) return;
             if (Time.time < (fake ? nextFake : nextMother)) return;
             if (fake) nextFake = Time.time + settings.fakeHeardCooldown;
-            else nextMother = Time.time + settings.motherHeardCooldown;
+            else
+            {
+                nextMother = Time.time + settings.motherHeardCooldown;
+                motherHeardOnce = true;
+            }
             Say(clip, length + settings.afterHeardDelay);
         }
 
@@ -91,9 +116,10 @@ namespace KaiForest
                 pending = null;
                 return;
             }
-            source.volume = settings.volume;
+            source.volume = LineVolume;
             if (pending == null || Time.time < pendingAt || IsSpeaking) return;
             source.clip = pending;
+            source.volume = LineVolume;
             source.Play();
             pending = null;
             nextAny = Time.time + source.clip.length + settings.minGap;

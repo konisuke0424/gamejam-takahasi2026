@@ -19,20 +19,41 @@ namespace KaiForest
         StaminaSettings settings;
         IReadOnlyList<MonsterAI> monsters;
         AudioSource pant;
-        float recoverAt;
+        float recoverAt, nextBreath;
+        int breath;
+
+        /// <summary>The panting comes one breath at a time with a pause between (StaminaSettings.pantGap).</summary>
+        bool ByBreath => settings.pantBreaths != null && settings.pantBreaths.Length > 0;
 
         public void Init(IReadOnlyList<MonsterAI> m)
         {
             settings = StaminaSettings.Load();
             monsters = m;
             pant = gameObject.AddComponent<AudioSource>();
-            pant.clip = settings.pantClip;
-            pant.loop = true;
             pant.playOnAwake = false;
             pant.spatialBlend = 0f;
             pant.volume = 0f;
-            if (pant.clip != null) pant.Play();
+            if (ByBreath) breath = Random.Range(0, settings.pantBreaths.Length);
+            else
+            {
+                // Fallback: the whole take looped, as it was recorded.
+                pant.clip = settings.pantClip;
+                pant.loop = true;
+                if (pant.clip != null) pant.Play();
+            }
             Hearing.Reset();
+        }
+
+        /// <summary>The next breath (in the recorded order) once the last one and the pause after it are over.</summary>
+        void Breathe(float e)
+        {
+            if (e <= 0.01f || pant.isPlaying || Time.time < nextBreath) return;
+            var clip = settings.pantBreaths[breath];
+            breath = (breath + 1) % settings.pantBreaths.Length;
+            if (clip == null) return;
+            pant.clip = clip;
+            pant.Play();
+            nextBreath = Time.time + clip.length / pant.pitch + settings.pantGap * Random.Range(0.85f, 1.15f);
         }
 
         void Update()
@@ -58,6 +79,7 @@ namespace KaiForest
 
             pant.volume = settings.pantMaxVolume * e;
             pant.pitch = Mathf.Lerp(0.95f, 1.2f, e);
+            if (ByBreath) Breathe(e);
             Hearing.Volume = 1f - settings.maxHearingLoss * e;
             Hearing.Muffle = settings.maxMuffle * e;
         }

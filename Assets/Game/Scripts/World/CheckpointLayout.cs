@@ -70,8 +70,8 @@ namespace KaiForest
             var go = new GameObject("Kanzashi");
             var item = go.AddComponent<CheckpointItem>();
             item.kind = ItemKind.Kanzashi;
-            item.displayName = "かんざし";
-            item.message = "おかあさんの　かんざしだ。\n……なにかが、こっちに　気づいた。";
+            item.displayName = "かみかざり";
+            item.message = "おかあさんの　かみかざりだ。\n……なにかが、こっちに　気づいた。";
             // A black lacquered pin with a red bead and paper dangles, lying on the ground (1.5x so it can be found).
             var pin = Prims.Group(go.transform, "Model", new Vector3(0f, 0.02f, 0f), 0f);
             pin.localScale = Vector3.one * 1.5f;

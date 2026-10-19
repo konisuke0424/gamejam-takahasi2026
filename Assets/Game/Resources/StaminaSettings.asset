@@ -17,6 +17,15 @@ MonoBehaviour:
   recoverSeconds: 12
   effectStart: 0.7
   pantMaxVolume: 0.8
+  pantGap: 0.35
   maxHearingLoss: 0.6
   maxMuffle: 0.7
   pantClip: {fileID: 8300000, guid: ed947c51ce977784d9950525f221ed76, type: 3}
+  pantBreaths:
+  - {fileID: 8300000, guid: 8790e83dd9c819642925c5519a699977, type: 3}
+  - {fileID: 8300000, guid: 3a722519b20b8cb4e8438596ffe5d2af, type: 3}
+  - {fileID: 8300000, guid: b9c81fc2dcd5fd94986e41c8dd344423, type: 3}
+  - {fileID: 8300000, guid: 30ebecaf68ec0ad40b2c759e01b44c01, type: 3}
+  - {fileID: 8300000, guid: 387c93c83126fa9418dcded6e1b9addd, type: 3}
+  - {fileID: 8300000, guid: 25f604d33ee562f4d8274224565dcc7b, type: 3}
+  - {fileID: 8300000, guid: f0915d86d5550c446ba5423ef1b84043, type: 3}

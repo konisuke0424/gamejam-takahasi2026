@@ -30,6 +30,9 @@ namespace KaiForest
         [Tooltip("息切れの最大音量")]
         [Range(0f, 1f)] public float pantMaxVolume = 0.8f;
 
+        [Tooltip("息と息のあいだの間（秒）。毎回 ±15% ゆらぐ。0 にすると元の素材と同じ速さ")]
+        [Min(0f)] public float pantGap = 0.35f;
+
         [Tooltip("スタミナ0のとき、周りの音（声・虫・風・化け物の足音と息）をどれだけ小さくするか")]
         [Range(0f, 1f)] public float maxHearingLoss = 0.6f;
 
@@ -37,7 +40,10 @@ namespace KaiForest
         [Range(0f, 1f)] public float maxMuffle = 0.7f;
 
         [Header("音素材（自動で設定される）")]
+        [Tooltip("Pant Breaths が空のときだけ使う、続けて鳴らす息切れ")]
         public AudioClip pantClip;
+        [Tooltip("息切れを1息ずつに切ったもの（Assets/Game/Audio/Sfx/Pant。Tools/audio/slice_pant.py で作る）。順番に、間をあけて鳴らす")]
+        public AudioClip[] pantBreaths = new AudioClip[0];
 
         /// <summary>The project's settings asset, or built-in defaults if it hasn't been created yet.</summary>
         public static StaminaSettings Load()

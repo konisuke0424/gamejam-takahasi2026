@@ -13,10 +13,6 @@ MonoBehaviour:
   m_Name: AudioBank
   m_EditorClassIdentifier: Assembly-CSharp::KaiForest.AudioBank
   motherLines:
-  - id: mother_01
-    near: {fileID: 8300000, guid: 8f5216467195c9847a5ef3e9ddd117da, type: 3}
-    far: {fileID: 8300000, guid: 5771a26183c607447a563c68423f7e35, type: 3}
-    weight: 1
   - id: mother_02
     near: {fileID: 8300000, guid: d89e5f9e53bd3134d90f0b9609b01237, type: 3}
     far: {fileID: 8300000, guid: 3578e08a20dd4eb4d887208be4d8e5eb, type: 3}

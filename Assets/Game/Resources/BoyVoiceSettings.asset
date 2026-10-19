@@ -12,17 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23c30385d31da3444addd1d7b82220d4, type: 3}
   m_Name: BoyVoiceSettings
   m_EditorClassIdentifier: Assembly-CSharp::KaiForest.BoyVoiceSettings
-  volume: 0.9
-  minGap: 12
+  volume: 0.3
+  minGap: 5
   startLine: {fileID: 8300000, guid: 3243df43f46baa648962364438e46155, type: 3}
   startDelay: 1.5
-  wallLine: {fileID: 8300000, guid: 3243df43f46baa648962364438e46155, type: 3}
+  wallLines:
+  - {fileID: 8300000, guid: 504df695c2b03f64f86ff9acce46615b, type: 3}
+  - {fileID: 8300000, guid: fb46e61a8fba1e54c8dfc2663ed011ea, type: 3}
   wallCooldown: 20
   forkLine: {fileID: 8300000, guid: 002c4d658e4735d47bab78248f48b1dc, type: 3}
   fakeHeardLine: {fileID: 8300000, guid: 85c061c9a3dee2c46a4050c9d2edb81d, type: 3}
-  fakeHeardCooldown: 60
+  fakeHeardCooldown: 30
   fakeHeardMinVolume: 0.1
   motherHeardLine: {fileID: 8300000, guid: 231d7560bec1bb94abe57f17161afcde, type: 3}
-  motherHeardCooldown: 90
+  motherHeardCooldown: 30
   motherHeardMinVolume: 0.1
+  motherHeardFirstAnyVolume: 1
   afterHeardDelay: 0.6

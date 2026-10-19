@@ -15,7 +15,7 @@ namespace KaiForest
         public float walkSpeed = 2.9f;
         public float backSpeed = 1.5f;
         public float acceleration = 7f;
-        [Tooltip("視点の感度（度/ピクセル）。ゆっくり動かしたときはこの値")]
+        [Tooltip("視点の感度（度/ピクセル）。ゆっくり動かしたときはこの値。プレイヤーが設定画面のマウス感度でこれに倍率をかける")]
         public float lookSensitivity = 0.225f;
         [Tooltip("マウスを速く振るほど左右に大きく回る。速く振ったときの感度は lookSensitivity ×（1 + この値）")]
         public float lookAcceleration = 0.5f;
@@ -28,6 +28,13 @@ namespace KaiForest
         public float maxLookSpeed = 12000f;
         [Tooltip("カーソルをロックした直後、この時間（秒）はマウスの動きを無視する。ロック直後の跳ねで視点が飛ぶのを防ぐ")]
         public float lookMuteAfterLock = 0.1f;
+        [Header("スマホ（タッチ）")]
+        [Tooltip("スワイプで回る角度（度）。指を画面の高さぶん動かすと、これだけ回る。設定画面の感度で倍率がかかる")]
+        public float touchLookDegrees = 150f;
+        [Tooltip("押してからこの秒数、指がほとんど動かなければ前へ歩き出す（その前に動かすとスワイプ＝見回すだけ）")]
+        public float touchWalkDelay = 0.18f;
+        [Tooltip("指がこれより動いたらスワイプとみなす（画面の高さに対する割合）")]
+        public float touchSwipeThreshold = 0.03f;
         public float eyeHeight = 1.25f;
         public float stepDistance = 0.78f;
         public float fieldOfView = 68f;
@@ -69,6 +76,11 @@ namespace KaiForest
         LanternSettings lanternSettings;
         bool controlEnabled, waitForRelease, wasLocked;
         float yaw, pitch, speed, vy, stepAccum, bobPhase, lastYaw, lookMuteUntil;
+
+        /// <summary>What each finger on the screen does, decided soon after it comes down.</summary>
+        enum TouchRole { Undecided, Look, Walk, Ignore }
+        struct TouchState { public TouchRole role; public Vector2 start; public float since; }
+        readonly System.Collections.Generic.Dictionary<int, TouchState> touches = new System.Collections.Generic.Dictionary<int, TouchState>();
         Vector3 lanternBasePos;
         Quaternion lookOverride;
         float lookOverrideWeight;
@@ -150,11 +162,60 @@ namespace KaiForest
             viewOverrideFov = fov;
         }
 
+        /// <summary>
+        /// Phones: a finger held still walks forward (moving it while walking steers); one that moves
+        /// off at once is a swipe and only looks round. The view follows the finger like the mouse.
+        /// A finger put down while he can't move, or on the settings, is ignored until lifted.
+        /// Returns true while some finger is walking.
+        /// </summary>
+        bool ReadTouch()
+        {
+            bool walk = false;
+            int down = 0;
+            float h = Mathf.Max(1f, Screen.height);
+            foreach (var t in GameInput.Touches)
+            {
+                if (!t.press.isPressed) continue;
+                down++;
+                int id = t.touchId.ReadValue();
+                var pos = t.position.ReadValue();
+                if (!touches.TryGetValue(id, out var s))
+                {
+                    bool ui = GameManager.I != null && GameManager.I.UiOwnsTouch(pos);
+                    s = new TouchState { role = ControlEnabled && !ui ? TouchRole.Undecided : TouchRole.Ignore, start = pos, since = Time.unscaledTime };
+                }
+                if (s.role == TouchRole.Ignore || !ControlEnabled || Time.timeScale == 0f) // paused: the settings window is up
+                {
+                    touches[id] = s;
+                    continue;
+                }
+                if (s.role == TouchRole.Undecided)
+                {
+                    if ((pos - s.start).magnitude > touchSwipeThreshold * h) s.role = TouchRole.Look;
+                    else if (Time.unscaledTime - s.since >= touchWalkDelay) s.role = TouchRole.Walk;
+                }
+                touches[id] = s;
+                var d = t.delta.ReadValue() / h * touchLookDegrees * GameOptions.LookScale;
+                yaw += d.x;
+                pitch = Mathf.Clamp(pitch - d.y, -pitchLimit, pitchLimit);
+                walk |= s.role == TouchRole.Walk;
+            }
+            if (down == 0) touches.Clear(); // every finger is up: forget them all
+            return walk;
+        }
+
         void Update()
         {
             float dt = Time.deltaTime;
             float input = 0f;
-            var mouse = GameManager.IgnoreMouse ? null : Mouse.current;
+            var mouse = GameInput.Mouse; // none while a finger is on the screen (phones)
+            // On the settings gear or window the mouse neither looks nor walks; a button pressed there
+            // must be let go before it walks again.
+            if (mouse != null && GameManager.I != null && GameManager.I.UiHasMouse)
+            {
+                waitForRelease = true;
+                mouse = null;
+            }
             if (ControlEnabled && mouse != null)
             {
                 bool l = mouse.leftButton.isPressed, r = mouse.rightButton.isPressed;
@@ -172,11 +233,13 @@ namespace KaiForest
                 d = Vector2.ClampMagnitude(d, maxLookSpeed * Mathf.Max(dt, 1f / 120f));
                 // A quick swing turns further, so a flick of the wrist can turn him round.
                 float swing = Mathf.InverseLerp(lookAccelerationStartSpeed, lookAccelerationFullSpeed, Mathf.Abs(d.x) / Mathf.Max(dt, 0.0001f));
-                yaw += d.x * lookSensitivity * (1f + lookAcceleration * swing);
-                pitch = Mathf.Clamp(pitch - d.y * lookSensitivity, -pitchLimit, pitchLimit);
+                float sens = lookSensitivity * GameOptions.LookScale; // the player's own setting (settings window)
+                yaw += d.x * sens * (1f + lookAcceleration * swing);
+                pitch = Mathf.Clamp(pitch - d.y * sens, -pitchLimit, pitchLimit);
                 if (l && !r) input = 1f;
                 else if (r && !l) input = -1f;
             }
+            if (ReadTouch()) input = 1f;
             if (ControlEnabled && DebugWalk != 0f) input = DebugWalk;
 
             float target = input > 0f ? walkSpeed * input : backSpeed * input;

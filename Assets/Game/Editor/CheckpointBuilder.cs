@@ -25,19 +25,62 @@ namespace KaiForest.EditorTools
 
         // ------------------------------------------------------------------ menu
 
+        /// <summary>Forest.unity (opened if it isn't) and its ForestMap; false if either can't be had.</summary>
+        static bool OpenForest(out Scene scene, out ForestMap map)
+        {
+            map = null;
+            scene = SceneManager.GetSceneByPath(ForestBaker.ScenePath);
+            if (!scene.isLoaded)
+            {
+                if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return false;
+                scene = EditorSceneManager.OpenScene(ForestBaker.ScenePath, OpenSceneMode.Single);
+            }
+            foreach (var go in scene.GetRootGameObjects())
+                if ((map = go.GetComponentInChildren<ForestMap>()) != null) break;
+            if (map == null) Debug.LogError("[KaiForest] ForestMap not found in Forest.unity");
+            return map != null;
+        }
+
+        /// <summary>ForestMap/Checkpoints, made if missing.</summary>
+        static Transform CheckpointsRoot(ForestMap map)
+        {
+            var root = map.transform.Find(RootName);
+            if (root != null) return root;
+            root = new GameObject(RootName).transform;
+            root.SetParent(map.transform, false);
+            Undo.RegisterCreatedObjectUndo(root.gameObject, "Place Checkpoints");
+            return root;
+        }
+
+        [MenuItem("KaiForest/Map/Add Hunter Spawn")]
+        static void MenuAddHunterSpawn()
+        {
+            if (!OpenForest(out var scene, out var map)) return;
+            // Where the Scene view is looking, else halfway between the kanzashi and mother.
+            var view = SceneView.lastActiveSceneView;
+            Vector3 at;
+            if (view != null) at = view.pivot;
+            else
+            {
+                var spots = CheckpointLayout.DefaultSpots(map);
+                at = (spots.kanzashi + spots.mother) * 0.5f;
+            }
+            at = map.ClampToMap(at);
+            var go = new GameObject("HunterSpawn", typeof(HunterSpawn));
+            go.transform.SetParent(CheckpointsRoot(map), false);
+            go.transform.position = at;
+            Undo.RegisterCreatedObjectUndo(go, "Add Hunter Spawn");
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            Selection.activeGameObject = go;
+            EditorGUIUtility.PingObject(go);
+            Debug.Log("[KaiForest] Added a hunter spawn under ForestMap/Checkpoints (red circle). Move it to where the chasing monster should appear and save Forest.unity.");
+        }
+
         [MenuItem("KaiForest/Map/Place Checkpoints and Traps")]
         static void MenuPlace()
         {
-            var scene = SceneManager.GetSceneByPath(ForestBaker.ScenePath);
-            if (!scene.isLoaded)
-            {
-                if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
-                scene = EditorSceneManager.OpenScene(ForestBaker.ScenePath, OpenSceneMode.Single);
-            }
-            ForestMap map = null;
-            foreach (var go in scene.GetRootGameObjects())
-                if ((map = go.GetComponentInChildren<ForestMap>()) != null) break;
-            if (map == null) { Debug.LogError("[KaiForest] ForestMap not found in Forest.unity"); return; }
+            if (!OpenForest(out var scene, out var map)) return;
 
             EnsurePrefabs(LoadMats(), false);
             Physics.SyncTransforms();
@@ -66,13 +109,7 @@ namespace KaiForest.EditorTools
         /// <summary>Adds whatever is missing at the default spots.</summary>
         static int Place(ForestMap map, Scene scene)
         {
-            var root = map.transform.Find(RootName);
-            if (root == null)
-            {
-                root = new GameObject(RootName).transform;
-                root.SetParent(map.transform, false);
-                Undo.RegisterCreatedObjectUndo(root.gameObject, "Place Checkpoints");
-            }
+            var root = CheckpointsRoot(map);
 
             int added = 0;
             void Add(string prefab, Vector3 pos, float yaw)

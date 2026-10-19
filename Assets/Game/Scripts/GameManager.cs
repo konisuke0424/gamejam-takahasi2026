@@ -91,7 +91,7 @@ namespace KaiForest
 
         Canvas canvas;
         Image fade;
-        CanvasGroup titleGroup, endGroup, diaryGroup, hintGroup, messageGroup, deerGroup;
+        CanvasGroup titleGroup, endGroup, diaryGroup, messageGroup, deerGroup;
         Text endSub, endHint, titleHint, debugText, messageText;
         RawImage endImage, deerImage, diaryImage;
         AspectRatioFitter diaryFit;
@@ -106,14 +106,37 @@ namespace KaiForest
         Coroutine messageRoutine, deerRoutine;
         Vignette vignette;
         ChromaticAberration chroma;
-        float baseVignette, baseChroma;
+        ColorAdjustments colorAdjust;
+        float baseVignette, baseChroma, baseExposure;
         bool debugHud, openingLine;
         Coroutine introRoutine;
         LanternSettings viewSettings;
+        SettingsMenu settings;
+        readonly HashSet<HunterSpawn> takenHunterSpawns = new HashSet<HunterSpawn>();
+
+        /// <summary>The mouse is on the settings (gear or window): clicks and movement aren't the game's.</summary>
+        public bool UiHasMouse => !IgnoreMouse && settings != null && settings.HasMouse;
+
+        /// <summary>The word for pressing on screens ("クリックで　はじめる"): a tap on phones.</summary>
+        static string Press => Application.isMobilePlatform ? "タップ" : "クリック";
+
+        /// <summary>A finger put down at this point is for the settings (gear or open window), not the game.</summary>
+        public bool UiOwnsTouch(Vector2 screenPos) => settings != null && settings.OwnsTouchAt(screenPos);
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        [System.Runtime.InteropServices.DllImport("__Internal")]
+        static extern void KaiForest_BlockContextMenu(); // Assets/Game/Plugins/WebGL/KaiForestBrowser.jslib
+#endif
 
         void Awake()
         {
             I = this;
+#if UNITY_WEBGL && !UNITY_EDITOR
+            KaiForest_BlockContextMenu(); // the right button walks backward: no browser menu, whatever page hosts the game
+            // Esc really frees the cursor (lockState follows the browser), so the gear can be clicked.
+            WebGLInput.stickyCursorLock = false;
+#endif
+            GameOptions.Load(); // volume and mouse sensitivity from the settings window
             viewSettings = LanternSettings.Load();
             storySettings = StorySettings.Load();
             ApplyRenderSettings();
@@ -124,6 +147,10 @@ namespace KaiForest
                 var p = volume.profile; // runtime copy, safe to animate
                 if (p.TryGet(out vignette)) baseVignette = vignette.intensity.value;
                 if (p.TryGet(out chroma)) baseChroma = chroma.intensity.value;
+                // Screen brightness (settings window) rides on the post exposure.
+                if (p.TryGet(out colorAdjust)) baseExposure = colorAdjust.postExposure.value;
+                else colorAdjust = p.Add<ColorAdjustments>();
+                colorAdjust.postExposure.overrideState = true;
             }
 
             debugHud = HasArg("-debughud");
@@ -198,8 +225,26 @@ namespace KaiForest
             return monster;
         }
 
-        /// <summary>Where a hunter appears: between the boy and his mother, away from both.</summary>
-        public Vector3 PickHunterSpawn() => PickMonsterSpawn(Player.transform.position, Mother.Home);
+        /// <summary>
+        /// Where a hunter appears: a HunterSpawn marker placed in Forest.unity that no other hunter has
+        /// taken, at random (one nearer the boy than monsterMinFromStart only if no other is left); with
+        /// no marker left, a random spot between the boy and his mother, away from both.
+        /// </summary>
+        public Vector3 PickHunterSpawn()
+        {
+            var boy = Player.transform.position;
+            boy.y = 0f;
+            var free = new List<HunterSpawn>();
+            foreach (var s in Map.HunterSpawns)
+                if (s != null && !takenHunterSpawns.Contains(s)) free.Add(s);
+            if (free.Count == 0) return PickMonsterSpawn(boy, Mother.Home);
+            var far = free.FindAll(s => Vector3.Distance(s.Position, boy) >= monsterMinFromStart);
+            var from = far.Count > 0 ? far : free;
+            var pick = from[Random.Range(0, from.Count)];
+            takenHunterSpawns.Add(pick);
+            // Right on the marker, or open ground within 3 m if a tree stands there.
+            return Map.IsOpen(pick.Position) ? pick.Position : Map.FindOpenPoint(pick.Position, 3f);
+        }
 
         public static bool HasArg(string a)
         {
@@ -248,6 +293,8 @@ namespace KaiForest
                 Player.Cam.farClipPlane = Mathf.Lerp(40f, 300f, day);
             }
             if (backdrop != null) backdrop.Daylight = day;
+            // The player's screen brightness: 100% = as tuned, 200% = twice the light (+1 EV), 30% ≈ -1.7 EV.
+            if (colorAdjust != null) colorAdjust.postExposure.value = baseExposure + Mathf.Log(GameOptions.Brightness, 2f);
         }
 
         void BuildMoon()
@@ -327,7 +374,7 @@ namespace KaiForest
             yield return IntoPlay(s.introToGameSeconds);
         }
 
-        /// <summary>Dissolves whatever covers the forest (the diary page, the dark title veil) away, then shows the controls hint.</summary>
+        /// <summary>Dissolves whatever covers the forest (the diary page, the dark title veil) away. The controls are in the settings window.</summary>
         IEnumerator IntoPlay(float seconds)
         {
             float veil = fade.color.a, page = diaryGroup.alpha;
@@ -340,9 +387,6 @@ namespace KaiForest
             }
             fade.color = new Color(0f, 0f, 0f, 0f);
             diaryGroup.alpha = 0f;
-            hintGroup.alpha = 1f;
-            yield return new WaitForSeconds(14f);
-            yield return Fade(hintGroup, 0f, 2f);
         }
 
         /// <summary>A click during the opening diary page jumps straight into play.</summary>
@@ -452,6 +496,7 @@ namespace KaiForest
         static void LockCursor(bool on)
         {
             if (IgnoreMouse) return; // AutoTest: don't grab the desktop cursor
+            if (on && GameInput.TouchUsed) return; // a phone or tablet: swipes look round, there is no cursor to capture
             Cursor.lockState = on ? CursorLockMode.Locked : CursorLockMode.None;
             Cursor.visible = !on;
         }
@@ -541,7 +586,7 @@ namespace KaiForest
             Director.StopAll();
             if (BoyVoice.Instance != null) BoyVoice.Instance.Stop();
             Ambience.FadeTo(0f, 0.4f);
-            Ambience.PlayOneShot(audioBank.catchLine.near, 1f);
+            Ambience.PlayOneShot(audioBank.catchLine.near, VoiceSettings.Load().VolumeOf(audioBank.catchLine.near));
             Ambience.PlayOneShot(audioBank.gameOverSting, 0.85f);
             StartCoroutine(CaughtRoutine(who));
         }
@@ -588,7 +633,7 @@ namespace KaiForest
             endImage.SetNativeSize();
             endImage.rectTransform.sizeDelta *= 0.62f;
             endSub.text = "あれは、おかあさんじゃ　なかった。";
-            endHint.text = StageDirector.HasCheckpoint ? "クリックで　つづきから" : "クリックで　もういちど";
+            endHint.text = Press + (StageDirector.HasCheckpoint ? "で　つづきから" : "で　もういちど");
             endHint.enabled = true;
             yield return new WaitForSeconds(0.3f);
             yield return Fade(endGroup, 1f, 0.8f);
@@ -605,8 +650,12 @@ namespace KaiForest
         {
             ApplyLook(); // fog / daylight are live-tunable in LanternSettings
             if (!Ready) return;
-            var mouse = IgnoreMouse ? null : Mouse.current;
-            bool click = mouse != null && mouse.leftButton.wasPressedThisFrame;
+            // The gear is up on the title, the opening page and in play; a click on it is only for it.
+            settings.ButtonShown = State == GameState.Title || State == GameState.Intro || State == GameState.Playing;
+            // A click, or on a phone a tap (the same screens go on with either).
+            var mouse = GameInput.Mouse;
+            bool click = mouse != null && mouse.leftButton.wasPressedThisFrame && !UiHasMouse;
+            if (!click && GameInput.TapStarted(out var tap) && !UiOwnsTouch(tap)) click = true;
             switch (State)
             {
                 case GameState.Title:
@@ -618,8 +667,10 @@ namespace KaiForest
                     break;
                 case GameState.Playing:
                     PlayTime += Time.deltaTime;
-                    // Esc releases the lock; the next click takes it back.
+                    // Esc releases the lock (the cursor shows, to reach the gear); the next click takes it back.
                     if (click && Cursor.lockState != CursorLockMode.Locked) LockCursor(true);
+                    else if (GameInput.TouchUsed && Cursor.lockState == CursorLockMode.Locked) LockCursor(false); // captured before the first touch (a tablet)
+                    else if (Cursor.lockState != CursorLockMode.Locked && !Cursor.visible && !IgnoreMouse) Cursor.visible = true;
                     break;
                 case GameState.Clear:
                     // Also by the clock, in case the ending coroutine was cut short (e.g. a recompile during Play).
@@ -779,6 +830,7 @@ namespace KaiForest
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920f, 1080f);
             scaler.matchWidthOrHeight = 0.5f;
+            go.AddComponent<GraphicRaycaster>(); // clicks reach the settings gear and window (everything else ignores raycasts)
 
             fade = MakeRect(go.transform, "Fade", Vector2.zero, Vector2.zero, true).gameObject.AddComponent<Image>();
             fade.raycastTarget = false;
@@ -792,13 +844,13 @@ namespace KaiForest
             title.rectTransform.sizeDelta *= 0.9f;
             MakeText(titleGroup.transform, "―　本物の声を、聞き分けて　―", 40, new Color(0.75f, 0.7f, 0.65f), new Vector2(0f, 0f));
             MakeText(titleGroup.transform, "ヘッドホン推奨", 60, new Color(0.5f, 0.45f, 0.42f), new Vector2(0f, -150f));
-            titleHint = MakeText(titleGroup.transform, "クリックで　はじめる", 60, Color.white, new Vector2(0f, -240f));
+            titleHint = MakeText(titleGroup.transform, Press + "で　はじめる", 60, Color.white, new Vector2(0f, -240f));
             var medal = MakeRect(titleGroup.transform, "ClearMedal", Vector2.zero, new Vector2(142f, 178f), false).gameObject.AddComponent<RawImage>();
             medal.texture = GetMedalTexture(PlayerPrefs.GetInt(ClearedPlayerPrefsKey, 0) != 0);
             medal.raycastTarget = false;
             var medalRect = medal.rectTransform;
             medalRect.anchorMin = medalRect.anchorMax = medalRect.pivot = new Vector2(1f, 1f);
-            medalRect.anchoredPosition = new Vector2(-72f, -62f);
+            medalRect.anchoredPosition = new Vector2(-150f, -62f); // left of the settings gear in the corner
             titleGroup.alpha = 0f;
 
             // Diary pages (StorySettings): the opening and the ending, fitted to the screen on black.
@@ -827,14 +879,9 @@ namespace KaiForest
             outline.effectColor = new Color(0.08f, 0.04f, 0.02f, 0.95f);
             outline.effectDistance = new Vector2(2f, -2f);
             resultTimeGroup = resultTime.gameObject.AddComponent<CanvasGroup>();
-            resultHint = ResultLine(resultBlock, "クリックで　タイトルへ", 26, new Color(0.85f, 0.8f, 0.74f), 0f);
+            resultHint = ResultLine(resultBlock, Press + "で　タイトルへ", 26, new Color(0.85f, 0.8f, 0.74f), 0f);
             resultBlock.gameObject.SetActive(false);
             diaryGroup.alpha = 0f;
-
-            hintGroup = MakeGroup(go.transform, "Hint");
-            MakeText(hintGroup.transform, "マウス：見回す　　左長押し：前へ　　右長押し：うしろへ　　Esc：カーソルを出す（クリックで戻る）",
-                22, new Color(0.7f, 0.68f, 0.64f, 0.8f), new Vector2(0f, 480f));
-            hintGroup.alpha = 0f;
 
             messageGroup = MakeGroup(go.transform, "Message");
             messageText = MakeText(messageGroup.transform, "", 34, new Color(0.88f, 0.84f, 0.78f), new Vector2(0f, -200f));
@@ -860,6 +907,9 @@ namespace KaiForest
             dr.anchoredPosition = new Vector2(16f, -12f);
             debugText.alignment = TextAnchor.UpperLeft;
             debugText.enabled = false;
+
+            // Last, so the gear and its window sit over everything else.
+            settings = SettingsMenu.Create(go.transform, uiFont);
         }
 
         /// <summary>A left-aligned line of the result block, y down from its top-left corner.</summary>

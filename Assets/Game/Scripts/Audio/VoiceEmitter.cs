@@ -14,6 +14,7 @@ namespace KaiForest
         public VoiceKind kind = VoiceKind.Mother;
 
         AudioSource near, far;
+        AudioClip lineClip; // the line's near take: its own volume is looked up every frame (live tuning)
         Transform listener;
         VoiceSettings settings;
         /// <summary>A voice line started: the emitter, how loud the boy hears it (0..1) and how long it lasts.</summary>
@@ -50,6 +51,7 @@ namespace KaiForest
         {
             if (line == null || line.near == null) return 0f;
             near.Stop(); far.Stop();
+            lineClip = line.near;
             near.clip = line.near;
             far.clip = line.far != null ? line.far : line.near;
             near.pitch = far.pitch = pitch;
@@ -88,7 +90,7 @@ namespace KaiForest
             }
             float d = Vector3.Distance(listener.position, transform.position);
             // Hearing: an out-of-breath boy hears voices quieter and muffled (pushed toward the far take).
-            float gain = GainAt(d) * settings.Loudness(kind) * Hearing.Volume;
+            float gain = GainAt(d) * settings.Loudness(kind) * settings.VolumeOf(lineClip) * Hearing.Volume;
             float mix = Mathf.Max(Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(settings.nearDistance, settings.farDistance, d)), Hearing.Muffle);
             near.volume = gain * (1f - mix);
             far.volume = gain * mix;

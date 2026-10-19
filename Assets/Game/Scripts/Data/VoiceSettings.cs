@@ -5,6 +5,17 @@ namespace KaiForest
     /// <summary>Who a voice belongs to: mother's real voice (her, her handkerchief and kanzashi) or a fake (monsters, deer traps).</summary>
     public enum VoiceKind { Mother, Fake }
 
+    /// <summary>One voice file's own volume (the file itself is left as it is).</summary>
+    [System.Serializable]
+    public class ClipVolume
+    {
+        [Tooltip("ファイル名（表示用。自動で入る）")]
+        public string name;
+        public AudioClip clip;
+        [Tooltip("1 で元の音量。0.8 で2割小さく。1 より上げても、すでに最大音量で聞こえているところ（すぐ近く）ではそれ以上大きくならない")]
+        [Range(0f, 2f)] public float volume = 1f;
+    }
+
     /// <summary>
     /// How voices fade with distance. Lives at Assets/Game/Resources/VoiceSettings.asset
     /// (menu: KaiForest > Voice Settings). Read every frame, so edits during Play are heard at once
@@ -43,8 +54,21 @@ namespace KaiForest
         [Tooltip("この距離（m）より先は、こもった遠くの声")]
         [Min(0f)] public float farDistance = 45f;
 
+        [Header("セリフごとの音量（素材はそのまま。ゲームで使っている声が自動で並ぶ）")]
+        [Tooltip("お母さん・化け物・カイの声それぞれの音量。遠くの声（_far）にも同じ倍率がかかる")]
+        public ClipVolume[] lineVolumes = new ClipVolume[0];
+
         public float Range(VoiceKind k) => k == VoiceKind.Mother ? motherRange : fakeRange;
         public float Loudness(VoiceKind k) => k == VoiceKind.Mother ? motherLoudness : fakeLoudness;
+
+        /// <summary>The voice file's own volume from lineVolumes (1 if it isn't listed).</summary>
+        public float VolumeOf(AudioClip clip)
+        {
+            if (clip == null || lineVolumes == null) return 1f;
+            foreach (var v in lineVolumes)
+                if (v != null && v.clip == clip) return v.volume;
+            return 1f;
+        }
 
         /// <summary>0..1 gain of a voice of this kind heard from distance d.</summary>
         public float GainAt(VoiceKind k, float d)

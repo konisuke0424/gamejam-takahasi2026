@@ -16,7 +16,7 @@ namespace KaiForest
         [Tooltip("セリフの音量")]
         [Range(0f, 1f)] public float volume = 0.9f;
         [Tooltip("どのセリフどうしも、最低これだけあける（秒）")]
-        [Min(0f)] public float minGap = 12f;
+        [Min(0f)] public float minGap = 5f;
 
         [Header("ゲーム開始（タイトルから始めたとき一度だけ）")]
         [Tooltip("「お母さんを探さなきゃ」")]
@@ -25,7 +25,8 @@ namespace KaiForest
         [Min(0f)] public float startDelay = 1.5f;
 
         [Header("外周の壁にぶつかったとき（これ以上進めないことを伝える）")]
-        public AudioClip wallLine;
+        [Tooltip("この中から毎回どれか1つを同じ確率で選ぶ（初期は takashi_10 と takashi_11 で半々）")]
+        public AudioClip[] wallLines;
         [Tooltip("一度言ったら、これだけは言わない（秒）")]
         [Min(0f)] public float wallCooldown = 20f;
 
@@ -46,6 +47,8 @@ namespace KaiForest
         [Min(0f)] public float motherHeardCooldown = 90f;
         [Tooltip("お母さんの声がこの大きさ（0〜1）以上で聞こえたときだけ言う")]
         [Range(0f, 1f)] public float motherHeardMinVolume = 0.1f;
+        [Tooltip("オンなら、最初にお母さんの声を聞いたとき（1回目）だけは、かすかにでも聞こえれば大きさに関係なく言う。2回目からは上の大きさの条件どおり")]
+        public bool motherHeardFirstAnyVolume = true;
 
         [Tooltip("聞こえた声が終わってから言うまで（秒）")]
         [Min(0f)] public float afterHeardDelay = 0.6f;

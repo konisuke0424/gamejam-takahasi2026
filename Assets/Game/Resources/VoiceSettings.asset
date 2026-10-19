@@ -14,9 +14,91 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KaiForest.VoiceSettings
   falloff: 1.3
   referenceDistance: 6
-  motherRange: 70
-  fakeRange: 40
-  motherLoudness: 1
-  fakeLoudness: 1
-  nearDistance: 6
-  farDistance: 45
+  motherRange: 100
+  fakeRange: 50
+  motherLoudness: 2
+  fakeLoudness: 0.7
+  nearDistance: 1
+  farDistance: 1
+  lineVolumes:
+  - name: catch_01
+    clip: {fileID: 8300000, guid: 6dc5c024c2beb81438037b7186b80d5f, type: 3}
+    volume: 1
+  - name: chase_01
+    clip: {fileID: 8300000, guid: de210c4292ef5a440b72ddbf90bbc79e, type: 3}
+    volume: 1
+  - name: chase_02
+    clip: {fileID: 8300000, guid: f8119cc0d4e9c7e42a7fc3a8e2694321, type: 3}
+    volume: 1
+  - name: monster_01
+    clip: {fileID: 8300000, guid: 68d206f77862cc14bb05f22f49270309, type: 3}
+    volume: 1
+  - name: monster_02
+    clip: {fileID: 8300000, guid: 1b178fb7ccf40564880e36ece32ce3f9, type: 3}
+    volume: 1
+  - name: monster_03
+    clip: {fileID: 8300000, guid: 425b4d2910300ab4cb2cf096ef3b6c9a, type: 3}
+    volume: 1
+  - name: monster_04
+    clip: {fileID: 8300000, guid: 702d9001a8c81254d8abc92a9f7da104, type: 3}
+    volume: 1
+  - name: monster_05
+    clip: {fileID: 8300000, guid: 780b031c3e30e9d4dae5da724f4ec781, type: 3}
+    volume: 1
+  - name: monster_06
+    clip: {fileID: 8300000, guid: c1b3833630d2eaf44b47669f97918f23, type: 3}
+    volume: 1
+  - name: monster_07
+    clip: {fileID: 8300000, guid: 2f8a582bdc6bc5345ba64bc80add5783, type: 3}
+    volume: 1
+  - name: monster_08
+    clip: {fileID: 8300000, guid: 909855fb6b24fbd48858356e70c9455a, type: 3}
+    volume: 1
+  - name: mother_02
+    clip: {fileID: 8300000, guid: d89e5f9e53bd3134d90f0b9609b01237, type: 3}
+    volume: 1
+  - name: mother_03
+    clip: {fileID: 8300000, guid: fc670ba02e7f5ec4dbbd22cbe3c90546, type: 3}
+    volume: 1
+  - name: mother_04
+    clip: {fileID: 8300000, guid: 1f79b57ff60b59b4cbdd5be0d1e6f993, type: 3}
+    volume: 1
+  - name: mother_05
+    clip: {fileID: 8300000, guid: d135fb136e6dd874b9c0d9c6fc1ff833, type: 3}
+    volume: 1
+  - name: mother_06
+    clip: {fileID: 8300000, guid: 98933142f1460644797af4d609f2090c, type: 3}
+    volume: 1
+  - name: mother_07
+    clip: {fileID: 8300000, guid: 3300295eee7d8ae4596dc8922a448ffb, type: 3}
+    volume: 1
+  - name: mother_08
+    clip: {fileID: 8300000, guid: 6e604f46488a3f84b9317e8ae7f1dd8d, type: 3}
+    volume: 1
+  - name: mother_09
+    clip: {fileID: 8300000, guid: 46084f238dc7295419abb1967aaebe4d, type: 3}
+    volume: 1
+  - name: mother_10
+    clip: {fileID: 8300000, guid: 9049633648fb76247858735270ff8f03, type: 3}
+    volume: 1
+  - name: mother_found
+    clip: {fileID: 8300000, guid: 8cae43e0607719841b233e7c8a50a565, type: 3}
+    volume: 1
+  - name: takashi_06
+    clip: {fileID: 8300000, guid: 3243df43f46baa648962364438e46155, type: 3}
+    volume: 1
+  - name: takashi_07
+    clip: {fileID: 8300000, guid: 002c4d658e4735d47bab78248f48b1dc, type: 3}
+    volume: 1
+  - name: takashi_08
+    clip: {fileID: 8300000, guid: 85c061c9a3dee2c46a4050c9d2edb81d, type: 3}
+    volume: 1
+  - name: takashi_09
+    clip: {fileID: 8300000, guid: 231d7560bec1bb94abe57f17161afcde, type: 3}
+    volume: 1
+  - name: takashi_10
+    clip: {fileID: 8300000, guid: 504df695c2b03f64f86ff9acce46615b, type: 3}
+    volume: 1
+  - name: takashi_11
+    clip: {fileID: 8300000, guid: fb46e61a8fba1e54c8dfc2663ed011ea, type: 3}
+    volume: 1

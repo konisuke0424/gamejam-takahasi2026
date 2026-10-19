@@ -51,6 +51,30 @@ namespace KaiForest.EditorTools
         [MenuItem("KaiForest/Build Windows")]
         public static void BuildWindows() => Build(BuildTarget.StandaloneWindows64, "Builds/Windows/KaiForest.exe");
 
+        /// <summary>
+        /// WebGL for unityroom (Builds/unityroom): plain Gzip without the decompression fallback, as
+        /// unityroom serves the .gz files with the right headers itself. Only for this build; the
+        /// project's own settings (fallback on, for itch.io and plain static servers) are put back.
+        /// Upload the four files in Builds/unityroom/Build.
+        /// </summary>
+        [MenuItem("KaiForest/Build WebGL for unityroom")]
+        public static void BuildWebGLUnityroom()
+        {
+            var format = PlayerSettings.WebGL.compressionFormat;
+            var fallback = PlayerSettings.WebGL.decompressionFallback;
+            try
+            {
+                PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+                PlayerSettings.WebGL.decompressionFallback = false;
+                Build(BuildTarget.WebGL, "Builds/unityroom");
+            }
+            finally
+            {
+                PlayerSettings.WebGL.compressionFormat = format;
+                PlayerSettings.WebGL.decompressionFallback = fallback;
+            }
+        }
+
         // -executeMethod entry points
         public static void CI_SetupOnly() => Setup();
         public static void CI_SetupBuildWindows() { Setup(); BuildWindows(); }
@@ -150,7 +174,7 @@ namespace KaiForest.EditorTools
         {
             var b = LoadOrCreate<AudioBank>($"{Root}/Data/AudioBank.asset");
             var mother = new List<VoiceLine>();
-            for (int i = 1; i <= 10; i++) mother.Add(Line($"mother_{i:00}"));
+            for (int i = 2; i <= 10; i++) mother.Add(Line($"mother_{i:00}")); // mother_01 (「カイー！」) is left out of the game
             b.motherLines = mother.ToArray();
             b.motherFound = Line("mother_found");
             // The pure imitations are the most common; the broken ones are rarer and creepier.

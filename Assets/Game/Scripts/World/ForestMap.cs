@@ -31,6 +31,8 @@ namespace KaiForest
         public DeerTrap[] DeerTraps { get; private set; }
         public MonsterTrap[] MonsterTraps { get; private set; }
         public MotherSpawn MotherSpawn { get; private set; }
+        /// <summary>Where the hunting monsters appear (KaiForest > Map > Add Hunter Spawn); empty = at random.</summary>
+        public HunterSpawn[] HunterSpawns { get; private set; }
 
         void Awake()
         {
@@ -40,6 +42,7 @@ namespace KaiForest
             var items = new List<CheckpointItem>();
             var deer = new List<DeerTrap>();
             var traps = new List<MonsterTrap>();
+            var hunters = new List<HunterSpawn>();
             foreach (var go in gameObject.scene.GetRootGameObjects())
             {
                 trees.AddRange(go.GetComponentsInChildren<ForestTree>());
@@ -47,6 +50,7 @@ namespace KaiForest
                 items.AddRange(go.GetComponentsInChildren<CheckpointItem>(true));
                 deer.AddRange(go.GetComponentsInChildren<DeerTrap>(true));
                 traps.AddRange(go.GetComponentsInChildren<MonsterTrap>(true));
+                hunters.AddRange(go.GetComponentsInChildren<HunterSpawn>());
                 if (MotherSpawn == null) MotherSpawn = go.GetComponentInChildren<MotherSpawn>(true);
             }
             TreeCount = trees.Count;
@@ -54,6 +58,7 @@ namespace KaiForest
             Items = items.ToArray();
             DeerTraps = deer.ToArray();
             MonsterTraps = traps.ToArray();
+            HunterSpawns = hunters.ToArray();
 
             // Forest.unity opened on its own and played: bring in the game scene too.
             if (FindAnyObjectByType<GameManager>() == null && Application.CanStreamedLevelBeLoaded(GameManager.SceneName))

@@ -12,9 +12,11 @@ namespace KaiForest.EditorTools
     {
         const string Dir = "Assets/Game/Resources";
         const string PantClipPath = "Assets/Game/Audio/Sfx/player_pant.wav";
+        const string PantBreathsDir = "Assets/Game/Audio/Sfx/Pant";
         const string BackdropImagePath = "Assets/Denim/back.png";
         const string MotherImagePath = "Assets/Denim/mother.png";
         const string VoicesDir = "Assets/Game/Audio/Voices/";
+        const string AudioBankPath = "Assets/Game/Data/AudioBank.asset";
         const string IntroImagePath = "Assets/Denim/nikki01.png";
         const string ClearImagePath = "Assets/Denim/nikki02.png";
         const string ClearTitlePath = "Assets/Game/UI/UI_GameClear.png";
@@ -32,7 +34,7 @@ namespace KaiForest.EditorTools
             BoyVoice();
         }
 
-        /// <summary>Also fills in the boy's lines (Assets/Game/Audio/Voices/takashi_06..09.wav) where empty.</summary>
+        /// <summary>Also fills in the boy's lines (Assets/Game/Audio/Voices/takashi_06..11.wav) where empty.</summary>
         public static BoyVoiceSettings BoyVoice()
         {
             var s = Ensure<BoyVoiceSettings>(BoyVoiceSettings.ResourceName);
@@ -45,7 +47,11 @@ namespace KaiForest.EditorTools
                 return clip;
             }
             s.startLine = Fill(s.startLine, "takashi_06.wav");
-            s.wallLine = Fill(s.wallLine, "takashi_06.wav");
+            if (s.wallLines == null || s.wallLines.Length == 0)
+            {
+                s.wallLines = new[] { Fill(null, "takashi_10.wav"), Fill(null, "takashi_11.wav") };
+                if (System.Array.TrueForAll(s.wallLines, c => c == null)) s.wallLines = new AudioClip[0];
+            }
             s.forkLine = Fill(s.forkLine, "takashi_07.wav");
             s.fakeHeardLine = Fill(s.fakeHeardLine, "takashi_08.wav");
             s.motherHeardLine = Fill(s.motherHeardLine, "takashi_09.wav");
@@ -122,19 +128,81 @@ namespace KaiForest.EditorTools
 
         public static LanternSettings Lantern() => Ensure<LanternSettings>(LanternSettings.ResourceName);
 
-        public static VoiceSettings Voice() => Ensure<VoiceSettings>(VoiceSettings.ResourceName);
+        /// <summary>
+        /// Also lists every voice the game plays (Audio Bank: mother, monsters, chase, catch; Boy Voice
+        /// Settings: the boy's lines) under Line Volumes at 1; voices already listed keep their volume.
+        /// Voice files no longer played drop off the list, so they stay out of the build (the list is
+        /// in Resources); entries for clips from elsewhere (added by hand) are kept.
+        /// </summary>
+        public static VoiceSettings Voice()
+        {
+            var s = Ensure<VoiceSettings>(VoiceSettings.ResourceName);
+            var bank = AssetDatabase.LoadAssetAtPath<AudioBank>(AudioBankPath);
+            if (bank == null) return s; // can't tell what is played yet
+            var used = new System.Collections.Generic.List<AudioClip>();
+            void Use(AudioClip c) { if (c != null && !used.Contains(c)) used.Add(c); }
+            void UseLines(VoiceLine[] lines) { if (lines != null) foreach (var l in lines) if (l != null) Use(l.near); }
+            UseLines(bank.motherLines);
+            UseLines(bank.monsterLines);
+            UseLines(bank.chaseLines);
+            UseLines(new[] { bank.motherFound, bank.catchLine });
+            var boy = BoyVoice();
+            Use(boy.startLine);
+            if (boy.wallLines != null) foreach (var c in boy.wallLines) Use(c);
+            Use(boy.forkLine);
+            Use(boy.fakeHeardLine);
+            Use(boy.motherHeardLine);
 
+            var list = new System.Collections.Generic.List<ClipVolume>(s.lineVolumes ?? new ClipVolume[0]);
+            int before = list.Count;
+            list.RemoveAll(v => v == null || v.clip == null ||
+                                (AssetDatabase.GetAssetPath(v.clip).StartsWith(VoicesDir) && !used.Contains(v.clip)));
+            bool dirty = list.Count != before;
+            foreach (var clip in used)
+            {
+                if (list.Exists(v => v.clip == clip)) continue;
+                list.Add(new ClipVolume { name = clip.name, clip = clip, volume = 1f });
+                dirty = true;
+            }
+            if (dirty)
+            {
+                list.Sort((a, b) => string.CompareOrdinal(a?.name, b?.name));
+                s.lineVolumes = list.ToArray();
+                EditorUtility.SetDirty(s);
+                AssetDatabase.SaveAssets();
+            }
+            return s;
+        }
+
+        /// <summary>Also fills in the panting: the whole take, and its breaths (Assets/Game/Audio/Sfx/Pant, by name) if none are set.</summary>
         public static StaminaSettings Stamina()
         {
             var s = Ensure<StaminaSettings>(StaminaSettings.ResourceName);
+            bool dirty = false;
             if (s.pantClip == null)
             {
                 s.pantClip = AssetDatabase.LoadAssetAtPath<AudioClip>(PantClipPath);
-                if (s.pantClip != null)
+                dirty |= s.pantClip != null;
+            }
+            if ((s.pantBreaths == null || s.pantBreaths.Length == 0) && AssetDatabase.IsValidFolder(PantBreathsDir))
+            {
+                var breaths = new System.Collections.Generic.List<AudioClip>();
+                foreach (var guid in AssetDatabase.FindAssets("t:AudioClip", new[] { PantBreathsDir }))
                 {
-                    EditorUtility.SetDirty(s);
-                    AssetDatabase.SaveAssets();
+                    var clip = AssetDatabase.LoadAssetAtPath<AudioClip>(AssetDatabase.GUIDToAssetPath(guid));
+                    if (clip != null) breaths.Add(clip);
                 }
+                breaths.Sort((a, b) => string.CompareOrdinal(a.name, b.name));
+                if (breaths.Count > 0)
+                {
+                    s.pantBreaths = breaths.ToArray();
+                    dirty = true;
+                }
+            }
+            if (dirty)
+            {
+                EditorUtility.SetDirty(s);
+                AssetDatabase.SaveAssets();
             }
             return s;
         }
